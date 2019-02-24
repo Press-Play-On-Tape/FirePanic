@@ -2,6 +2,7 @@
 #include "../images/Images.h"
 #include "../utils/EEPROM_Utils.h"
 
+constexpr const static uint8_t PRESS_A_DELAY = 150;
 constexpr const static uint8_t UPLOAD_DELAY = 16;
 
 
@@ -23,6 +24,7 @@ void TitleScreenState::update(StateMachine & machine) {
   auto & arduboy = machine.getContext().arduboy;
   auto justPressed = arduboy.justPressedButtons();
   auto pressed = arduboy.pressedButtons();
+
 
 	// Restart ?
 
@@ -47,6 +49,21 @@ void TitleScreenState::update(StateMachine & machine) {
 		machine.changeState(GameStateType::GameIntroScreen); 
 	}
 
+
+  // Update flame counter.
+
+  if (arduboy.everyXFrames(15)) {
+
+    this->flameCounter++;
+    if (this->flameCounter == 3) this->flameCounter = 0;
+
+  }
+
+
+  // Update 'Press A' counter / delay ..
+
+  if (this->pressACounter < PRESS_A_DELAY) this->pressACounter++;
+
 }
 
 
@@ -55,8 +72,13 @@ void TitleScreenState::update(StateMachine & machine) {
 //
 void TitleScreenState::render(StateMachine & machine) {
 
-	auto & arduboy = machine.getContext().arduboy;
-
 	SpritesB::drawOverwrite(0, 0, Images::FirePanic, 0);
+  Sprites::drawSelfMasked(33, 1, (uint8_t *)pgm_read_word_near(&Images::FirePanic_Logos[this->flameCounter]), 0);
+
+  if (this->pressACounter == PRESS_A_DELAY) {
+
+    Sprites::drawExternalMask(43, 52, Images::PressA, Images::PressA_Mask, 0, 0);
+
+  }
 
 }
