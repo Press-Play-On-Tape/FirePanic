@@ -2,7 +2,7 @@
 #include "../images/Images.h"
 #include "../utils/EEPROM_Utils.h"
 
-constexpr const static uint8_t PRESS_A_DELAY = 150;
+constexpr const static uint8_t PRESS_A_DELAY = 200;
 constexpr const static uint8_t UPLOAD_DELAY = 16;
 
 
@@ -60,6 +60,15 @@ void TitleScreenState::update(StateMachine & machine) {
   }
 
 
+  // Help !
+
+  if (arduboy.everyXFrames(80)) {
+
+    this->help = !this->help;
+
+  }
+
+
   // Update 'Press A' counter / delay ..
 
   if (this->pressACounter < PRESS_A_DELAY) this->pressACounter++;
@@ -78,6 +87,12 @@ void TitleScreenState::render(StateMachine & machine) {
   if (this->pressACounter == PRESS_A_DELAY) {
 
     Sprites::drawExternalMask(43, 52, Images::PressA, Images::PressA_Mask, 0, 0);
+
+  }
+
+  if (this->help) {
+
+    Sprites::drawOverwrite(18, 16, Images::Help, 0);
 
   }
 
