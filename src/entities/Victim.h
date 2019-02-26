@@ -12,8 +12,11 @@ class Victim {
     uint8_t getY();
     uint8_t getRotation();
     uint8_t getEnabled();
+    uint8_t getAlive();
+    uint8_t getHaloIndex();
 
     void setEnabled(bool value);
+    void setAlive(uint8_t value);
 
     void move();
     void rotate();
@@ -26,6 +29,7 @@ class Victim {
     uint8_t posIndex;
     uint8_t rotIndex;
     bool enabled;
+    uint8_t alive;
 
 };
 

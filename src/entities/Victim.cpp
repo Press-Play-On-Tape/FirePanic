@@ -5,6 +5,7 @@ Victim::Victim() {
 
   this->enabled = false;
   this->posIndex = 0;
+  this->alive = 0;
   this->x = pgm_read_byte(&Physics_Arc[this->posIndex * 2]);
   this->y = pgm_read_byte(&Physics_Arc[(this->posIndex * 2) + 1]);
 
@@ -24,11 +25,11 @@ uint8_t Victim::getY() {
 
 uint8_t Victim::getRotation() {
 
-  if (this->y >= 37) {
+  if (this->alive == 0) {
     return this->rotIndex;
   }
   else {
-    return 5;
+    return 4;
   }
 
 }
@@ -39,9 +40,27 @@ uint8_t Victim::getEnabled() {
 
 }
 
+uint8_t Victim::getHaloIndex() {
+
+  return (this->alive / VICTIM_HALO_DELAY) % 3;
+
+}
+
+uint8_t Victim::getAlive() {
+
+  return this->alive;
+
+}
+
 void Victim::setEnabled(bool value) {
 
   this->enabled = value;
+
+}
+
+void Victim::setAlive(uint8_t value) {
+
+  this->alive = value;
 
 }
 
@@ -63,9 +82,28 @@ void Victim::move() {
 
   if (this->posIndex == 76) this->posIndex = 0;
 
-  this->x = pgm_read_byte(&Physics_Arc[this->posIndex * 2]);
-  this->y = pgm_read_byte(&Physics_Arc[(this->posIndex * 2) + 1]);
+  switch (this->alive) {
 
+    case 0: // alive
+      this->x = pgm_read_byte(&Physics_Arc[this->posIndex * 2]);
+      this->y = pgm_read_byte(&Physics_Arc[(this->posIndex * 2) + 1]);
+      break;
+
+    case 1: //
+      this->x++;
+      this->y = VICTIM_ON_GROUND;
+      this->alive++;
+      break;
+
+    case 2 ... VICTIM_HALO_MAX: //
+      this->alive++;
+      break;
+
+    default: 
+      this->enabled = false;
+      break;
+
+  }
 
 }
 

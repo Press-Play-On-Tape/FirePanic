@@ -31,7 +31,15 @@ void PlayGameState::update(StateMachine & machine) {
     for (uint8_t i = 0; i < VICTIMS_MAX_NUMBER; i++) {
 
       if (this->victims[i].getEnabled()) {
+
+        if (this->victims[i].getY() == VICTIM_BOUNCE_HEIGHT) {
+
+          this->victims[i].setAlive(VICTIM_MISSED_TRAMPOLINE);
+          
+        }
+
         this->victims[i].move();
+        
       }
 
     }
@@ -77,6 +85,13 @@ void PlayGameState::render(StateMachine & machine) {
   Sprites::drawExternalMask(81, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
   
 
+  uint8_t i = 0;
+
+
+  Sprites::drawExternalMask(96, 31, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
+
+  Sprites::drawExternalMask(this->player.getX(), this->player.getY(), (uint8_t *)pgm_read_word_near(&Images::Firemen[i]), (uint8_t *)pgm_read_word_near(&Images::Firemen_Mask[i]), 0, 0);
+
   // Render victims ..
 
   for (uint8_t i = 0; i < VICTIMS_MAX_NUMBER; i++) {
@@ -87,16 +102,19 @@ void PlayGameState::render(StateMachine & machine) {
 
       Sprites::drawExternalMask(victim.getX(), victim.getY(), (uint8_t *)pgm_read_word_near(&Images::Victims[victim.getRotation()]), (uint8_t *)pgm_read_word_near(&Images::Victims_Mask[victim.getRotation()]), 0, 0);
 
+      uint8_t isAlive = this->victims[i].getAlive();
+
+      if (isAlive > 0) {
+        
+        uint8_t haloIndex = victim.getHaloIndex();
+        Sprites::drawExternalMask(victim.getX(), victim.getY() - 5, (uint8_t *)pgm_read_word_near(&Images::Victim_Halos[haloIndex]), (uint8_t *)pgm_read_word_near(&Images::Victim_Halos_Mask[haloIndex]), 0, 0);
+
+      }
+
     }
 
   }
 
-  uint8_t i = 0;
-
-
-
-  Sprites::drawExternalMask(this->player.getX(), this->player.getY(), (uint8_t *)pgm_read_word_near(&Images::Firemen[i]), (uint8_t *)pgm_read_word_near(&Images::Firemen_Mask[i]), 0, 0);
-
-  Sprites::drawExternalMask(96, 31, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
+  Serial.println(this->player.getX());
 
 }

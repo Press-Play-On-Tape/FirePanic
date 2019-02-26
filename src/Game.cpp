@@ -25,7 +25,7 @@
 void Game::setup(void) {
 
 	auto & arduboy = this->context.arduboy;
-	auto & gameStats = this->context.gameStats;
+	//auto & gameStats = this->context.gameStats;
 
 	arduboy.boot();
 	arduboy.flashlight();
