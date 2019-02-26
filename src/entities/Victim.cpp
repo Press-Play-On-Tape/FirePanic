@@ -24,7 +24,12 @@ uint8_t Victim::getY() {
 
 uint8_t Victim::getRotation() {
 
-  return this->rotIndex;
+  if (this->y >= 37) {
+    return this->rotIndex;
+  }
+  else {
+    return 5;
+  }
 
 }
 

@@ -9,6 +9,7 @@
 void GameIntroState::activate(StateMachine & machine) {
 
   (void)machine;
+  this->counter = 0;
 
 }
 
@@ -19,7 +20,7 @@ void GameIntroState::activate(StateMachine & machine) {
 void GameIntroState::update(StateMachine & machine) { 
 
 	auto & arduboy = machine.getContext().arduboy;
-	auto pressed = arduboy.pressedButtons();
+	auto justPressed = arduboy.justPressedButtons();
 
   if (arduboy.everyXFrames(2)) {
 
@@ -52,10 +53,13 @@ void GameIntroState::update(StateMachine & machine) {
         break;
 
     }
-
     this->counter++;
 
   }
+
+  // Skip intro ..
+  
+  if (justPressed & A_BUTTON) machine.changeState(GameStateType::PlayGameScreen); 
 
 }
 

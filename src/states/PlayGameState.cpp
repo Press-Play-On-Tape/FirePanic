@@ -53,8 +53,14 @@ void PlayGameState::update(StateMachine & machine) {
 
   // Update player position ..
 
-  if (pressed & LEFT_BUTTON && this->player.getX() > PLAYER_MIN_X_POS)    this->player.decX();
-  if (pressed & RIGHT_BUTTON && this->player.getX() < PLAYER_MAX_X_POS)   this->player.incX();
+  if ((pressed & LEFT_BUTTON) && this->player.canMoveLeft())      { this->player.setPlayerDirection(PlayerDirection::Left); }
+  if ((pressed & RIGHT_BUTTON) && this->player.canMoveRight())    { this->player.setPlayerDirection(PlayerDirection::Right); }
+  
+  if (arduboy.everyXFrames(2)) {
+
+    this->player.move();
+
+  }
 
 }
 
