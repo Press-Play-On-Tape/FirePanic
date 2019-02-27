@@ -95,9 +95,11 @@ void PlayGameState::render(StateMachine & machine) {
 	auto & arduboy = machine.getContext().arduboy;
   auto & gameStats = machine.getContext().gameStats;
 
-  Sprites::drawExternalMask(0, 41, Images::Ground, Images::Ground_Mask, 0, 0);
+  Sprites::drawExternalMask(0, 28, Images::Grass, Images::Grass_Mask, 0, 0);
+  Sprites::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
   Sprites::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
   Sprites::drawExternalMask(81, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
+  Sprites::drawExternalMask(0, 61, Images::Grass, Images::Grass_Mask, 0, 0);
   
 
   // Render misses ..

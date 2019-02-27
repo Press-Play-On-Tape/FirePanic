@@ -70,10 +70,12 @@ void GameIntroState::update(StateMachine & machine) {
 void GameIntroState::render(StateMachine & machine) {
 
 	auto & arduboy = machine.getContext().arduboy;
-
-  Sprites::drawExternalMask(0, 41, Images::Ground, Images::Ground_Mask, 0, 0);
+	
+  Sprites::drawExternalMask(0, 28, Images::Grass, Images::Grass_Mask, 0, 0);
+  Sprites::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
   Sprites::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
   Sprites::drawExternalMask(xAmbulance, 31, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
+  Sprites::drawExternalMask(0, 61, Images::Grass, Images::Grass_Mask, 0, 0);
 
   switch (this->lights) {
 
