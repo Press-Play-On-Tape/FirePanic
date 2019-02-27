@@ -40,14 +40,17 @@ void PlayGameState::update(StateMachine & machine) {
           if (victimX == VICTIM_IN_AMBULANCE) {
             gameStats.score++;
           }
+          else {
 
-          uint8_t victimXCentre = victimX + VICTIM_WIDTH_HALF;
-          uint8_t delta = absT(victimXCentre - playerXCentre);
+            uint8_t victimXCentre = victimX + VICTIM_WIDTH_HALF;
+            uint8_t delta = absT(victimXCentre - playerXCentre);
 
-          if (this->victims[i].getY() == VICTIM_BOUNCE_HEIGHT && delta > ACCURACY_TOLERANCE) {
+            if (this->victims[i].getY() == VICTIM_BOUNCE_HEIGHT && delta > ACCURACY_TOLERANCE) {
 
-            this->victims[i].setAlive(VICTIM_MISSED_TRAMPOLINE);
-            
+              this->victims[i].setAlive(VICTIM_MISSED_TRAMPOLINE);
+              
+            }  
+
           }
 
           this->victims[i].move();
@@ -98,13 +101,13 @@ void PlayGameState::render(StateMachine & machine) {
   Sprites::drawExternalMask(0, 28, Images::Grass, Images::Grass_Mask, 0, 0);
   Sprites::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
   Sprites::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
-  Sprites::drawExternalMask(81, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
+  Sprites::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
   
 
   // Render misses ..
 
-  if (gameStats.misses >= 1) { Sprites::drawExternalMask(86, 2, Images::Misses, Images::Misses_Mask, 0, 0); }
-  if (gameStats.misses >= 2) { Sprites::drawExternalMask(99, 2, Images::Misses, Images::Misses_Mask, 0, 0); }
+  if (gameStats.misses >= 1) { Sprites::drawExternalMask(74, 2, Images::Misses, Images::Misses_Mask, 0, 0); }
+  if (gameStats.misses >= 2) { Sprites::drawExternalMask(59, 2, Images::Misses, Images::Misses_Mask, 0, 0); }
 
 
   // Render score ..
