@@ -14,6 +14,7 @@
 #define VICTIM_MISSED_TRAMPOLINE 1
 #define VICTIM_BOUNCE_HEIGHT 37
 #define VICTIM_WIDTH_HALF 8
+#define VICTIM_IN_AMBULANCE 102
 
 #define PLAYER_MIN_X_POS 18
 #define PLAYER_MID_X_POS 39
@@ -118,25 +119,13 @@ struct GameStats {
     
     GameStats() { };
 
-    // Player player1;
-    // Player player2;
-    // Player player3;
-    // Player player4;
-
-    // Player * players[4] = { &player1, &player2, &player3, &player4 };
-    
-    // uint8_t numberOfPlayers = 1;
-    // uint8_t playerBeingEdited = 1;
+    uint16_t score = 0;
+    uint16_t misses = 2;
 
     void resetGame() {
 
-    //   numberOfPlayers = 1;
-    //   playerBeingEdited = 1;
-
-    //   player1.setIcon(1);
-    //   player2.setIcon(0);
-    //   player3.setIcon(0);
-    //   player4.setIcon(0);
+      score = 0;
+      misses = 0;
 
     }
 

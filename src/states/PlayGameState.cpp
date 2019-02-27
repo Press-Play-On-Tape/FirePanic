@@ -21,6 +21,7 @@ void PlayGameState::activate(StateMachine & machine) {
 void PlayGameState::update(StateMachine & machine) { 
 
 	auto & arduboy = machine.getContext().arduboy;
+  auto & gameStats = machine.getContext().gameStats;
 	auto pressed = arduboy.pressedButtons();
 
 
@@ -34,7 +35,13 @@ void PlayGameState::update(StateMachine & machine) {
 
         if (this->victims[i].getEnabled()) {
 
-          uint8_t victimXCentre = this->victims[i].getX() + VICTIM_WIDTH_HALF;
+          uint8_t victimX = this->victims[i].getX();
+
+          if (victimX == VICTIM_IN_AMBULANCE) {
+            gameStats.score++;
+          }
+
+          uint8_t victimXCentre = victimX + VICTIM_WIDTH_HALF;
           uint8_t delta = absT(victimXCentre - playerXCentre);
 
           if (this->victims[i].getY() == VICTIM_BOUNCE_HEIGHT && delta > ACCURACY_TOLERANCE) {
@@ -86,18 +93,34 @@ void PlayGameState::update(StateMachine & machine) {
 void PlayGameState::render(StateMachine & machine) {
 
 	auto & arduboy = machine.getContext().arduboy;
+  auto & gameStats = machine.getContext().gameStats;
 
   Sprites::drawExternalMask(0, 41, Images::Ground, Images::Ground_Mask, 0, 0);
   Sprites::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
   Sprites::drawExternalMask(81, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
   
 
+  // Render misses ..
+
+  if (gameStats.misses >= 1) { Sprites::drawExternalMask(86, 2, Images::Misses, Images::Misses_Mask, 0, 0); }
+  if (gameStats.misses >= 2) { Sprites::drawExternalMask(99, 2, Images::Misses, Images::Misses_Mask, 0, 0); }
+
+
+  // Render score ..
+
+	uint8_t digits[6] = {};
+	extractDigits(digits, gameStats.score);
+	
+	for (uint8_t j = 6; j > 0; --j) {
+    Sprites::drawSelfMasked(124 - (j*5), 3, Images::Scoreboard_Numbers, digits[j]);
+	}
+
+
   uint8_t i = 0;
 
-
   Sprites::drawExternalMask(96, 31, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
-
   Sprites::drawExternalMask(this->player.getX(), this->player.getY(), (uint8_t *)pgm_read_word_near(&Images::Firemen[i]), (uint8_t *)pgm_read_word_near(&Images::Firemen_Mask[i]), 0, 0);
+
 
   // Render victims ..
 
