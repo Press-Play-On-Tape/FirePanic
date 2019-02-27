@@ -99,7 +99,6 @@ void PlayGameState::render(StateMachine & machine) {
   Sprites::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
   Sprites::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
   Sprites::drawExternalMask(81, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
-  Sprites::drawExternalMask(0, 61, Images::Grass, Images::Grass_Mask, 0, 0);
   
 
   // Render misses ..
@@ -122,6 +121,9 @@ void PlayGameState::render(StateMachine & machine) {
 
   Sprites::drawExternalMask(96, 31, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
   Sprites::drawExternalMask(this->player.getX(), this->player.getY(), (uint8_t *)pgm_read_word_near(&Images::Firemen[i]), (uint8_t *)pgm_read_word_near(&Images::Firemen_Mask[i]), 0, 0);
+  
+  // Render Foreground grass ..
+  Sprites::drawExternalMask(0, 59, Images::Grass, Images::Grass_Mask, 0, 0);
 
 
   // Render victims ..
