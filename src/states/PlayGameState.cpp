@@ -25,21 +25,28 @@ void PlayGameState::update(StateMachine & machine) {
 
 
   // Update victim positions ..
+  {
+    uint8_t playerXCentre = this->player.getX() + PLAYER_WIDTH_HALF;
 
-  if (arduboy.everyXFrames(5)) {
+    if (arduboy.everyXFrames(5)) {
 
-    for (uint8_t i = 0; i < VICTIMS_MAX_NUMBER; i++) {
+      for (uint8_t i = 0; i < VICTIMS_MAX_NUMBER; i++) {
 
-      if (this->victims[i].getEnabled()) {
+        if (this->victims[i].getEnabled()) {
 
-        if (this->victims[i].getY() == VICTIM_BOUNCE_HEIGHT) {
+          uint8_t victimXCentre = this->victims[i].getX() + VICTIM_WIDTH_HALF;
+          uint8_t delta = absT(victimXCentre - playerXCentre);
 
-          this->victims[i].setAlive(VICTIM_MISSED_TRAMPOLINE);
+          if (this->victims[i].getY() == VICTIM_BOUNCE_HEIGHT && delta > ACCURACY_TOLERANCE) {
+
+            this->victims[i].setAlive(VICTIM_MISSED_TRAMPOLINE);
+            
+          }
+
+          this->victims[i].move();
           
         }
 
-        this->victims[i].move();
-        
       }
 
     }
