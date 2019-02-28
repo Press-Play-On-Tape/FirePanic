@@ -47,7 +47,7 @@ void Game::loop(void) {
 	if (!arduboy.nextFrame()) return;
 
 	arduboy.pollButtons();
-	arduboy.clear();
+	//arduboy.clear();
 
 	switch (currentState) {
 
@@ -99,6 +99,7 @@ void Game::loop(void) {
 
 	}
 
-	arduboy.display();
+//	arduboy.display();
+  	arduboy.displayWithBackground(TimeOfDay::Day);
 	
 }

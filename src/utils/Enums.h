@@ -79,6 +79,11 @@
 #define EEPROM_HS_SCORE_3             177
 #define EEPROM_END                    179
 
+enum class TimeOfDay : uint8_t {
+  Day,
+  Night,
+};
+
 enum class GameStateType : uint8_t {
 	SplashScreen,
 	TitleScreen,
