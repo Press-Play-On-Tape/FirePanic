@@ -71,20 +71,20 @@ void SplashScreenState::render(StateMachine & machine) {
 
 	auto & arduboy = machine.getContext().arduboy;
 
-  arduboy.drawCompressed(47, 17, Images::Ppot_Buttons, WHITE);
-  arduboy.drawCompressed(43, 26, Images::Ppot_ButtonUp, WHITE);
-  arduboy.drawCompressed(73, 26, Images::Ppot_ButtonUp, WHITE);
+  arduboy.drawCompressed(47, 17, Images::Ppot_Buttons, BLACK);
+  arduboy.drawCompressed(43, 26, Images::Ppot_ButtonUp, BLACK);
+  arduboy.drawCompressed(73, 26, Images::Ppot_ButtonUp, BLACK);
 
   if (this->counter == 0) {
 
-    arduboy.drawCompressed(58, 26, Images::Ppot_ButtonUp, WHITE);
-    arduboy.drawCompressed(26, 46, Images::Ppot_Caption, WHITE);
+    arduboy.drawCompressed(58, 26, Images::Ppot_ButtonUp, BLACK);
+    arduboy.drawCompressed(26, 46, Images::Ppot_Caption, BLACK);
 
   }
   else {
 
-    arduboy.drawCompressed(58, 26, Images::Ppot_ButtonDown, WHITE);
-    arduboy.drawCompressed(44, 46, Images::Ppot_Loading, WHITE);
+    arduboy.drawCompressed(58, 26, Images::Ppot_ButtonDown, BLACK);
+    arduboy.drawCompressed(44, 46, Images::Ppot_Loading, BLACK);
 
     uint8_t i = (this->counter / 15) % 4;
 
