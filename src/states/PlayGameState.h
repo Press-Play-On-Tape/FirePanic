@@ -3,8 +3,7 @@
 #include "../utils/GameContext.h"
 #include "../utils/GameState.h"
 #include "../utils/Enums.h"
-#include "../entities/Victim.h"
-#include "../entities/Player.h"
+#include "../entities/Entities.h"
 
 class PlayGameState : public GameState<GameContext, GameStateType> {
 
@@ -14,6 +13,7 @@ class PlayGameState : public GameState<GameContext, GameStateType> {
   
     Victim victims[VICTIMS_MAX_NUMBER];
     Player player;
+    Angel angel;
 
   public:
     void activate(StateMachine & machine) override;

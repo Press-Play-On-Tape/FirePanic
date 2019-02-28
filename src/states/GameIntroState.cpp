@@ -93,4 +93,6 @@ void GameIntroState::render(StateMachine & machine) {
     Sprites::drawExternalMask(this->xAmbulance - 8, 30, Images::Ambulance_Door, Images::Ambulance_Door_Mask, 0, 0);
   }
 
+  arduboy.displayWithBackground(TimeOfDay::Day);
+
 }
