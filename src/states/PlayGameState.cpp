@@ -51,7 +51,23 @@ void PlayGameState::update(StateMachine & machine) {
 
               this->victims[i].setAlive(VICTIM_MISSED_TRAMPOLINE);
 
-              this->angel.init(0);
+              switch (this->victims[i].getX()) {
+
+                case PLAYER_MIN_X_POS ... PLAYER_MID_X_POS - 1:
+                  this->angel.init(0);
+                  break;
+
+                case PLAYER_MID_X_POS ... PLAYER_MAX_X_POS - 1:
+                  this->angel.init(0);
+                  break;
+
+                case PLAYER_MAX_X_POS ... WIDTH:
+                  this->angel.init(0);
+                  break;
+                  
+
+              }
+
               
             }  
 
@@ -96,7 +112,7 @@ void PlayGameState::update(StateMachine & machine) {
   
   if (this->angel.getEnabled()) {
     
-    if (arduboy.everyXFrames(2)) {
+    if (arduboy.everyXFrames(4)) {
 
       this->angel.move();
 
