@@ -90,7 +90,7 @@ void GameIntroState::render(StateMachine & machine) {
   }
 
   if (this->ambulanceDoor) {
-    Sprites::drawExternalMask(this->xAmbulance - 8, 30, Images::Ambulance_Door, Images::Ambulance_Door_Mask, 0, 0);
+    Sprites::drawExternalMask(this->xAmbulance - 4, 36, Images::Ambulance_Door, Images::Ambulance_Door_Mask, 0, 0);
   }
 
 }
