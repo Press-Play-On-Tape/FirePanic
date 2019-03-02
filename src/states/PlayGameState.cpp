@@ -112,7 +112,7 @@ void PlayGameState::update(StateMachine & machine) {
   
   if (this->angel.getEnabled()) {
     
-    if (arduboy.everyXFrames(4)) {
+    if (arduboy.everyXFrames(6)) {
 
       this->angel.move();
 
@@ -172,11 +172,15 @@ void PlayGameState::render(StateMachine & machine) {
 
     if (this->victims[i].getEnabled()) {
 
+
+Serial.print(victim.getX());
+Serial.print(" ");
+Serial.println(victim.getY());
       Sprites::drawExternalMask(victim.getX(), victim.getY(), (uint8_t *)pgm_read_word_near(&Images::Victims[victim.getRotation()]), (uint8_t *)pgm_read_word_near(&Images::Victims_Mask[victim.getRotation()]), 0, 0);
 
       uint8_t isAlive = this->victims[i].getAlive();
 
-      if (isAlive > 0) {
+      if (isAlive >= 2) {
         
         uint8_t haloIndex = victim.getHaloIndex();
         Sprites::drawExternalMask(victim.getX(), victim.getY() - 5, (uint8_t *)pgm_read_word_near(&Images::Victim_Halos[haloIndex]), (uint8_t *)pgm_read_word_near(&Images::Victim_Halos_Mask[haloIndex]), 0, 0);
@@ -190,9 +194,10 @@ void PlayGameState::render(StateMachine & machine) {
 
   // Render angel if required ..
 
-  if (this->angel.getEnabled()) {
+  if (this->angel.getEnabled() && this->angel.renderImage()) {
 
-    Sprites::drawExternalMask(this->angel.getX(), this->angel.getY(), (uint8_t *)pgm_read_word_near(&Images::Angels[0]), (uint8_t *)pgm_read_word_near(&Images::Angels_Mask[0]), 0, 0);
+    uint8_t imageIndex = this->angel.getImageIndex();
+    Sprites::drawExternalMask(this->angel.getX(), this->angel.getY(), Images::Angels, Images::Angels_Mask, imageIndex, imageIndex);
 
   }
 

@@ -11,11 +11,13 @@ class Angel {
     uint8_t getX();
     uint8_t getY();
     uint8_t getEnabled();
+    uint8_t getImageIndex();
 
     void setEnabled(bool value);
     void setSequence(uint8_t sequence);
     void init(uint8_t sequence);
     void move();
+    bool renderImage();
     
   protected:
 
@@ -24,7 +26,7 @@ class Angel {
     bool enabled;
     uint8_t sequence;
     uint8_t sequenceLen;
-    uint8_t posIndex;
+    int8_t posIndex;
 
 };
 
