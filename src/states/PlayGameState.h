@@ -14,6 +14,7 @@ class PlayGameState : public GameState<GameContext, GameStateType> {
     Victim victims[VICTIMS_MAX_NUMBER];
     Player player;
     Angel angel;
+    uint8_t smokeIndex = 0;
 
   public:
     void activate(StateMachine & machine) override;

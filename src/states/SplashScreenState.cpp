@@ -90,12 +90,12 @@ void SplashScreenState::render(StateMachine & machine) {
 
     for (uint8_t j = 0; j < i; j++) {
       
-        arduboy.drawPixel(79 + (j * 2), 49);
+        arduboy.drawPixel(79 + (j * 2), 49, BLACK);
 
     }
 
   }
 
-	arduboy.display(true);
+	arduboy.displayWithBackground(TimeOfDay::Day);
 
 }

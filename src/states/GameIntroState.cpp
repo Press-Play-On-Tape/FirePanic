@@ -61,6 +61,12 @@ void GameIntroState::update(StateMachine & machine) {
   
   if (justPressed & A_BUTTON) machine.changeState(GameStateType::PlayGameScreen); 
 
+
+  if (arduboy.everyXFrames(16)) {
+  this->smokeIndex++;
+  if (this->smokeIndex >= 5) this->smokeIndex = 0;
+  }
+
 }
 
 
@@ -74,17 +80,25 @@ void GameIntroState::render(StateMachine & machine) {
   Sprites::drawExternalMask(0, 28, Images::Grass, Images::Grass_Mask, 0, 0);
   Sprites::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
   Sprites::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
-  Sprites::drawExternalMask(xAmbulance, 31, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
   Sprites::drawExternalMask(0, 59, Images::Grass, Images::Grass_Mask, 0, 0);
+
+
+  Sprites::drawOverwrite(15, 0, Images::Smoke, this->smokeIndex);
+
+
+
+  // Draw Ambulance with lights ..
+
+  Sprites::drawExternalMask(xAmbulance, 31, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
 
   switch (this->lights) {
 
     case LightsState::Lights_1:
-      Sprites::drawSelfMasked(this->xAmbulance + 16, 28, Images::Ambulance_Lights_01, 0);
+      Sprites::drawExternalMask(this->xAmbulance + 18, 31, Images::Ambulance_Lights_01, Images::Ambulance_Lights_Mask, 0, 0);
       break;
 
     case LightsState::Lights_2:
-      Sprites::drawSelfMasked(this->xAmbulance + 16, 28, Images::Ambulance_Lights_02, 0);
+      Sprites::drawExternalMask(this->xAmbulance + 18, 31, Images::Ambulance_Lights_02, Images::Ambulance_Lights_Mask, 0, 0);
       break;
 
   }

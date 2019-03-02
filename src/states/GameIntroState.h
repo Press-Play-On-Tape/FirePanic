@@ -17,8 +17,9 @@ class GameIntroState : public GameState<GameContext, GameStateType> {
   private:
 
     uint8_t xAmbulance = 156;
-    bool ambulanceDoor = false;
     uint8_t counter = 0;
+    uint8_t smokeIndex = 0;
+    bool ambulanceDoor = false;
 
     LightsState lights = LightsState::Lights_1;
 

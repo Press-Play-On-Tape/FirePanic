@@ -120,7 +120,10 @@ void PlayGameState::update(StateMachine & machine) {
 
   }
 
-
+  if (arduboy.everyXFrames(16)) {
+    this->smokeIndex++;
+    if (this->smokeIndex >= 5) this->smokeIndex = 0;
+  }
 
 }
 
@@ -138,6 +141,8 @@ void PlayGameState::render(StateMachine & machine) {
   Sprites::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
   Sprites::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
   
+  Sprites::drawOverwrite(15, 0, Images::Smoke, this->smokeIndex);
+
 
   // Render misses ..
 
@@ -172,18 +177,15 @@ void PlayGameState::render(StateMachine & machine) {
 
     if (this->victims[i].getEnabled()) {
 
-
-Serial.print(victim.getX());
-Serial.print(" ");
-Serial.println(victim.getY());
-      Sprites::drawExternalMask(victim.getX(), victim.getY(), (uint8_t *)pgm_read_word_near(&Images::Victims[victim.getRotation()]), (uint8_t *)pgm_read_word_near(&Images::Victims_Mask[victim.getRotation()]), 0, 0);
+      uint8_t imageIndex = victim.getRotation();
+      Sprites::drawExternalMask(victim.getX(), victim.getY(), Images::Victims, Images::Victims_Mask, imageIndex, imageIndex);
 
       uint8_t isAlive = this->victims[i].getAlive();
 
       if (isAlive >= 2) {
         
         uint8_t haloIndex = victim.getHaloIndex();
-        Sprites::drawExternalMask(victim.getX(), victim.getY() - 5, (uint8_t *)pgm_read_word_near(&Images::Victim_Halos[haloIndex]), (uint8_t *)pgm_read_word_near(&Images::Victim_Halos_Mask[haloIndex]), 0, 0);
+        Sprites::drawExternalMask(victim.getX(), victim.getY() - 5, Images::Victim_Halos, Images::Victim_Halos_Mask, haloIndex, haloIndex);
 
       }
 

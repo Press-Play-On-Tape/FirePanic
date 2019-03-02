@@ -53,20 +53,14 @@ void Angel::init(uint8_t sequence) {
 
     case 0:
       this->sequenceLen = pgm_read_byte(&Angel_Arc_1[0]);
-      // this->x = pgm_read_byte(&Angel_Arc_1[(this->posIndex * 2) + 1]);
-      // this->y = pgm_read_byte(&Angel_Arc_1[(this->posIndex * 2) + 2]);
       break;
 
     case 1:
-      this->sequenceLen = pgm_read_byte(&Angel_Arc_1[0]);
-      // this->x = pgm_read_byte(&Angel_Arc_2[(this->posIndex * 2) + 1]);
-      // this->y = pgm_read_byte(&Angel_Arc_2[(this->posIndex * 2) + 2]);
+      this->sequenceLen = pgm_read_byte(&Angel_Arc_2[0]);
       break;
 
     case 2:
-      this->sequenceLen = pgm_read_byte(&Angel_Arc_1[0]);
-      // this->x = pgm_read_byte(&Angel_Arc_3[(this->posIndex * 2) + 1]);
-      // this->y = pgm_read_byte(&Angel_Arc_3[(this->posIndex * 2) + 2]);
+      this->sequenceLen = pgm_read_byte(&Angel_Arc_3[0]);
       break;
 
   }
