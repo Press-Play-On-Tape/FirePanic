@@ -81,6 +81,8 @@ void TitleScreenState::update(StateMachine & machine) {
 //
 void TitleScreenState::render(StateMachine & machine) {
 
+  auto & arduboy = machine.getContext().arduboy;
+
 	SpritesB::drawOverwrite(0, 0, Images::FirePanic, 0);
   Sprites::drawSelfMasked(33, 1, (uint8_t *)pgm_read_word_near(&Images::FirePanic_Logos[this->flameCounter]), 0);
 
@@ -95,5 +97,7 @@ void TitleScreenState::render(StateMachine & machine) {
     Sprites::drawOverwrite(18, 16, Images::Help, 0);
 
   }
+
+	arduboy.display(true);
 
 }

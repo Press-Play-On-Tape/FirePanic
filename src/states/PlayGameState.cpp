@@ -1,4 +1,5 @@
 #include "PlayGameState.h"
+
 #include "../utils/Arduboy2Ext.h"
 #include "../images/Images.h"
 
@@ -11,6 +12,7 @@ void PlayGameState::activate(StateMachine & machine) {
   (void)machine;
 
   this->victims[0].init();
+  this->angel.setEnabled(false);
 
 }
 
@@ -48,6 +50,24 @@ void PlayGameState::update(StateMachine & machine) {
             if (this->victims[i].getY() == VICTIM_BOUNCE_HEIGHT && delta > ACCURACY_TOLERANCE) {
 
               this->victims[i].setAlive(VICTIM_MISSED_TRAMPOLINE);
+
+              switch (this->victims[i].getX()) {
+
+                case PLAYER_MIN_X_POS ... PLAYER_MID_X_POS - 1:
+                  this->angel.init(0);
+                  break;
+
+                case PLAYER_MID_X_POS ... PLAYER_MAX_X_POS - 1:
+                  this->angel.init(1);
+                  break;
+
+                case PLAYER_MAX_X_POS ... WIDTH:
+                  this->angel.init(2);
+                  break;
+                  
+
+              }
+
               
             }  
 
@@ -87,6 +107,21 @@ void PlayGameState::update(StateMachine & machine) {
 
   }
 
+
+  // Update angel ..
+  
+  if (this->angel.getEnabled()) {
+    
+    if (arduboy.everyXFrames(6)) {
+
+      this->angel.move();
+
+    }
+
+  }
+
+
+
 }
 
 
@@ -106,8 +141,8 @@ void PlayGameState::render(StateMachine & machine) {
 
   // Render misses ..
 
-  if (gameStats.misses >= 1) { Sprites::drawExternalMask(74, 2, Images::Misses, Images::Misses_Mask, 0, 0); }
-  if (gameStats.misses >= 2) { Sprites::drawExternalMask(59, 2, Images::Misses, Images::Misses_Mask, 0, 0); }
+  if (gameStats.misses >= 1) { Sprites::drawExternalMask(76, 2, Images::Misses, Images::Misses_Mask, 0, 0); }
+  if (gameStats.misses >= 2) { Sprites::drawExternalMask(63, 2, Images::Misses, Images::Misses_Mask, 0, 0); }
 
 
   // Render score ..
@@ -137,11 +172,15 @@ void PlayGameState::render(StateMachine & machine) {
 
     if (this->victims[i].getEnabled()) {
 
+
+Serial.print(victim.getX());
+Serial.print(" ");
+Serial.println(victim.getY());
       Sprites::drawExternalMask(victim.getX(), victim.getY(), (uint8_t *)pgm_read_word_near(&Images::Victims[victim.getRotation()]), (uint8_t *)pgm_read_word_near(&Images::Victims_Mask[victim.getRotation()]), 0, 0);
 
       uint8_t isAlive = this->victims[i].getAlive();
 
-      if (isAlive > 0) {
+      if (isAlive >= 2) {
         
         uint8_t haloIndex = victim.getHaloIndex();
         Sprites::drawExternalMask(victim.getX(), victim.getY() - 5, (uint8_t *)pgm_read_word_near(&Images::Victim_Halos[haloIndex]), (uint8_t *)pgm_read_word_near(&Images::Victim_Halos_Mask[haloIndex]), 0, 0);
@@ -152,6 +191,16 @@ void PlayGameState::render(StateMachine & machine) {
 
   }
 
-  Serial.println(this->player.getX());
+
+  // Render angel if required ..
+
+  if (this->angel.getEnabled() && this->angel.renderImage()) {
+
+    uint8_t imageIndex = this->angel.getImageIndex();
+    Sprites::drawExternalMask(this->angel.getX(), this->angel.getY(), Images::Angels, Images::Angels_Mask, imageIndex, imageIndex);
+
+  }
+
+  arduboy.displayWithBackground(TimeOfDay::Day);
 
 }

@@ -83,6 +83,8 @@ void Player::move() {
       }
       break;
 
+    default: break;
+    
   }
 
 }

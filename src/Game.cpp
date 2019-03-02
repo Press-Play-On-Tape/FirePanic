@@ -99,7 +99,4 @@ void Game::loop(void) {
 
 	}
 
-//	arduboy.display();
-  	arduboy.displayWithBackground(TimeOfDay::Day);
-	
 }
