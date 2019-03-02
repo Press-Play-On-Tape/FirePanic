@@ -7,12 +7,6 @@
 #include "../entities/Player.h"
 
 class GameIntroState : public GameState<GameContext, GameStateType> {
-  
-  enum class LightsState : uint8_t {
-    Lights_1,
-    Lights_2,
-    None
-  };
 
   private:
 

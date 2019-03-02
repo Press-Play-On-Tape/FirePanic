@@ -4,7 +4,7 @@
 #include "../utils/Enums.h"
 
 #define NUM_OF_ELEMENTS 11
-const unsigned char PROGMEM steps[] = { // 21
+const uint8_t PROGMEM steps[] = { // 21
   1, 1, 2, 2, 3, 3, 3, 2, 2, 1, 1
 };
 

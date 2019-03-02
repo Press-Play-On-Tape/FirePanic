@@ -33,9 +33,12 @@ void Angel::setSequence(uint8_t sequence) {
 
 }
 
-uint8_t Angel::getImageIndex() {
+uint8_t Angel::getImageIndex() { // Seq 0 1 2 3 2 1 .. 0 1 2 3 2 1 ..
 
-  return (this->posIndex / 2) % 4;
+  uint8_t imageIndex = (this->posIndex / 2) % 6;
+
+  if (imageIndex == 4) imageIndex = 2;
+  if (imageIndex == 5) imageIndex = 1;
 
 }
 

@@ -24,23 +24,20 @@ void GameIntroState::update(StateMachine & machine) {
 
   if (arduboy.everyXFrames(2)) {
 
+    if (arduboy.everyXFrames(8)) {
+      this->lights = (this->lights == LightsState::Lights_1 ? LightsState::Lights_2 : LightsState::Lights_1);
+    }
+    
     switch (counter) {
 
       case 0 ... 59:
         this->xAmbulance--;
-        if (arduboy.everyXFrames(8)) {
-          this->lights = (this->lights == LightsState::Lights_1 ? LightsState::Lights_2 : LightsState::Lights_1);
-        }
         break;
 
       case 60 ... 90:
-        if (arduboy.everyXFrames(8)) {
-          this->lights = (this->lights == LightsState::Lights_1 ? LightsState::Lights_2 : LightsState::Lights_1);
-        }
         break;
 
       case 91 ... 140:
-        this->lights = LightsState::None;
         this->ambulanceDoor = true;
         break;
 
@@ -53,6 +50,7 @@ void GameIntroState::update(StateMachine & machine) {
         break;
 
     }
+    
     this->counter++;
 
   }
@@ -83,7 +81,7 @@ void GameIntroState::render(StateMachine & machine) {
   Sprites::drawExternalMask(0, 59, Images::Grass, Images::Grass_Mask, 0, 0);
 
 
-  Sprites::drawOverwrite(15, 0, Images::Smoke, this->smokeIndex);
+  Sprites::drawOverwrite(16, 0, Images::Smoke, this->smokeIndex);
 
 
 

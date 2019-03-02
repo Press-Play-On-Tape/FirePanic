@@ -11,7 +11,7 @@ void PlayGameState::activate(StateMachine & machine) {
 
   (void)machine;
 
-  this->victims[0].init();
+//  this->victims[0].init();
   this->angel.setEnabled(false);
 
 }
@@ -93,7 +93,35 @@ void PlayGameState::update(StateMachine & machine) {
 
     }
 
+
   }
+
+
+
+  // Launch a new victim?
+
+  if (arduboy.everyXFrames(30)) {
+
+    switch (this->victimCountdown) {
+
+      case 0: break;
+
+      case 1:
+        {
+          this->victimCountdown--;
+          uint8_t nextAvailableVictim = getNextAvailable();
+          this->victims[nextAvailableVictim].init();
+        }
+        break;
+
+      default:
+        this->victimCountdown--;
+        break;
+
+    }
+
+  }
+
 
 
   // Update player position ..
@@ -120,10 +148,31 @@ void PlayGameState::update(StateMachine & machine) {
 
   }
 
+  if (arduboy.everyXFrames(8)) {
+    this->lights = (this->lights == LightsState::Lights_1 ? LightsState::Lights_2 : LightsState::Lights_1);
+  }
+
+
+
   if (arduboy.everyXFrames(16)) {
     this->smokeIndex++;
     if (this->smokeIndex >= 5) this->smokeIndex = 0;
   }
+
+}
+
+
+uint8_t PlayGameState::getNextAvailable() {
+
+  for (uint8_t i = 0; i < VICTIMS_MAX_NUMBER; i++) {
+
+    if (!this->victims[i].getEnabled()) {
+      return i;
+    }
+
+  }
+
+  return 255;
 
 }
 
@@ -141,7 +190,7 @@ void PlayGameState::render(StateMachine & machine) {
   Sprites::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
   Sprites::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
   
-  Sprites::drawOverwrite(15, 0, Images::Smoke, this->smokeIndex);
+  Sprites::drawOverwrite(16, 0, Images::Smoke, this->smokeIndex);
 
 
   // Render misses ..
@@ -162,7 +211,6 @@ void PlayGameState::render(StateMachine & machine) {
 
   uint8_t i = 0;
 
-  Sprites::drawExternalMask(96, 31, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
   Sprites::drawExternalMask(this->player.getX(), this->player.getY(), (uint8_t *)pgm_read_word_near(&Images::Firemen[i]), (uint8_t *)pgm_read_word_near(&Images::Firemen_Mask[i]), 0, 0);
   
   // Render Foreground grass ..
@@ -184,8 +232,13 @@ void PlayGameState::render(StateMachine & machine) {
 
       if (isAlive >= 2) {
         
-        uint8_t haloIndex = victim.getHaloIndex();
-        Sprites::drawExternalMask(victim.getX(), victim.getY() - 5, Images::Victim_Halos, Images::Victim_Halos_Mask, haloIndex, haloIndex);
+        uint8_t haloIndexMask = victim.getHaloIndex();
+        uint8_t haloIndex = haloIndexMask * 2;
+        if (TimeOfDay::Night == TimeOfDay::Day) haloIndex++;
+        Serial.print(haloIndex);
+        Serial.print(" ");
+        Serial.println(haloIndexMask);
+        Sprites::drawExternalMask(victim.getX(), victim.getY() - 5, Images::Victim_Halos, Images::Victim_Halos_Mask, haloIndex, haloIndexMask);
 
       }
 
@@ -194,12 +247,44 @@ void PlayGameState::render(StateMachine & machine) {
   }
 
 
+  // Render victim about to jump ..
+
+  const int8_t edgePos[] = { 0, -5, 17, -1, 0, 12, 17, 13, 0, 28, 17, 29 };
+
+  if (this->victimCountdown > 0) {
+
+    Sprites::drawExternalMask(edgePos[this->victimLevel * 4], edgePos[(this->victimLevel * 4) + 1], Images::Victim_OnEdge_01, Images::Victim_OnEdge_01_Mask, 0, 0);
+
+    if (this->victimCountdown % 2 == 0) {
+
+      Sprites::drawExternalMask(edgePos[(this->victimLevel * 4) + 2], edgePos[(this->victimLevel * 4) + 3], Images::Victim_OnEdge_02, Images::Victim_OnEdge_02_Mask, 0, 0);
+
+    }
+
+  }
+
+
+
   // Render angel if required ..
 
   if (this->angel.getEnabled() && this->angel.renderImage()) {
 
     uint8_t imageIndex = this->angel.getImageIndex();
     Sprites::drawExternalMask(this->angel.getX(), this->angel.getY(), Images::Angels, Images::Angels_Mask, imageIndex, imageIndex);
+
+  }
+
+  Sprites::drawExternalMask(96, 31, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
+
+  switch (this->lights) {
+
+    case LightsState::Lights_1:
+      Sprites::drawExternalMask(114, 31, Images::Ambulance_Lights_01, Images::Ambulance_Lights_Mask, 0, 0);
+      break;
+
+    case LightsState::Lights_2:
+      Sprites::drawExternalMask(114, 31, Images::Ambulance_Lights_02, Images::Ambulance_Lights_Mask, 0, 0);
+      break;
 
   }
 

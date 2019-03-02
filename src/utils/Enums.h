@@ -91,7 +91,12 @@ enum class GameStateType : uint8_t {
   GameIntroScreen,
   PlayGameScreen,
 };
-
+  
+enum class LightsState : uint8_t {
+  Lights_1,
+  Lights_2,
+  None
+};
 // struct Player {
 
 //   public: 
