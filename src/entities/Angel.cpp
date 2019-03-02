@@ -35,16 +35,10 @@ void Angel::setSequence(uint8_t sequence) {
 
 void Angel::init(uint8_t sequence) {
 
-//  const uint8_t *angelArc = Angel_Arcs[sequence];
-
   this->sequence = sequence;
   this->enabled = true;
   this->posIndex = 0;  
-//(uint8_t *)pgm_read_word_near(&Images::Victims[victim.getRotation()])
 
-  // this->sequenceLen = pgm_read_byte(&angelArc[posIndex]);
-  // this->x = pgm_read_byte(&angelArc[(this->posIndex * 2) + 1]);
-  // this->y = pgm_read_byte(&angelArc[(this->posIndex * 2) + 2]);
 
   switch (this->sequence) {
 
@@ -67,21 +61,10 @@ void Angel::init(uint8_t sequence) {
       break;
 
   }
-
-
-  Serial.print(this->sequenceLen);
-  Serial.print(" ");
-  Serial.print(this->posIndex);
-  Serial.print(" ");
-  Serial.print(this->x);
-  Serial.print(" ");
-  Serial.println(this->y);
   
 }
 
 void Angel::move() {
-
-  //const uint8_t *angelArc = Angel_Arcs[this->sequence];
   
   this->posIndex++;  
 
@@ -110,19 +93,6 @@ void Angel::move() {
         break;
 
     }
-
-
-
-    Serial.print(this->sequenceLen);
-    Serial.print(" ");
-    Serial.print(this->posIndex);
-    Serial.print(" ");
-    Serial.print(this->x);
-    Serial.print(" ");
-    Serial.println(this->y);
-    // this->x = pgm_read_byte(&angelArc[(this->posIndex * 2) + 1]);
-    // this->y = pgm_read_byte(&angelArc[(this->posIndex * 2) + 2]);
-
 
   }
 

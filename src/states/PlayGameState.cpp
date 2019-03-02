@@ -58,11 +58,11 @@ void PlayGameState::update(StateMachine & machine) {
                   break;
 
                 case PLAYER_MID_X_POS ... PLAYER_MAX_X_POS - 1:
-                  this->angel.init(0);
+                  this->angel.init(1);
                   break;
 
                 case PLAYER_MAX_X_POS ... WIDTH:
-                  this->angel.init(0);
+                  this->angel.init(2);
                   break;
                   
 
