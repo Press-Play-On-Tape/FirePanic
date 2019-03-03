@@ -31,19 +31,19 @@ void GameIntroState::update(StateMachine & machine) {
 
     switch (counter) {
 
-      case 0 ... 49:
+      case 0 ... 59:
         this->xAmbulance--;
         break;
 
-      case 50 ... 70:
+      case 60 ... 75:
         break;
 
-      case 71 ... 90:
+      case 76 ... 90:
         this->ambulanceDoor = true;
         break;
 
       case 91 ... 161:
-      
+
         this->ambulanceDoor = true;
 
         if (arduboy.everyXFrames(4)) {
