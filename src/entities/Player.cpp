@@ -4,7 +4,8 @@
 #include "../utils/Enums.h"
 
 #define NUM_OF_ELEMENTS 11
-const uint8_t PROGMEM steps[] = { // 21
+
+const uint8_t PROGMEM steps[] = { // 21 steps between positions.
   1, 1, 2, 2, 3, 3, 3, 2, 2, 1, 1
 };
 
@@ -23,6 +24,12 @@ uint8_t Player::getX() {
 uint8_t Player::getY() {
 
   return PLAYER_Y_POS;
+
+}
+
+uint8_t Player::getImageIndex() {
+
+  return this->image / PLAYER_STEP_INC;
 
 }
 
@@ -68,7 +75,11 @@ void Player::move() {
   switch (this->playerDirection) {
 
     case PlayerDirection::Left:
+
       this->x = this->x - pgm_read_byte(&steps[this->xIdx++]);
+      this->image++;
+      if (this->image == PLAYER_STEP_INC * 2) this->image = 0;
+
       if (this->xIdx == NUM_OF_ELEMENTS) {
         this->xIdx = 0;
         this->playerDirection = PlayerDirection::None;
@@ -76,7 +87,11 @@ void Player::move() {
       break;
 
     case PlayerDirection::Right:
+
       this->x = this->x + pgm_read_byte(&steps[this->xIdx++]);
+      this->image++;
+      if (this->image == PLAYER_STEP_INC * 2) this->image = 0;
+
       if (this->xIdx == NUM_OF_ELEMENTS) {
         this->xIdx = 0;
         this->playerDirection = PlayerDirection::None;

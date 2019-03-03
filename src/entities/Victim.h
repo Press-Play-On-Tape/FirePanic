@@ -18,7 +18,7 @@ class Victim {
     void setEnabled(bool value);
     void setAlive(uint8_t value);
 
-    bool move();
+    void move();
     void rotate();
     void init();
     

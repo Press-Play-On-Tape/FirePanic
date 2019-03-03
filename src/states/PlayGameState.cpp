@@ -280,10 +280,11 @@ void PlayGameState::render(StateMachine & machine) {
 
 
 
-  uint8_t i = 0;
+  uint8_t i = this->player.getImageIndex();
 
-  Sprites::drawExternalMask(this->player.getX(), this->player.getY(), (uint8_t *)pgm_read_word_near(&Images::Firemen[i]), (uint8_t *)pgm_read_word_near(&Images::Firemen_Mask[i]), 0, 0);
-  
+  Sprites::drawExternalMask(this->player.getX(), this->player.getY(), Images::FireMen, Images::FireMen_Mask, i, i);
+
+
   // Render Foreground grass ..
   Sprites::drawExternalMask(0, 59, Images::Grass, Images::Grass_Mask, 0, 0);
 

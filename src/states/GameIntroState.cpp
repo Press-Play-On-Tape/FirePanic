@@ -22,26 +22,55 @@ void GameIntroState::update(StateMachine & machine) {
 	auto & arduboy = machine.getContext().arduboy;
 	auto justPressed = arduboy.justPressedButtons();
 
+
+  if (arduboy.everyXFrames(8)) {
+    this->lights = (this->lights == LightsState::Lights_1 ? LightsState::Lights_2 : LightsState::Lights_1);
+  }
+    
   if (arduboy.everyXFrames(2)) {
 
-    if (arduboy.everyXFrames(8)) {
-      this->lights = (this->lights == LightsState::Lights_1 ? LightsState::Lights_2 : LightsState::Lights_1);
-    }
-    
     switch (counter) {
 
-      case 0 ... 59:
+      case 0 ... 49:
         this->xAmbulance--;
         break;
 
-      case 60 ... 90:
+      case 50 ... 70:
         break;
 
-      case 91 ... 140:
+      case 71 ... 90:
         this->ambulanceDoor = true;
         break;
 
-      case 141 ... 190:
+      case 91 ... 161:
+      
+        this->ambulanceDoor = true;
+
+        if (arduboy.everyXFrames(4)) {
+
+          switch (this->xPlayer) {
+
+            case PLAYER_MIN_X_POS : break;
+
+            case PLAYER_MIN_X_POS + 1 ... PLAYER_MIN_X_POS + 3:
+              this->xPlayer = this->xPlayer - 1;
+              break;
+
+            case PLAYER_MIN_X_POS + 4 ... PLAYER_MIN_X_POS + 8:
+              this->xPlayer = this->xPlayer - 2;
+              break;
+
+            default:
+              this->xPlayer = this->xPlayer - 3;
+              break;
+
+          }
+
+        }
+
+        break;
+
+      case 162 ... 190:
         this->ambulanceDoor = false;
         break;
 
@@ -61,9 +90,14 @@ void GameIntroState::update(StateMachine & machine) {
 
 
   if (arduboy.everyXFrames(16)) {
-  this->smokeIndex++;
-  if (this->smokeIndex >= 5) this->smokeIndex = 0;
+    this->smokeIndex++;
+    if (this->smokeIndex >= 5) this->smokeIndex = 0;
   }
+
+  if (arduboy.everyXFrames(12) && this->xPlayer != PLAYER_MIN_X_POS) {
+    this->playerImageIndex = !this->playerImageIndex;
+  }
+  
 
 }
 
@@ -84,6 +118,15 @@ void GameIntroState::render(StateMachine & machine) {
 
   Sprites::drawOverwrite(16, 0, Images::Smoke, this->smokeIndex);
 
+  if (this->xPlayer < 100) {
+    uint8_t image = this->playerImageIndex ? 1 : 0;
+    Sprites::drawExternalMask(xPlayer, PLAYER_Y_POS, Images::FireMen, Images::FireMen_Mask, image, image);
+
+  }
+
+  Sprites::drawExternalMask(104, 28, Images::Grass, Images::Grass_Mask, 0, 0);
+  Sprites::drawOverwrite(104, 38, Images::Ground_RHS, 0);
+  Sprites::drawExternalMask(104, 59, Images::Grass, Images::Grass_Mask, 0, 0);
 
 
   // Draw Ambulance with lights ..
@@ -105,6 +148,7 @@ void GameIntroState::render(StateMachine & machine) {
   if (this->ambulanceDoor) {
     Sprites::drawExternalMask(this->xAmbulance - 4, 36, Images::Ambulance_Door, Images::Ambulance_Door_Mask, 0, 0);
   }
+
 
   arduboy.displayWithBackground(gameStats.timeOfDay);
 

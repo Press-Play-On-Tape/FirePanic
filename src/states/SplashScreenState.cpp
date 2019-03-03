@@ -71,32 +71,32 @@ void SplashScreenState::render(StateMachine & machine) {
 
 	auto & arduboy = machine.getContext().arduboy;
   auto & gameStats = machine.getContext().gameStats;
-  
-  arduboy.drawCompressed(47, 17, Images::Ppot_Buttons, BLACK);
-  arduboy.drawCompressed(43, 26, Images::Ppot_ButtonUp, BLACK);
-  arduboy.drawCompressed(73, 26, Images::Ppot_ButtonUp, BLACK);
+
+  arduboy.drawCompressed(47, 17, Images::Ppot_Buttons, WHITE);
+  arduboy.drawCompressed(43, 26, Images::Ppot_ButtonUp, WHITE);
+  arduboy.drawCompressed(73, 26, Images::Ppot_ButtonUp, WHITE);
 
   if (this->counter == 0) {
 
-    arduboy.drawCompressed(58, 26, Images::Ppot_ButtonUp, BLACK);
-    arduboy.drawCompressed(26, 46, Images::Ppot_Caption, BLACK);
+    arduboy.drawCompressed(58, 26, Images::Ppot_ButtonUp, WHITE);
+    arduboy.drawCompressed(26, 46, Images::Ppot_Caption, WHITE);
 
   }
   else {
 
-    arduboy.drawCompressed(58, 26, Images::Ppot_ButtonDown, BLACK);
-    arduboy.drawCompressed(44, 46, Images::Ppot_Loading, BLACK);
+    arduboy.drawCompressed(58, 26, Images::Ppot_ButtonDown, WHITE);
+    arduboy.drawCompressed(44, 46, Images::Ppot_Loading, WHITE);
 
     uint8_t i = (this->counter / 15) % 4;
 
     for (uint8_t j = 0; j < i; j++) {
       
-        arduboy.drawPixel(79 + (j * 2), 49, BLACK);
+        arduboy.drawPixel(79 + (j * 2), 49, WHITE);
 
     }
 
   }
 
-	arduboy.displayWithBackground(gameStats.timeOfDay);
+	arduboy.display(true);
 
 }

@@ -46,6 +46,7 @@
 #define PLAYER_RANGE1_X_24_POS PLAYER_MAX_X_POS - 1
 
 #define PLAYER_Y_POS 42
+#define PLAYER_STEP_INC 6 
 
 #define NAME_LENGTH 9
 

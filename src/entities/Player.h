@@ -25,11 +25,13 @@ class Player {
     bool canChangeDirections();
     bool canMoveLeft();
     bool canMoveRight();
+    uint8_t getImageIndex();
     
   protected:
 
     uint8_t x;
     uint8_t xIdx;
+    uint8_t image;
     PlayerDirection playerDirection = PlayerDirection::None;
 
 };
