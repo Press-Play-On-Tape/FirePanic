@@ -40,6 +40,8 @@ uint8_t Angel::getImageIndex() { // Seq 0 1 2 3 2 1 .. 0 1 2 3 2 1 ..
   if (imageIndex == 4) imageIndex = 2;
   if (imageIndex == 5) imageIndex = 1;
 
+  return imageIndex;
+
 }
 
 bool Angel::renderImage() {

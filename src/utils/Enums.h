@@ -17,6 +17,15 @@
 #define VICTIM_WIDTH_HALF 8
 #define VICTIM_IN_AMBULANCE 102
 
+
+#define VICTIM_DELAY_0_MIN 150
+#define VICTIM_DELAY_0_MAX 200
+#define VICTIM_DELAY_1_MIN 120
+#define VICTIM_DELAY_1_MAX 170
+#define VICTIM_DELAY_2_MIN 80
+#define VICTIM_DELAY_2_MAX 130
+#define VICTIM_COUNTDOWN 6
+
 #define PLAYER_MIN_X_POS 18
 #define PLAYER_MID_X_POS 39
 #define PLAYER_MAX_X_POS 60
@@ -39,29 +48,7 @@
 #define PLAYER_Y_POS 42
 
 #define NAME_LENGTH 9
-// #define NAME_CHARACTER_SPACING 6
-// #define NAME_UNDERLINE_WIDTH 3
 
-// #define ASCII_SPACE 32
-// #define ASCII_CAPITAL_A 65
-// #define ASCII_CAPITAL_B 66
-// #define ASCII_CAPITAL_Y 89
-// #define ASCII_CAPITAL_Z 90
-// #define ASCII_LOWER_A 97
-// #define ASCII_LOWER_B 98
-// #define ASCII_LOWER_Y 121
-// #define ASCII_LOWER_Z 122
-
-// #define KEY_REPEAT_DELAY 24
-// #define FLASH_FRAME_COUNT 20
-// #define FLASH_FRAME_COUNT_2 56
-// #define ICON_MAX 8
-// #define PLAYER_MAX 4
-// #define FARKLE_DELAY 14
-
-// #define FARKLE_PENALTY 500
-// #define MINIMUM_HAND_SCORE 300
-// #define NUMBER_OF_ROUNDS_PER_GAME 10//sjh
 #define NO_WINNER 255
 // #define NUMBER_OF_FIREWORKS 5
 
@@ -94,35 +81,8 @@ enum class GameStateType : uint8_t {
   
 enum class LightsState : uint8_t {
   Lights_1,
-  Lights_2,
-  None
+  Lights_2
 };
-// struct Player {
-
-//   public: 
-   
-//     Player() {
-
-//       for (uint8_t x = 1; x < NAME_LENGTH; x++) {
-//         name[x] = ' ';
-//       }
-
-//       name[NAME_LENGTH - 1] = 0;
-
-//     };
-
-//     uint8_t getIcon() {
-//       return static_cast<uint8_t>(this->name[0]);
-//     }
-
-//     void setIcon(uint8_t val) {
-//       this->name[0] = static_cast<char>(val);
-//     }
-
-//     char name[NAME_LENGTH + 1];
-//     int16_t score = 0;
-
-// };
 
 struct GameStats {
 
@@ -131,12 +91,14 @@ struct GameStats {
     GameStats() { };
 
     uint16_t score = 0;
-    uint16_t misses = 2;
+    uint16_t misses = 0;
+    TimeOfDay timeOfDay = TimeOfDay::Day;
 
     void resetGame() {
 
       score = 0;
       misses = 0;
+      timeOfDay = TimeOfDay::Day;
 
     }
 

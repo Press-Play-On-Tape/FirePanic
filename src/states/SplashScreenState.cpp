@@ -70,7 +70,8 @@ void SplashScreenState::update(StateMachine & machine) {
 void SplashScreenState::render(StateMachine & machine) {
 
 	auto & arduboy = machine.getContext().arduboy;
-
+  auto & gameStats = machine.getContext().gameStats;
+  
   arduboy.drawCompressed(47, 17, Images::Ppot_Buttons, BLACK);
   arduboy.drawCompressed(43, 26, Images::Ppot_ButtonUp, BLACK);
   arduboy.drawCompressed(73, 26, Images::Ppot_ButtonUp, BLACK);
@@ -96,6 +97,6 @@ void SplashScreenState::render(StateMachine & machine) {
 
   }
 
-	arduboy.displayWithBackground(TimeOfDay::Day);
+	arduboy.displayWithBackground(gameStats.timeOfDay);
 
 }

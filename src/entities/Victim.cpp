@@ -68,6 +68,7 @@ void Victim::init() {
 
   this->enabled = true;
   this->posIndex = 0;  
+  this->alive = 0;
 
   if (this->posIndex > 67) this->posIndex = 0;
 
@@ -76,11 +77,16 @@ void Victim::init() {
 
 }
 
-void Victim::move() {
+bool Victim::move() {
   
   this->posIndex++;  
 
-  if (this->posIndex == 76) this->posIndex = 0;
+  if (this->posIndex == 76) {
+    this->posIndex = 0;
+    this->enabled = false;
+
+    return true;
+  }
 
   switch (this->alive) {
 
@@ -110,6 +116,8 @@ void Victim::move() {
       break;
 
   }
+
+  return false;
 
 }
 

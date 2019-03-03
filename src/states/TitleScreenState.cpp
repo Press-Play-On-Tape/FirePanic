@@ -11,7 +11,7 @@ constexpr const static uint8_t UPLOAD_DELAY = 16;
 //
 void TitleScreenState::activate(StateMachine & machine) {
 
-	auto & gameStats = machine.getContext().gameStats;
+	(void)machine;
 
 }
 

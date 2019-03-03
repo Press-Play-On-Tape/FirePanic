@@ -15,9 +15,10 @@ class PlayGameState : public GameState<GameContext, GameStateType> {
     Player player;
     Angel angel;
     LightsState lights = LightsState::Lights_1;
-    
+
     uint8_t smokeIndex = 0;
-    uint8_t victimCountdown = 8;
+    uint8_t victimCountdown = VICTIM_COUNTDOWN;
+    uint8_t victimDelay = 1;
     uint8_t victimLevel = 0;
 
     uint8_t getNextAvailable();

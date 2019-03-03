@@ -33,11 +33,11 @@ void PlayGameState::update(StateMachine & machine) {
 
     if (arduboy.everyXFrames(5)) {
 
-      for (uint8_t i = 0; i < VICTIMS_MAX_NUMBER; i++) {
+      for (auto &victim : victims) {
 
-        if (this->victims[i].getEnabled()) {
+        if (victim.getEnabled()) {
 
-          uint8_t victimX = this->victims[i].getX();
+          uint8_t victimX = victim.getX();
 
           if (victimX == VICTIM_IN_AMBULANCE) {
             gameStats.score++;
@@ -47,11 +47,12 @@ void PlayGameState::update(StateMachine & machine) {
             uint8_t victimXCentre = victimX + VICTIM_WIDTH_HALF;
             uint8_t delta = absT(victimXCentre - playerXCentre);
 
-            if (this->victims[i].getY() == VICTIM_BOUNCE_HEIGHT && delta > ACCURACY_TOLERANCE) {
+            if (victim.getY() == VICTIM_BOUNCE_HEIGHT && delta > ACCURACY_TOLERANCE) {
 
-              this->victims[i].setAlive(VICTIM_MISSED_TRAMPOLINE);
+              victim.setAlive(VICTIM_MISSED_TRAMPOLINE);
+              gameStats.misses++;
 
-              switch (this->victims[i].getX()) {
+              switch (victim.getX()) {
 
                 case PLAYER_MIN_X_POS ... PLAYER_MID_X_POS - 1:
                   this->angel.init(0);
@@ -64,16 +65,14 @@ void PlayGameState::update(StateMachine & machine) {
                 case PLAYER_MAX_X_POS ... WIDTH:
                   this->angel.init(2);
                   break;
-                  
 
               }
-
               
             }  
 
           }
 
-          this->victims[i].move();
+          victim.move();
           
         }
 
@@ -85,20 +84,53 @@ void PlayGameState::update(StateMachine & machine) {
 
   if (arduboy.everyXFrames(15)) {
 
-    for (uint8_t i = 0; i < VICTIMS_MAX_NUMBER; i++) {
+    for (auto &victim : victims) {
 
-      if (this->victims[i].getEnabled()) {
-        this->victims[i].rotate();
+      if (victim.getEnabled()) {
+        victim.rotate();
       }
 
     }
 
+  }
+
+
+  // Launch a new victim?
+
+  if (arduboy.everyXFrames(2)) {
+
+    this->victimDelay--;
+
+    if (this->victimDelay == 0) {
+
+      switch (gameStats.score) {
+
+        case 0 ... 10:
+          this->victimDelay = random(VICTIM_DELAY_0_MIN, VICTIM_DELAY_0_MAX);
+          this->victimCountdown = VICTIM_COUNTDOWN;
+          this->victimLevel = 0;
+          break;
+
+        case 11 ... 20:
+          this->victimDelay = random(VICTIM_DELAY_1_MIN, VICTIM_DELAY_1_MAX);
+          this->victimCountdown = VICTIM_COUNTDOWN;
+          this->victimLevel = random(2);
+          break;
+
+        default:
+          this->victimDelay = random(VICTIM_DELAY_2_MIN, VICTIM_DELAY_2_MAX);
+          this->victimCountdown = VICTIM_COUNTDOWN;
+          this->victimLevel = random(3);
+          break;
+
+      }
+
+    }
 
   }
 
 
-
-  // Launch a new victim?
+  // Is a victim ready to jump?
 
   if (arduboy.everyXFrames(30)) {
 
@@ -162,6 +194,9 @@ void PlayGameState::update(StateMachine & machine) {
 }
 
 
+// ----------------------------------------------------------------------------
+//  Get index of next available victim.
+//
 uint8_t PlayGameState::getNextAvailable() {
 
   for (uint8_t i = 0; i < VICTIMS_MAX_NUMBER; i++) {
@@ -188,25 +223,61 @@ void PlayGameState::render(StateMachine & machine) {
   Sprites::drawExternalMask(0, 28, Images::Grass, Images::Grass_Mask, 0, 0);
   Sprites::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
   Sprites::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
-  Sprites::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
+
+  if (gameStats.timeOfDay == TimeOfDay::Day) {
+    Sprites::drawErase(89, 0, Images::Scoreboard, 0);
+  }
+  else {
+    Sprites::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
+  }
   
   Sprites::drawOverwrite(16, 0, Images::Smoke, this->smokeIndex);
 
 
+
   // Render misses ..
 
-  if (gameStats.misses >= 1) { Sprites::drawExternalMask(76, 2, Images::Misses, Images::Misses_Mask, 0, 0); }
-  if (gameStats.misses >= 2) { Sprites::drawExternalMask(63, 2, Images::Misses, Images::Misses_Mask, 0, 0); }
+  switch (gameStats.misses) {
+
+    case 0: break;
+
+    case 1:
+      if (!this->angel.getEnabled()) {
+        Sprites::drawExternalMask(76, 2, Images::Misses, Images::Misses_Mask, 0, 0); 
+      }
+      break;
+
+    case 2:
+      Sprites::drawExternalMask(76, 2, Images::Misses, Images::Misses_Mask, 0, 0); 
+      if (!this->angel.getEnabled()) {
+        Sprites::drawExternalMask(63, 2, Images::Misses, Images::Misses_Mask, 0, 0); 
+      }
+      break;
+      
+    default: 
+      Sprites::drawExternalMask(76, 2, Images::Misses, Images::Misses_Mask, 0, 0); 
+      Sprites::drawExternalMask(63, 2, Images::Misses, Images::Misses_Mask, 0, 0); 
+      break;
+
+  }
 
 
   // Render score ..
 
 	uint8_t digits[6] = {};
 	extractDigits(digits, gameStats.score);
-	
+
 	for (uint8_t j = 6; j > 0; --j) {
-    Sprites::drawSelfMasked(124 - (j*5), 3, Images::Scoreboard_Numbers, digits[j]);
+
+    if (gameStats.timeOfDay == TimeOfDay::Day) {
+      Sprites::drawErase(124 - (j*5), 3, Images::Scoreboard_Numbers, digits[j - 1]);
+    }
+    else {
+      Sprites::drawSelfMasked(124 - (j*5), 3, Images::Scoreboard_Numbers, digits[j - 1]);
+    }
+
 	}
+
 
 
   uint8_t i = 0;
@@ -219,25 +290,21 @@ void PlayGameState::render(StateMachine & machine) {
 
   // Render victims ..
 
-  for (uint8_t i = 0; i < VICTIMS_MAX_NUMBER; i++) {
+  for (auto &victim : this->victims) {
 
-    Victim &victim = this->victims[i];
-
-    if (this->victims[i].getEnabled()) {
+    if (victim.getEnabled()) {
 
       uint8_t imageIndex = victim.getRotation();
       Sprites::drawExternalMask(victim.getX(), victim.getY(), Images::Victims, Images::Victims_Mask, imageIndex, imageIndex);
 
-      uint8_t isAlive = this->victims[i].getAlive();
+      uint8_t isAlive = victim.getAlive();
 
       if (isAlive >= 2) {
         
         uint8_t haloIndexMask = victim.getHaloIndex();
         uint8_t haloIndex = haloIndexMask * 2;
-        if (TimeOfDay::Night == TimeOfDay::Day) haloIndex++;
-        Serial.print(haloIndex);
-        Serial.print(" ");
-        Serial.println(haloIndexMask);
+
+        if (gameStats.timeOfDay == TimeOfDay::Night) haloIndex++; 
         Sprites::drawExternalMask(victim.getX(), victim.getY() - 5, Images::Victim_Halos, Images::Victim_Halos_Mask, haloIndex, haloIndexMask);
 
       }
@@ -288,6 +355,6 @@ void PlayGameState::render(StateMachine & machine) {
 
   }
 
-  arduboy.displayWithBackground(TimeOfDay::Day);
+  arduboy.displayWithBackground(gameStats.timeOfDay);
 
 }

@@ -50,7 +50,7 @@ void GameIntroState::update(StateMachine & machine) {
         break;
 
     }
-    
+
     this->counter++;
 
   }
@@ -74,7 +74,8 @@ void GameIntroState::update(StateMachine & machine) {
 void GameIntroState::render(StateMachine & machine) {
 
 	auto & arduboy = machine.getContext().arduboy;
-	
+	auto & gameStats = machine.getContext().gameStats;
+
   Sprites::drawExternalMask(0, 28, Images::Grass, Images::Grass_Mask, 0, 0);
   Sprites::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
   Sprites::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
@@ -105,6 +106,6 @@ void GameIntroState::render(StateMachine & machine) {
     Sprites::drawExternalMask(this->xAmbulance - 4, 36, Images::Ambulance_Door, Images::Ambulance_Door_Mask, 0, 0);
   }
 
-  arduboy.displayWithBackground(TimeOfDay::Day);
+  arduboy.displayWithBackground(gameStats.timeOfDay);
 
 }
