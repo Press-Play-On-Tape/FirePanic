@@ -11,7 +11,7 @@ void PlayGameState::activate(StateMachine & machine) {
 
   (void)machine;
 
-//  this->victims[0].init();
+  this->gameOver = false;
   this->angel.setEnabled(false);
 
 }
@@ -24,6 +24,7 @@ void PlayGameState::update(StateMachine & machine) {
 
 	auto & arduboy = machine.getContext().arduboy;
   auto & gameStats = machine.getContext().gameStats;
+	auto justPressed = arduboy.justPressedButtons();
 	auto pressed = arduboy.pressedButtons();
 
 
@@ -97,7 +98,7 @@ void PlayGameState::update(StateMachine & machine) {
 
   // Launch a new victim?
 
-  if (arduboy.everyXFrames(2)) {
+  if (arduboy.everyXFrames(2) && gameStats.misses < /*3 SJH */1) {
 
     this->victimDelay--;
 
@@ -180,15 +181,35 @@ void PlayGameState::update(StateMachine & machine) {
 
   }
 
+
+  // Update ambulance lights ..
+
   if (arduboy.everyXFrames(8)) {
     this->lights = (this->lights == LightsState::Lights_1 ? LightsState::Lights_2 : LightsState::Lights_1);
   }
 
 
+  // Update smoke graphic ..
 
   if (arduboy.everyXFrames(16)) {
     this->smokeIndex++;
     if (this->smokeIndex >= 5) this->smokeIndex = 0;
+  }
+
+
+  if (gameStats.misses == /*3 SJH*/1 && allVictimsDisabled()) {
+
+    this->gameOver = true;
+
+  }
+
+
+  if (this->gameOver){
+
+    if (justPressed & A_BUTTON) {
+      machine.changeState(GameStateType::HighScoreScreen); 
+    }
+
   }
 
 }
@@ -208,6 +229,24 @@ uint8_t PlayGameState::getNextAvailable() {
   }
 
   return 255;
+
+}
+
+
+// ----------------------------------------------------------------------------
+//  Are all the victims disabled?
+//
+bool PlayGameState::allVictimsDisabled() {
+
+  for (auto &victim : this->victims) {
+
+    if (victim.getEnabled()) {
+      return false;
+    }
+
+  }
+
+  return true;
 
 }
 
@@ -353,6 +392,22 @@ void PlayGameState::render(StateMachine & machine) {
     case LightsState::Lights_2:
       Sprites::drawExternalMask(114, 31, Images::Ambulance_Lights_02, Images::Ambulance_Lights_Mask, 0, 0);
       break;
+
+  }
+
+
+
+
+  // Game Over?
+
+  if (this->gameOver) {
+
+    if (gameStats.timeOfDay == TimeOfDay::Day) {
+      Sprites::drawErase(41, 24, Images::GameOver, 0);
+    }
+    else {
+      Sprites::drawExternalMask(41, 24, Images::GameOver, Images::GameOver_Mask, 0, 0);
+    } 
 
   }
 

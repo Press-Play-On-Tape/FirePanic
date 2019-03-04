@@ -5,17 +5,17 @@
 /* ----------------------------------------------------------------------------
  *   Is the EEPROM initialised?
  *
- *   Looks for the characters 'F' and 'A' in the first two bytes of the EEPROM
+ *   Looks for the characters 'F' and 'P' in the first two bytes of the EEPROM
  *   memory range starting from byte EEPROM_STORAGE_SPACE_START.  If not found,
  *   it resets the settings ..
  */
 
-const char chars1[8] = { 'F', 'i', 'l', 'm', 'o', 't', 'e', ' ' };
-const char chars2[8] = { 'V', 'a', 'm', 'p', 'i', 'r', 'i', 'c' };
-const char chars3[8] = { 'H', 'e', 'c', 't', 'o', 'r', ' ', ' ' };
+const char chars1[4] = { 'Q', 'A', 'A', ' ' };
+const char chars2[4] = { 'B', 'B', 'B', ' ' };
+const char chars3[4] = { 'C', 'C', 'C', ' ' };
 
 const uint8_t letter1 = 'F'; 
-const uint8_t letter2 = 'A'; 
+const uint8_t letter2 = 'P'; 
 
 void EEPROM_Utils::initEEPROM(bool forceClear) {
 
@@ -27,31 +27,24 @@ void EEPROM_Utils::initEEPROM(bool forceClear) {
     EEPROM.update(EEPROM_START_C1, letter1);
     EEPROM.update(EEPROM_START_C2, letter2);
 
-    for (uint8_t x = EEPROM_PLAYER1; x <= EEPROM_END; x++) {
+    for (uint8_t x = EEPROM_HS_NAME_1; x <= EEPROM_END; x++) {
 
-      EEPROM.update(x, 0);
-
-    }
-
-    for (uint8_t x = EEPROM_PLAYER1 + 1, y = 0; x < EEPROM_PLAYER2 - 1; x++, y++) {
-
-      EEPROM.update(x, 32);
-      EEPROM.update(x + 10, 32);
-      EEPROM.update(x + 20, 32);
-      EEPROM.update(x + 30, 32);
-
-      EEPROM.update(x + 39, chars1[y]);
-      EEPROM.update(x + 49, chars2[y]);
-      EEPROM.update(x + 59, chars3[y]);
+       EEPROM.update(x, 0);
 
     }
 
-    int16_t score = 150;
-    EEPROM.put(EEPROM_HS_SCORE_1, score);
-    score = 100;
-    EEPROM.put(EEPROM_HS_SCORE_1 + 2, score);
-    score = 50;
-    EEPROM.put(EEPROM_HS_SCORE_1 + 4, score);
+    for (uint8_t x = 0; x < 3; x++) {
+
+      EEPROM.update(EEPROM_HS_NAME_1 + x, chars1[x]);
+      EEPROM.update(EEPROM_HS_NAME_2 + x, chars2[x]);
+      EEPROM.update(EEPROM_HS_NAME_3 + x, chars3[x]);
+
+    }
+
+    int16_t score = 3;
+    EEPROM.put(EEPROM_HS_SCORE_1, score--);
+    EEPROM.put(EEPROM_HS_SCORE_2, score--);
+    EEPROM.put(EEPROM_HS_SCORE_3, score--);
 
   }
 

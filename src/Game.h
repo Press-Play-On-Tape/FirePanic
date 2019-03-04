@@ -32,6 +32,8 @@ class Game : public GameStateMachine<GameContext, GameStateType> {
     SplashScreenState splashScreenState;
     GameIntroState gameIntroState;
     PlayGameState playGameState;
+    HighScoreState highScoreState;
+    
     
   public:
 

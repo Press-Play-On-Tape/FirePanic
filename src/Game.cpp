@@ -34,6 +34,9 @@ void Game::setup(void) {
 	arduboy.initRandomSeed();
 	arduboy.setFrameRate(75);
 
+
+  EEPROM_Utils::initEEPROM(false);
+
 	arduboy.setRGBled(0, 0, 0);
 
 	this->currentState = GameStateType::SplashScreen; 
@@ -93,6 +96,17 @@ void Game::loop(void) {
 			}
 			this->gameIntroState.update(*this);
 			this->gameIntroState.render(*this);
+			break;
+
+		case GameStateType::HighScoreScreen: 
+
+			if (currentState != savedCurrentState) {
+				this->context.gameState = this->currentState;
+				this->highScoreState.activate(*this);
+				this->savedCurrentState = this->currentState;
+			}
+			this->highScoreState.update(*this);
+			this->highScoreState.render(*this);
 			break;
 
 		default: break;	
