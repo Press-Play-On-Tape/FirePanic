@@ -438,12 +438,13 @@ void PlayGameState::render(StateMachine & machine) {
 
   if (this->gameOver) {
 
-    if (gameStats.timeOfDay == TimeOfDay::Day) {
-      Sprites::drawErase(41, 24, Images::GameOver, 0);
-    }
-    else {
-      Sprites::drawExternalMask(41, 24, Images::GameOver, Images::GameOver_Mask, 0, 0);
-    } 
+    Sprites::drawExternalMask(32, 20, Images::GameOver, Images::GameOver_Mask, 0, 0); // no need for a time of the day color switch because there's a border.
+//    if (gameStats.timeOfDay == TimeOfDay::Day) {
+//      Sprites::drawErase(32, 20, Images::GameOver, 0);
+//    }
+//    else {
+//      Sprites::drawExternalMask(32, 20, Images::GameOver, Images::GameOver_Mask, 0, 0);
+//    } 
 
   }
 
