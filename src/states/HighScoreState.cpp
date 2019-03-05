@@ -41,7 +41,7 @@ void HighScoreState::update(StateMachine & machine) {
   auto justPressed = arduboy.justPressedButtons();
   auto pressed = arduboy.pressedButtons();
 
-
+Serial.println(this->winnerIdx);
   // Is the new score a high score ?
 
   if (this->winnerIdx < NO_WINNER) {
@@ -75,15 +75,19 @@ void HighScoreState::update(StateMachine & machine) {
       }
 
       if (pressed & A_BUTTON) {
-
+Serial.println("A pressed 1");
         char *player = this->players[this->winnerIdx];
-        for (uint8_t i = 0; i < 3; i++) {
-          EEPROM_Utils::saveChar(this->winnerIdx, i, player[i]);
+
+        if (player[0] != 63 && player[1] != 63 && player[2] != 63) {
+          
+          for (uint8_t i = 0; i < 3; i++) {
+            EEPROM_Utils::saveChar(this->winnerIdx, i, player[i]);
+          }
+          
+          this->winnerIdx = NO_WINNER;
+          this->pressACounter = HS_PRESS_A_DELAY;
 
         }
-        
-        this->winnerIdx = NO_WINNER;
-        this->pressACounter = HS_PRESS_A_DELAY;
 
       }
 
@@ -96,6 +100,7 @@ void HighScoreState::update(StateMachine & machine) {
     // Handle other input ..
 
     if (justPressed & A_BUTTON && this->pressACounter == 0) {
+Serial.println("A pressed 2");
       machine.changeState(GameStateType::TitleScreen); 
     }
 

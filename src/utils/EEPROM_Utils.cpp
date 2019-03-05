@@ -84,6 +84,9 @@ int16_t EEPROM_Utils::getHighScore(uint8_t startLoc) {
 }
 
 
+/* -----------------------------------------------------------------------------
+ *   Save score if it is in the top 3, return slot number (or NO_WINNER) .. 
+ */
 static uint8_t EEPROM_Utils::saveScore(int16_t score) {
 
   int16_t scores[3];

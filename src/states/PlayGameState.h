@@ -16,6 +16,7 @@ class PlayGameState : public GameState<GameContext, GameStateType> {
 
     uint8_t counter = 0;
     uint8_t smokeIndex = 0;
+    uint8_t puffIndex = 0;
     uint8_t victimCountdown = VICTIM_COUNTDOWN;
     uint8_t victimDelay = 1;
     uint8_t victimLevel = 0;

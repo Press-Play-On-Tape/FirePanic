@@ -9,10 +9,12 @@
 //
 void PlayGameState::activate(StateMachine & machine) {
 
-  (void)machine;
+  auto & gameStats = machine.getContext().gameStats;
 
   this->gameOver = false;
   this->angel.setEnabled(false);
+
+  gameStats.resetGame();
 
 }
 
@@ -56,15 +58,15 @@ void PlayGameState::update(StateMachine & machine) {
               switch (victim.getX()) {
 
                 case PLAYER_MIN_X_POS ... PLAYER_MID_X_POS - 1:
-                  this->angel.init(0);
+                  this->angel.init(0, gameStats.misses);
                   break;
 
                 case PLAYER_MID_X_POS ... PLAYER_MAX_X_POS - 1:
-                  this->angel.init(1);
+                  this->angel.init(1, gameStats.misses);
                   break;
 
                 case PLAYER_MAX_X_POS ... WIDTH:
-                  this->angel.init(2);
+                  this->angel.init(2, gameStats.misses);
                   break;
 
               }
@@ -98,7 +100,7 @@ void PlayGameState::update(StateMachine & machine) {
 
   // Launch a new victim?
 
-  if (arduboy.everyXFrames(2) && gameStats.misses < /*3 SJH */1) {
+  if (arduboy.everyXFrames(2) && gameStats.misses < 3) {
 
     this->victimDelay--;
 
@@ -164,7 +166,7 @@ void PlayGameState::update(StateMachine & machine) {
   
   if (arduboy.everyXFrames(2)) {
 
-    this->player.move();
+    player.move();
 
   }
 
@@ -175,8 +177,27 @@ void PlayGameState::update(StateMachine & machine) {
     
     if (arduboy.everyXFrames(6)) {
 
-      this->angel.move();
+      if (this->angel.move(gameStats.misses)) {
 
+        this->puffIndex++;
+
+Serial.print(this->puffIndex);
+Serial.print(" ");
+        if (this->puffIndex == 8) {
+
+          this->angel.setEnabled(false);
+          this->puffIndex = 0;
+
+        }
+Serial.println(this->puffIndex);
+
+      }
+      else {
+
+        this->puffIndex = 0;
+
+      }
+      
     }
 
   }
@@ -197,7 +218,7 @@ void PlayGameState::update(StateMachine & machine) {
   }
 
 
-  if (gameStats.misses == /*3 SJH*/1 && allVictimsDisabled()) {
+  if (gameStats.misses == 3 && allVictimsDisabled()) {
 
     this->gameOver = true;
 
@@ -273,7 +294,6 @@ void PlayGameState::render(StateMachine & machine) {
   Sprites::drawOverwrite(16, 0, Images::Smoke, this->smokeIndex);
 
 
-
   // Render misses ..
 
   switch (gameStats.misses) {
@@ -281,21 +301,25 @@ void PlayGameState::render(StateMachine & machine) {
     case 0: break;
 
     case 1:
-      if (!this->angel.getEnabled()) {
-        Sprites::drawExternalMask(76, 2, Images::Misses, Images::Misses_Mask, 0, 0); 
+      // if (!this->angel.getEnabled()) {
+      // if (this->puffIndex >= 0 || this->puffIndex >= 3) {
+      if (!this->angel.getEnabled() || this->puffIndex >= 3) {
+        Sprites::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
       }
       break;
 
     case 2:
-      Sprites::drawExternalMask(76, 2, Images::Misses, Images::Misses_Mask, 0, 0); 
-      if (!this->angel.getEnabled()) {
-        Sprites::drawExternalMask(63, 2, Images::Misses, Images::Misses_Mask, 0, 0); 
+      Sprites::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+//      if (!this->angel.getEnabled()) {
+//      if (this->puffIndex >= 0 || this->puffIndex >= 3) {
+      if (!this->angel.getEnabled() || this->puffIndex >= 3) {
+        Sprites::drawExternalMask(ANGEL_MISS_2_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
       }
       break;
       
     default: 
-      Sprites::drawExternalMask(76, 2, Images::Misses, Images::Misses_Mask, 0, 0); 
-      Sprites::drawExternalMask(63, 2, Images::Misses, Images::Misses_Mask, 0, 0); 
+      Sprites::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+      Sprites::drawExternalMask(ANGEL_MISS_2_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
       break;
 
   }
@@ -356,7 +380,7 @@ void PlayGameState::render(StateMachine & machine) {
 
   // Render victim about to jump ..
 
-  const int8_t edgePos[] = { 0, -5, 17, -1, 0, 12, 17, 13, 0, 28, 17, 29 };
+  const int8_t edgePos[] = { 5, 0, 22, 1, 5, 16, 22, 17, 5, 31, 22, 32 };
 
   if (this->victimCountdown > 0) {
 
@@ -374,7 +398,7 @@ void PlayGameState::render(StateMachine & machine) {
 
   // Render angel if required ..
 
-  if (this->angel.getEnabled() && this->angel.renderImage()) {
+  if (this->angel.getEnabled() && this->angel.renderImage() && this->puffIndex <= 3) {
 
     uint8_t imageIndex = this->angel.getImageIndex();
     Sprites::drawExternalMask(this->angel.getX(), this->angel.getY(), Images::Angels, Images::Angels_Mask, imageIndex, imageIndex);
@@ -395,6 +419,18 @@ void PlayGameState::render(StateMachine & machine) {
 
   }
 
+  if (this->puffIndex > 0) {
+
+    if (gameStats.misses < 3) {
+
+      uint8_t puffIndex_Mask = this->puffIndex - 1;
+      uint8_t puffIndex = (puffIndex_Mask * 2) + (gameStats.timeOfDay == TimeOfDay::Night ? 1 : 0);
+
+      Sprites::drawExternalMask((gameStats.misses == 1 ? ANGEL_MISS_1_LEFT : ANGEL_MISS_2_LEFT) - 1, ANGEL_MISS_TOP, Images::Puff, Images::Puff_Mask, puffIndex, puffIndex_Mask);
+
+    }
+
+  }
 
 
 

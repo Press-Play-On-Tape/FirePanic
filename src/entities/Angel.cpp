@@ -24,6 +24,7 @@ uint8_t Angel::getEnabled() {
 void Angel::setEnabled(bool value) {
 
   this->enabled = value;
+  this->posIndex = 0;
 
 }
 
@@ -48,31 +49,33 @@ bool Angel::renderImage() {
   return this->posIndex >= 0;
 }
 
-void Angel::init(uint8_t sequence) {
+void Angel::init(uint8_t sequence, uint8_t missNumber) {
 
   this->sequence = sequence;
   this->enabled = true;
-  this->posIndex = -7;  
+  this->posIndex = -6;  
+
+  if (missNumber > 2) missNumber = 2; // on the third miss, use the second pattern ..
 
   switch (this->sequence) {
 
     case 0:
-      this->sequenceLen = pgm_read_byte(&Angel_Arc_1[0]);
+      this->sequenceLen = pgm_read_byte(&Angel_Arc_1[missNumber - 1]);
       break;
 
     case 1:
-      this->sequenceLen = pgm_read_byte(&Angel_Arc_2[0]);
+      this->sequenceLen = pgm_read_byte(&Angel_Arc_2[missNumber - 1]);
       break;
 
     case 2:
-      this->sequenceLen = pgm_read_byte(&Angel_Arc_3[0]);
+      this->sequenceLen = pgm_read_byte(&Angel_Arc_3[missNumber - 1]);
       break;
 
   }
   
 }
 
-void Angel::move() {
+bool Angel::move(uint8_t missNumber) {
   
   this->posIndex++;  
 
@@ -81,18 +84,18 @@ void Angel::move() {
     switch (this->sequence) {
 
       case 0:
-        this->x = pgm_read_byte(&Angel_Arc_1[(this->posIndex * 2) + 1]);
-        this->y = pgm_read_byte(&Angel_Arc_1[(this->posIndex * 2) + 2]);
+        this->x = pgm_read_byte(&Angel_Arc_1[(this->posIndex * 2) + 2]);
+        this->y = pgm_read_byte(&Angel_Arc_1[(this->posIndex * 2) + 3]);
         break;
 
       case 1:
-        this->x = pgm_read_byte(&Angel_Arc_2[(this->posIndex * 2) + 1]);
-        this->y = pgm_read_byte(&Angel_Arc_2[(this->posIndex * 2) + 2]);
+        this->x = pgm_read_byte(&Angel_Arc_2[(this->posIndex * 2) + 2]);
+        this->y = pgm_read_byte(&Angel_Arc_2[(this->posIndex * 2) + 3]);
         break;
 
       case 2:
-        this->x = pgm_read_byte(&Angel_Arc_3[(this->posIndex * 2) + 1]);
-        this->y = pgm_read_byte(&Angel_Arc_3[(this->posIndex * 2) + 2]);
+        this->x = pgm_read_byte(&Angel_Arc_3[(this->posIndex * 2) + 2]);
+        this->y = pgm_read_byte(&Angel_Arc_3[(this->posIndex * 2) + 3]);
         break;
 
     }
@@ -103,32 +106,6 @@ void Angel::move() {
     this->enabled = false;
   }
 
-  // if (this->posIndex == this->sequenceLen) {
-
-  //   this->enabled = false;
-
-  // }
-  // else {
-
-  //   switch (this->sequence) {
-
-  //     case 0:
-  //       this->x = pgm_read_byte(&Angel_Arc_1[(this->posIndex * 2) + 1]);
-  //       this->y = pgm_read_byte(&Angel_Arc_1[(this->posIndex * 2) + 2]);
-  //       break;
-
-  //     case 1:
-  //       this->x = pgm_read_byte(&Angel_Arc_2[(this->posIndex * 2) + 1]);
-  //       this->y = pgm_read_byte(&Angel_Arc_2[(this->posIndex * 2) + 2]);
-  //       break;
-
-  //     case 2:
-  //       this->x = pgm_read_byte(&Angel_Arc_3[(this->posIndex * 2) + 1]);
-  //       this->y = pgm_read_byte(&Angel_Arc_3[(this->posIndex * 2) + 2]);
-  //       break;
-
-  //   }
-
-  // }
+  return (this->sequenceLen - this->posIndex < 8) ;
 
 }

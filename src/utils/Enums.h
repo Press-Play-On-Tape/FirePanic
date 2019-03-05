@@ -6,6 +6,10 @@
 // #define _DEBUG
 // #define SOUND
 
+#define ANGEL_MISS_1_LEFT 76
+#define ANGEL_MISS_2_LEFT 63
+#define ANGEL_MISS_TOP 1
+
 #define VICTIMS_MAX_NUMBER 10
 
 #define VICTIM_ON_GROUND_1 43
