@@ -6,6 +6,10 @@
 // #define _DEBUG
 // #define SOUND
 
+#define ANGEL_MISS_1_LEFT 76
+#define ANGEL_MISS_2_LEFT 63
+#define ANGEL_MISS_TOP 1
+
 #define VICTIMS_MAX_NUMBER 10
 
 #define VICTIM_ON_GROUND_1 43
@@ -48,7 +52,14 @@
 #define PLAYER_Y_POS 42
 #define PLAYER_STEP_INC 6 
 
-#define NAME_LENGTH 9
+#define NAME_LENGTH 3
+#define NAME_LENGTH_PLUS_TERM (NAME_LENGTH + 1)
+
+#define HS_NAME_LEFT 37
+#define HS_SCORE_LEFT 75
+#define HS_CHAR_TOP 18
+#define HS_CHAR_V_SPACING 9
+#define HS_PRESS_A_DELAY 100
 
 #define NO_WINNER 255
 // #define NUMBER_OF_FIREWORKS 5
@@ -56,17 +67,16 @@
 #define EEPROM_START                  100
 #define EEPROM_START_C1               101
 #define EEPROM_START_C2               102
-#define EEPROM_PLAYER1                103
-#define EEPROM_PLAYER2                113
-#define EEPROM_PLAYER3                123
-#define EEPROM_PLAYER4                133
-#define EEPROM_HS_NAME_1              143
-#define EEPROM_HS_NAME_2              153
-#define EEPROM_HS_NAME_3              163
-#define EEPROM_HS_SCORE_1             173
-#define EEPROM_HS_SCORE_2             175
-#define EEPROM_HS_SCORE_3             177
-#define EEPROM_END                    179
+#define EEPROM_HS_NAME_1              103
+#define EEPROM_HS_NAME_2              107
+#define EEPROM_HS_NAME_3              111
+#define EEPROM_HS_SCORE_1             115
+#define EEPROM_HS_SCORE_2             117
+#define EEPROM_HS_SCORE_3             119
+#define EEPROM_END                    121
+
+#define FLASH_FRAME_COUNT_2 56
+
 
 enum class TimeOfDay : uint8_t {
   Day,
@@ -78,6 +88,7 @@ enum class GameStateType : uint8_t {
 	TitleScreen,
   GameIntroScreen,
   PlayGameScreen,
+  HighScoreScreen
 };
   
 enum class LightsState : uint8_t {

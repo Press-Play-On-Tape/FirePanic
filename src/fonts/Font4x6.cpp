@@ -5,7 +5,7 @@
 
 #define USE_LOWER_CASE
 
-#define FONT4x6_WIDTH 4
+#define FONT4x6_WIDTH 5
 #define FONT4x6_WIDTH_NARROW 3
 #define FONT4x6_HEIGHT 7
 
