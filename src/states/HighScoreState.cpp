@@ -10,14 +10,16 @@ void HighScoreState::activate(StateMachine & machine) {
 	auto & arduboy = machine.getContext().arduboy;
 	auto & gameStats = machine.getContext().gameStats;
 
+  this->charIdx = 0;
+  this->clearScores = 0;
+  this->pressACounter = HS_PRESS_A_DELAY;
+  this->winnerIdx = EEPROM_Utils::saveScore(gameStats.score);
+
 	arduboy.setRGBled(0, 0, 0);
+  arduboy.clearButtonState();
 
-	// this->yLeft = -96;
-	// this->yRight = 0;
-	this->count = 0;
 
-//  uint8_t winner = getWinner(machine);
-//  winnerIdx = EEPROM_Utils::saveScore(gameStats.players[winner]->name, gameStats.players[winner]->score);
+  // Retrieve existing names and scores ..
 
   EEPROM_Utils::getName(this->player1, EEPROM_HS_NAME_1);
   EEPROM_Utils::getName(this->player2, EEPROM_HS_NAME_2);
@@ -40,7 +42,64 @@ void HighScoreState::update(StateMachine & machine) {
   auto pressed = arduboy.pressedButtons();
 
 
+  // Is the new score a high score ?
 
+  if (this->winnerIdx < NO_WINNER) {
+
+    if (arduboy.everyXFrames(8)) {
+
+      if (pressed & UP_BUTTON) {
+
+        char *player = this->players[this->winnerIdx];
+        player[this->charIdx]++;
+        if (player[this->charIdx] > 90) player[this->charIdx] = 65;
+        if (player[this->charIdx] == 64) player[this->charIdx] = 65;
+
+      }
+
+      if (pressed & DOWN_BUTTON) {
+
+        char *player = this->players[this->winnerIdx];
+        player[this->charIdx]--;
+        if (player[this->charIdx] < 65) player[this->charIdx] = 90;
+        if (player[this->charIdx] == 62) player[this->charIdx] = 90;
+
+      }
+
+      if (pressed & LEFT_BUTTON && this->charIdx > 0) {
+        this->charIdx--;
+      }
+
+      if (pressed & RIGHT_BUTTON && this->charIdx < 2) {
+        this->charIdx++;
+      }
+
+      if (pressed & A_BUTTON) {
+
+        char *player = this->players[this->winnerIdx];
+        for (uint8_t i = 0; i < 3; i++) {
+          EEPROM_Utils::saveChar(this->winnerIdx, i, player[i]);
+
+        }
+        
+        this->winnerIdx = NO_WINNER;
+        this->pressACounter = HS_PRESS_A_DELAY;
+
+      }
+
+    }
+
+  }
+  else {
+
+
+    // Handle other input ..
+
+    if (justPressed & A_BUTTON && this->pressACounter == 0) {
+      machine.changeState(GameStateType::TitleScreen); 
+    }
+
+  }
 
 
 	// Clear scores ..
@@ -87,11 +146,9 @@ void HighScoreState::update(StateMachine & machine) {
 	}
 
 
-	// Handle other input ..
+  // Decrement the 'Press A' counter if it has been set ..
 
-	if (justPressed & A_BUTTON) {
-		machine.changeState(GameStateType::TitleScreen); 
-	}
+  if (this->pressACounter > 0) pressACounter--;
 
 }
 
@@ -106,66 +163,46 @@ void HighScoreState::render(StateMachine & machine) {
 
 	const bool flash = arduboy.getFrameCountHalf(FLASH_FRAME_COUNT_2);
 
-	// SpritesB::drawOverwrite(27, 0, Images::HighScore, 0);
 
-	// SpritesB::drawOverwrite(-4, this->yLeft, Images::Title_Dice_Vert, 0);
-	// SpritesB::drawOverwrite(-4, this->yLeft + 96, Images::Title_Dice_Vert, 0);
-	// SpritesB::drawOverwrite(103, this->yRight, Images::Title_Dice_Vert_Mirror, 0);
-	// SpritesB::drawOverwrite(103, this->yRight + 96, Images::Title_Dice_Vert_Mirror, 0);
+  // Render scores ..
 
-#define HS_CHAR_0_LEFT 37
-#define HS_SCORE_LEFT 75
-#define HS_CHAR_TOP 28
-#define HS_CHAR_V_SPACING 9
+  font4x6.setCursor(HS_NAME_LEFT, HS_CHAR_TOP);
+  font4x6.print(this->player1);
+  renderScore(machine, this->score1, HS_SCORE_LEFT, HS_CHAR_TOP);
 
-    uint8_t playerIdx = 2;
-    uint8_t charIndex = 1;
+  font4x6.setCursor(HS_NAME_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
+  font4x6.print(this->player2);
+  renderScore(machine, this->score2, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
 
-		font4x6.setCursor(HS_CHAR_0_LEFT, HS_CHAR_TOP);
-		font4x6.print(this->player1);
-		renderScore(machine, this->score1, HS_SCORE_LEFT, HS_CHAR_TOP);
+  font4x6.setCursor(HS_NAME_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
+  font4x6.print(this->player3);
+  renderScore(machine, this->score3, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
 
 
+  // Render edit field if the slot is being editted ..
 
+  if (this->winnerIdx < NO_WINNER && flash) {
 
-		font4x6.setCursor(HS_CHAR_0_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
-		font4x6.print(this->player2);
-		renderScore(machine, this->score2, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
+    char *player = this->players[this->winnerIdx];
 
-		font4x6.setCursor(HS_CHAR_0_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
-		font4x6.print(this->player3);
-		renderScore(machine, this->score3, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
-
-
-
-
-    arduboy.fillRect(HS_CHAR_0_LEFT + (charIndex * 6) - 1, HS_CHAR_TOP + (playerIdx * HS_CHAR_V_SPACING), 6, 8, WHITE);
+    arduboy.fillRect(HS_NAME_LEFT + (this->charIdx * 6) - 1, HS_CHAR_TOP + (winnerIdx * HS_CHAR_V_SPACING), 6, 8, WHITE);
     font4x6.setTextColor(BLACK);
-
-    switch (playerIdx) {
-
-      case 0:
-        font4x6.setCursor(HS_CHAR_0_LEFT + (charIndex * 6), HS_CHAR_TOP);
-        font4x6.print(this->player1[charIndex]);
-        break;
-
-      case 1:
-        font4x6.setCursor(HS_CHAR_0_LEFT + (charIndex * 6), HS_CHAR_TOP + HS_CHAR_V_SPACING);
-        font4x6.print(this->player2[charIndex]);
-        break;
-
-      case 2:
-        font4x6.setCursor(HS_CHAR_0_LEFT + (charIndex * 6), HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
-        font4x6.print(this->player3[charIndex]);
-        break;
-
-      default: break;
-
-    }
+    font4x6.setCursor(HS_NAME_LEFT + (this->charIdx * 6), HS_CHAR_TOP + (HS_CHAR_V_SPACING * this->winnerIdx));
+    font4x6.print(player[this->charIdx]);
     font4x6.setTextColor(WHITE);
 
+  }
+
+
+
+  // Display Press A message?
+
+  if (this->winnerIdx == NO_WINNER & this->pressACounter == 0) {
+
+    Sprites::drawExternalMask(43, 52, Images::PressA, Images::PressA_Mask, 0, 0);
+
+  }
 
   arduboy.display(true);
 
 }
-

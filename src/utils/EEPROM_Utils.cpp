@@ -10,7 +10,7 @@
  *   it resets the settings ..
  */
 
-const char chars1[4] = { 'Q', 'A', 'A', ' ' };
+const char chars1[4] = { 'A', 'A', 'A', ' ' };
 const char chars2[4] = { 'B', 'B', 'B', ' ' };
 const char chars3[4] = { 'C', 'C', 'C', ' ' };
 
@@ -41,10 +41,10 @@ void EEPROM_Utils::initEEPROM(bool forceClear) {
 
     }
 
-    int16_t score = 3;
-    EEPROM.put(EEPROM_HS_SCORE_1, score--);
-    EEPROM.put(EEPROM_HS_SCORE_2, score--);
-    EEPROM.put(EEPROM_HS_SCORE_3, score--);
+    int16_t score = 0;
+    EEPROM.put(EEPROM_HS_SCORE_1, score);
+    EEPROM.put(EEPROM_HS_SCORE_2, score);
+    EEPROM.put(EEPROM_HS_SCORE_3, score);
 
   }
 
@@ -84,16 +84,16 @@ int16_t EEPROM_Utils::getHighScore(uint8_t startLoc) {
 }
 
 
-static uint8_t EEPROM_Utils::saveScore(char *name, int16_t score) {
+static uint8_t EEPROM_Utils::saveScore(int16_t score) {
 
   int16_t scores[3];
   uint8_t idx = NO_WINNER;
 
   for (uint8_t i = 0; i < 3; i++) {
 
-    scores[i] = getHighScore(EEPROM_HS_SCORE_1 + (i*2));
+    scores[i] = getHighScore(EEPROM_HS_SCORE_1 + (i * 2));
 
-    if (score > scores[i]) {
+    if (score >= scores[i]) {
 
       idx = i;
       break;
@@ -109,10 +109,10 @@ static uint8_t EEPROM_Utils::saveScore(char *name, int16_t score) {
 
     for (uint8_t i = 2; i > idx; i--) {
 
-      for (uint8_t j = 0; j < NAME_LENGTH + 1; j++) {
+      for (uint8_t j = 0; j < NAME_LENGTH_PLUS_TERM; j++) {
 
-        uint8_t x = EEPROM.read(EEPROM_HS_NAME_1 + ((i - 1) * 10) + j);
-        EEPROM.update(EEPROM_HS_NAME_1 + (i * 10) + j, x);
+        uint8_t x = EEPROM.read(EEPROM_HS_NAME_1 + ((i - 1) * NAME_LENGTH_PLUS_TERM) + j);
+        EEPROM.update(EEPROM_HS_NAME_1 + (i * NAME_LENGTH_PLUS_TERM) + j, x);
 
       }
 
@@ -125,9 +125,9 @@ static uint8_t EEPROM_Utils::saveScore(char *name, int16_t score) {
 
     // Write out new name and score ..
 
-    for (uint8_t j = 1; j < NAME_LENGTH; j++) {
+    for (uint8_t j = 0; j < NAME_LENGTH_PLUS_TERM; j++) {
 
-      EEPROM.update(EEPROM_HS_NAME_1 + (idx * 10) + j - 1, name[j]);
+      EEPROM.update(EEPROM_HS_NAME_1 + (idx * NAME_LENGTH_PLUS_TERM) + j, '?');
 
     }
 
@@ -136,5 +136,11 @@ static uint8_t EEPROM_Utils::saveScore(char *name, int16_t score) {
   }
 
   return idx;
+
+}
+
+static void EEPROM_Utils::saveChar(int8_t slotIdx, uint8_t charIdx, uint8_t newChar) {
+
+  EEPROM.update(EEPROM_HS_NAME_1 + (slotIdx * NAME_LENGTH_PLUS_TERM) + charIdx, newChar);
 
 }

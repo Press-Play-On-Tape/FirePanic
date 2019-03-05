@@ -9,7 +9,14 @@
 void GameIntroState::activate(StateMachine & machine) {
 
   (void)machine;
+
+  this->xAmbulance = 156;
+  this->xPlayer = PLAYER_MIN_X_POS + 6 + (30 * 3);
   this->counter = 0;
+  this->smokeIndex = 0;
+  this->ambulanceDoor = false;
+  this->playerImageIndex = false;
+  this->lights = LightsState::Lights_1;
 
 }
 
