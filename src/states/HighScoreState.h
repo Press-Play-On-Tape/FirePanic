@@ -10,11 +10,8 @@ class HighScoreState : public BaseState {
 
   private:
 
-    // int8_t yLeft = 0;
-    // int8_t yRight = 64;
     uint8_t winnerIdx = 0;
     uint8_t charIdx = 0;
-//    uint8_t count = 0;
     uint8_t clearScores = 0;
     uint8_t pressACounter = HS_PRESS_A_DELAY;
 

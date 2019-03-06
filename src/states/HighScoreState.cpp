@@ -41,7 +41,7 @@ void HighScoreState::update(StateMachine & machine) {
   auto justPressed = arduboy.justPressedButtons();
   auto pressed = arduboy.pressedButtons();
 
-Serial.println(this->winnerIdx);
+
   // Is the new score a high score ?
 
   if (this->winnerIdx < NO_WINNER) {
@@ -75,7 +75,7 @@ Serial.println(this->winnerIdx);
       }
 
       if (pressed & A_BUTTON) {
-Serial.println("A pressed 1");
+
         char *player = this->players[this->winnerIdx];
 
         if (player[0] != 63 && player[1] != 63 && player[2] != 63) {
@@ -100,7 +100,7 @@ Serial.println("A pressed 1");
     // Handle other input ..
 
     if (justPressed & A_BUTTON && this->pressACounter == 0) {
-Serial.println("A pressed 2");
+
       machine.changeState(GameStateType::TitleScreen); 
     }
 

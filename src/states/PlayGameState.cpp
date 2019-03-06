@@ -181,15 +181,12 @@ void PlayGameState::update(StateMachine & machine) {
 
         this->puffIndex++;
 
-Serial.print(this->puffIndex);
-Serial.print(" ");
         if (this->puffIndex == 8) {
 
           this->angel.setEnabled(false);
           this->puffIndex = 0;
 
         }
-Serial.println(this->puffIndex);
 
       }
       else {
