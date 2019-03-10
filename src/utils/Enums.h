@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "Utils.h"
 
-// #define _DEBUG
+//#define DEBUG
 // #define SOUND
 
 #define ANGEL_MISS_1_LEFT 76
@@ -77,6 +77,9 @@
 
 #define FLASH_FRAME_COUNT_2 56
 
+const int8_t edgePos[] = { 5, 0, 22, 1, 5, 16, 22, 17, 5, 31, 22, 32 };
+const uint8_t cloud_X_Pos[] = { 16, 16, 18, 18, 46 };
+const uint8_t cloud_Y_Pos[] = { 10, 7, 0, 0, 0 };
 
 enum class TimeOfDay : uint8_t {
   Day,
@@ -84,10 +87,12 @@ enum class TimeOfDay : uint8_t {
 };
 
 enum class GameStateType : uint8_t {
+  None,
 	SplashScreen,
 	TitleScreen,
   GameIntroScreen,
   PlayGameScreen,
+  PlayRaceScreen,
   HighScoreScreen
 };
   
@@ -104,6 +109,7 @@ struct GameStats {
 
     uint16_t score = 0;
     uint16_t misses = 0;
+    uint8_t xPosition = 0;
     TimeOfDay timeOfDay = TimeOfDay::Day;
 
     void resetGame() {

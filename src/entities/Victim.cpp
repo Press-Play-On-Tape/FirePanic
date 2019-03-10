@@ -46,6 +46,12 @@ uint8_t Victim::getHaloIndex() {
 
 }
 
+uint8_t Victim::getPuffIndex() {
+
+  return this->puffIndex;
+
+}
+
 uint8_t Victim::getAlive() {
 
   return this->alive;
@@ -69,11 +75,20 @@ void Victim::init() {
   this->enabled = true;
   this->posIndex = 0;  
   this->alive = 0;
+  this->puffIndex = 0;
 
   if (this->posIndex > 67) this->posIndex = 0;
 
   this->x = pgm_read_byte(&Physics_Arc[this->posIndex * 2]);
   this->y = pgm_read_byte(&Physics_Arc[(this->posIndex * 2) + 1]);
+
+}
+
+
+void Victim::incPuffIndex() {
+
+  this->puffIndex++;
+  if (this->puffIndex == 6) this->enabled = false;
 
 }
 

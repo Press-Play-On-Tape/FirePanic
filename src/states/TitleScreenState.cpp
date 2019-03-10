@@ -11,7 +11,8 @@ constexpr const static uint8_t UPLOAD_DELAY = 16;
 //
 void TitleScreenState::activate(StateMachine & machine) {
 
-	(void)machine;
+  auto & gameStats = machine.getContext().gameStats;
+  gameStats.resetGame();
 
 }
 
@@ -46,7 +47,7 @@ void TitleScreenState::update(StateMachine & machine) {
 	// Handle other input ..
 
 	if (justPressed & A_BUTTON) {
-		machine.changeState(GameStateType::GameIntroScreen); 
+		machine.changeState(GameStateType::GameIntroScreen, GameStateType::PlayGameScreen); 
 	}
 
 
@@ -83,8 +84,15 @@ void TitleScreenState::render(StateMachine & machine) {
 
   auto & arduboy = machine.getContext().arduboy;
 
-	SpritesB::drawOverwrite(0, 0, Images::FirePanic, 0);
-  Sprites::drawSelfMasked(33, 1, Images::FirePanic_Logo_Anim, this->flameCounter);
+//	SpritesB::drawOverwrite(0, 0, Images::FirePanic, 0);
+  Sprites::drawExternalMask(0, 28, Images::Grass, Images::Grass_Mask, 0, 0);
+  Sprites::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
+  Sprites::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
+  Sprites::drawExternalMask(0, 59, Images::Grass, Images::Grass_Mask, 0, 0);  
+  Sprites::drawOverwrite(112, 0, Images::Building_RHS, 0);
+  
+  Sprites::drawExternalMask(33, 1, Images::FirePanic_Logo, Images::FirePanic_Logo_Mask, 0, 0);
+  Sprites::drawSelfMasked(42, 13, Images::FirePanic_Logo_Anim, this->flameCounter);
 
   if (this->pressACounter == PRESS_A_DELAY) {
 
@@ -92,12 +100,14 @@ void TitleScreenState::render(StateMachine & machine) {
 
   }
 
+  Sprites::drawExternalMask(0, 14, Images::Victim_OnEdge_01, Images::Victim_OnEdge_01_Mask, 0, 0);
+
   if (this->help) {
 
-    Sprites::drawOverwrite(18, 16, Images::Help, 0);
+    Sprites::drawOverwrite(17, 16, Images::Help, 0);
 
   }
 
-	arduboy.display(true);
+	arduboy.displayWithBackground(TimeOfDay::Day);
 
 }

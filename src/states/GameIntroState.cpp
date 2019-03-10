@@ -7,16 +7,28 @@
 //  Initialise state ..
 //
 void GameIntroState::activate(StateMachine & machine) {
+  	
+  auto & gameStats = machine.getContext().gameStats;
 
-  (void)machine;
+  if (machine.getContext().nextState == GameStateType::PlayGameScreen) {
 
-  this->xAmbulance = 156;
-  this->xPlayer = PLAYER_MIN_X_POS + 6 + (30 * 3);
+    this->xAmbulance = 156;
+    this->xPlayer = PLAYER_MIN_X_POS + 6 + (30 * 3);
+
+  }
+  else {
+
+    this->xAmbulance = 96;
+    this->xPlayer = gameStats.xPosition;
+
+  }
+
   this->counter = 0;
   this->smokeIndex = 0;
   this->ambulanceDoor = false;
   this->playerImageIndex = false;
   this->lights = LightsState::Lights_1;
+  this->speedInc = 0;
 
 }
 
@@ -36,64 +48,123 @@ void GameIntroState::update(StateMachine & machine) {
     
   if (arduboy.everyXFrames(2)) {
 
-    switch (counter) {
+    if (machine.getContext().nextState == GameStateType::PlayGameScreen) {
 
-      case 0 ... 59:
-        this->xAmbulance--;
-        break;
+      switch (counter) {
 
-      case 60 ... 75:
-        break;
+        case 0 ... 59:
+          this->xAmbulance--;
+          break;
 
-      case 76 ... 90:
-        this->ambulanceDoor = true;
-        break;
+        case 60 ... 75:
+          break;
 
-      case 91 ... 161:
+        case 76 ... 90:
+          this->ambulanceDoor = true;
+          break;
 
-        this->ambulanceDoor = true;
+        case 91 ... 161:
 
-        if (arduboy.everyXFrames(4)) {
+          this->ambulanceDoor = true;
 
-          switch (this->xPlayer) {
+          if (arduboy.everyXFrames(4)) {
 
-            case PLAYER_MIN_X_POS : break;
+            switch (this->xPlayer) {
 
-            case PLAYER_MIN_X_POS + 1 ... PLAYER_MIN_X_POS + 3:
-              this->xPlayer = this->xPlayer - 1;
-              break;
+              case PLAYER_MIN_X_POS : break;
 
-            case PLAYER_MIN_X_POS + 4 ... PLAYER_MIN_X_POS + 8:
-              this->xPlayer = this->xPlayer - 2;
-              break;
+              case PLAYER_MIN_X_POS + 1 ... PLAYER_MIN_X_POS + 3:
+                this->xPlayer = this->xPlayer - 1;
+                break;
 
-            default:
-              this->xPlayer = this->xPlayer - 3;
-              break;
+              case PLAYER_MIN_X_POS + 4 ... PLAYER_MIN_X_POS + 8:
+                this->xPlayer = this->xPlayer - 2;
+                break;
+
+              default:
+                this->xPlayer = this->xPlayer - 3;
+                break;
+
+            }
 
           }
 
-        }
+          break;
 
-        break;
+        case 162 ... 190:
+          this->ambulanceDoor = false;
+          break;
 
-      case 162 ... 190:
-        this->ambulanceDoor = false;
-        break;
+        case 191:
+          machine.changeState(machine.getContext().nextState, GameStateType::None); 
+          break;
 
-      case 191:
-        machine.changeState(GameStateType::PlayGameScreen); 
-        break;
+      }
+
+      this->counter++;
 
     }
+    else {
 
-    this->counter++;
+      switch (counter) {
+
+        case 0 ... 20:
+          break;
+
+        case 21 ... 40:
+          this->ambulanceDoor = true;
+          break;
+
+        case 41 ... 115:
+
+          this->ambulanceDoor = true;
+
+          if (arduboy.everyXFrames(4)) {
+
+            switch (this->speedInc) {
+
+              case 0 ... 1:
+                this->xPlayer = this->xPlayer + 1;
+                break;
+
+              case 2 ... 3:
+                this->xPlayer = this->xPlayer + 2;
+                break;
+
+              default:
+                this->xPlayer = this->xPlayer + 3;
+                break;
+
+            }
+
+            this->speedInc++;
+
+          }
+
+          break;
+
+        case 116 ... 140:
+          this->ambulanceDoor = false;
+          break;
+
+        case 141 ... 179:
+          this->xAmbulance++;
+          break;
+
+        case 180:
+          machine.changeState(machine.getContext().nextState, GameStateType::None); 
+          break;
+      }
+
+      this->counter++;
+
+    }
 
   }
 
   // Skip intro ..
   
-  if (justPressed & A_BUTTON) machine.changeState(GameStateType::PlayGameScreen); 
+  if (justPressed & A_BUTTON) machine.changeState(machine.getContext().nextState, GameStateType::None); 
 
 
   if (arduboy.everyXFrames(16)) {
@@ -122,8 +193,12 @@ void GameIntroState::render(StateMachine & machine) {
   Sprites::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
   Sprites::drawExternalMask(0, 59, Images::Grass, Images::Grass_Mask, 0, 0);
 
+  {
+    uint8_t x = cloud_X_Pos[this->smokeIndex];
+    uint8_t y = cloud_Y_Pos[this->smokeIndex];
 
-  Sprites::drawOverwrite(16, 0, Images::Smoke, this->smokeIndex);
+    Sprites::drawOverwrite(x, y, pgm_read_word_near(&Images::Smoke_Day[this->smokeIndex]), 0);
+  }
 
   if (this->xPlayer < 100) {
     uint8_t image = this->playerImageIndex ? 1 : 0;
@@ -139,23 +214,11 @@ void GameIntroState::render(StateMachine & machine) {
   // Draw Ambulance with lights ..
 
   Sprites::drawExternalMask(xAmbulance, 31, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
-
-  switch (this->lights) {
-
-    case LightsState::Lights_1:
-      Sprites::drawExternalMask(this->xAmbulance + 18, 31, Images::Ambulance_Lights_01, Images::Ambulance_Lights_Mask, 0, 0);
-      break;
-
-    case LightsState::Lights_2:
-      Sprites::drawExternalMask(this->xAmbulance + 18, 31, Images::Ambulance_Lights_02, Images::Ambulance_Lights_Mask, 0, 0);
-      break;
-
-  }
+  Sprites::drawExternalMask(this->xAmbulance + 18, 31, Images::Ambulance_Lights, Images::Ambulance_Lights_Mask, static_cast<uint8_t>(this->lights), 0);
 
   if (this->ambulanceDoor) {
     Sprites::drawExternalMask(this->xAmbulance - 4, 36, Images::Ambulance_Door, Images::Ambulance_Door_Mask, 0, 0);
   }
-
 
   arduboy.displayWithBackground(gameStats.timeOfDay);
 

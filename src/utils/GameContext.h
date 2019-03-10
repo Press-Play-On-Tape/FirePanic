@@ -26,6 +26,7 @@ class GameContext {
   public:
 
     GameStateType gameState;
+    GameStateType nextState;
     Arduboy2Ext arduboy;
     GameStats gameStats;
 

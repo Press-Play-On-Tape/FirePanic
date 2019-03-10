@@ -51,7 +51,7 @@ void SplashScreenState::update(StateMachine & machine) {
         break;
         
       case 125:   
-        machine.changeState(GameStateType::TitleScreen);    
+        machine.changeState(GameStateType::TitleScreen, GameStateType::None); 
         break;
 
       default:

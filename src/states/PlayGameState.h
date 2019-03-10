@@ -20,7 +20,10 @@ class PlayGameState : public GameState<GameContext, GameStateType> {
     uint8_t victimCountdown = VICTIM_COUNTDOWN;
     uint8_t victimDelay = 1;
     uint8_t victimLevel = 0;
+
     bool gameOver = false;
+    bool paused = false;
+    bool transitionToRace = false;
 
     uint8_t getNextAvailable();
     bool allVictimsDisabled();

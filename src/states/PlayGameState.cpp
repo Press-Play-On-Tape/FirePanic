@@ -13,8 +13,8 @@ void PlayGameState::activate(StateMachine & machine) {
 
   this->gameOver = false;
   this->angel.setEnabled(false);
-
-  gameStats.resetGame();
+  this->paused = false;
+  this->transitionToRace = false;
 
 }
 
@@ -29,203 +29,276 @@ void PlayGameState::update(StateMachine & machine) {
 	auto justPressed = arduboy.justPressedButtons();
 	auto pressed = arduboy.pressedButtons();
 
+  if (!this->paused) {
 
-  // Update victim positions ..
-  {
-    uint8_t playerXCentre = this->player.getX() + PLAYER_WIDTH_HALF;
+    // Update victim positions ..
+    {
+      uint8_t playerXCentre = this->player.getX() + PLAYER_WIDTH_HALF;
 
-    if (arduboy.everyXFrames(5)) {
+      if (arduboy.everyXFrames(5)) {
+
+        for (auto &victim : victims) {
+
+          if (victim.getEnabled()) {
+
+            uint8_t victimX = victim.getX();
+
+            if (victimX == VICTIM_IN_AMBULANCE) {
+              gameStats.score++;
+            }
+            else {
+
+              uint8_t victimXCentre = victimX + VICTIM_WIDTH_HALF;
+              uint8_t delta = absT(victimXCentre - playerXCentre);
+
+              if (victim.getY() == VICTIM_BOUNCE_HEIGHT && delta > ACCURACY_TOLERANCE) {
+
+                victim.setAlive(VICTIM_MISSED_TRAMPOLINE);
+                gameStats.misses++;
+
+                switch (victim.getX()) {
+
+                  case PLAYER_MIN_X_POS ... PLAYER_MID_X_POS - 1:
+                    if (gameStats.misses < 3) {
+                      this->angel.init(0, gameStats.misses);
+                    }
+                    break;
+
+                  case PLAYER_MID_X_POS ... PLAYER_MAX_X_POS - 1:
+                    if (gameStats.misses < 3) {
+                      this->angel.init(1, gameStats.misses);
+                    }
+                    break;
+
+                  case PLAYER_MAX_X_POS ... WIDTH:
+                    if (gameStats.misses < 3) {
+                      this->angel.init(2, gameStats.misses);
+                    }
+                    break;
+
+                }
+                
+              }  
+
+            }
+
+            victim.move();
+            
+          }
+
+        }
+
+      }
+
+
+      // If its the end of the game, remove all other victims ..
+
+      if (gameStats.misses == 3) {
+
+        for (auto &victim : victims) {
+
+          if (victim.getEnabled() && victim.getAlive() == 0 && victim.getPuffIndex() == 0) {
+
+            victim.incPuffIndex();
+
+          }
+
+        }
+
+      }
+
+    }
+
+
+    // Rotate victims ..
+
+    if (arduboy.everyXFrames(15)) {
 
       for (auto &victim : victims) {
 
         if (victim.getEnabled()) {
-
-          uint8_t victimX = victim.getX();
-
-          if (victimX == VICTIM_IN_AMBULANCE) {
-            gameStats.score++;
-          }
-          else {
-
-            uint8_t victimXCentre = victimX + VICTIM_WIDTH_HALF;
-            uint8_t delta = absT(victimXCentre - playerXCentre);
-
-            if (victim.getY() == VICTIM_BOUNCE_HEIGHT && delta > ACCURACY_TOLERANCE) {
-
-              victim.setAlive(VICTIM_MISSED_TRAMPOLINE);
-              gameStats.misses++;
-
-              switch (victim.getX()) {
-
-                case PLAYER_MIN_X_POS ... PLAYER_MID_X_POS - 1:
-                  this->angel.init(0, gameStats.misses);
-                  break;
-
-                case PLAYER_MID_X_POS ... PLAYER_MAX_X_POS - 1:
-                  this->angel.init(1, gameStats.misses);
-                  break;
-
-                case PLAYER_MAX_X_POS ... WIDTH:
-                  this->angel.init(2, gameStats.misses);
-                  break;
-
-              }
-              
-            }  
-
-          }
-
-          victim.move();
-          
+          victim.rotate();
         }
 
       }
 
     }
 
-  }
 
-  if (arduboy.everyXFrames(15)) {
+    // Launch a new victim?
 
-    for (auto &victim : victims) {
+    if (arduboy.everyXFrames(2) && gameStats.misses < 3 && this) {
 
-      if (victim.getEnabled()) {
-        victim.rotate();
+      this->victimDelay--;
+
+      if (this->victimDelay == 0) {
+
+        switch (gameStats.score) {
+
+          case 0 ... 10:
+            this->victimDelay = random(VICTIM_DELAY_0_MIN, VICTIM_DELAY_0_MAX);
+            this->victimCountdown = VICTIM_COUNTDOWN;
+            this->victimLevel = 0;
+            break;
+
+          case 11 ... 20:
+            this->victimDelay = random(VICTIM_DELAY_1_MIN, VICTIM_DELAY_1_MAX);
+            this->victimCountdown = VICTIM_COUNTDOWN;
+            this->victimLevel = random(2);
+            break;
+
+          default:
+            this->victimDelay = random(VICTIM_DELAY_2_MIN, VICTIM_DELAY_2_MAX);
+            this->victimCountdown = VICTIM_COUNTDOWN;
+            this->victimLevel = random(3);
+            break;
+
+        }
+
       }
 
     }
 
-  }
 
+    // Is a victim ready to jump?
 
-  // Launch a new victim?
+    if (arduboy.everyXFrames(30) && !this->transitionToRace) {
 
-  if (arduboy.everyXFrames(2) && gameStats.misses < 3) {
+      switch (this->victimCountdown) {
 
-    this->victimDelay--;
+        case 0: break;
 
-    if (this->victimDelay == 0) {
-
-      switch (gameStats.score) {
-
-        case 0 ... 10:
-          this->victimDelay = random(VICTIM_DELAY_0_MIN, VICTIM_DELAY_0_MAX);
-          this->victimCountdown = VICTIM_COUNTDOWN;
-          this->victimLevel = 0;
-          break;
-
-        case 11 ... 20:
-          this->victimDelay = random(VICTIM_DELAY_1_MIN, VICTIM_DELAY_1_MAX);
-          this->victimCountdown = VICTIM_COUNTDOWN;
-          this->victimLevel = random(2);
+        case 1:
+          {
+            this->victimCountdown--;
+            uint8_t nextAvailableVictim = getNextAvailable();
+            this->victims[nextAvailableVictim].init();
+          }
           break;
 
         default:
-          this->victimDelay = random(VICTIM_DELAY_2_MIN, VICTIM_DELAY_2_MAX);
-          this->victimCountdown = VICTIM_COUNTDOWN;
-          this->victimLevel = random(3);
+          this->victimCountdown--;
           break;
 
       }
 
     }
 
-  }
 
 
-  // Is a victim ready to jump?
+    // Update player position ..
 
-  if (arduboy.everyXFrames(30)) {
+    if ((pressed & LEFT_BUTTON) && this->player.canMoveLeft())      { this->player.setPlayerDirection(PlayerDirection::Left); }
+    if ((pressed & RIGHT_BUTTON) && this->player.canMoveRight())    { this->player.setPlayerDirection(PlayerDirection::Right); }
+    
+    if (arduboy.everyXFrames(2)) {
 
-    switch (this->victimCountdown) {
-
-      case 0: break;
-
-      case 1:
-        {
-          this->victimCountdown--;
-          uint8_t nextAvailableVictim = getNextAvailable();
-          this->victims[nextAvailableVictim].init();
-        }
-        break;
-
-      default:
-        this->victimCountdown--;
-        break;
+      player.move();
 
     }
 
-  }
 
-
-
-  // Update player position ..
-
-  if ((pressed & LEFT_BUTTON) && this->player.canMoveLeft())      { this->player.setPlayerDirection(PlayerDirection::Left); }
-  if ((pressed & RIGHT_BUTTON) && this->player.canMoveRight())    { this->player.setPlayerDirection(PlayerDirection::Right); }
-  
-  if (arduboy.everyXFrames(2)) {
-
-    player.move();
-
-  }
-
-
-  // Update angel ..
-  
-  if (this->angel.getEnabled()) {
+    // Update angel ..
     
-    if (arduboy.everyXFrames(6)) {
+    if (this->angel.getEnabled()) {
+      
+      if (arduboy.everyXFrames(6)) {
 
-      if (this->angel.move(gameStats.misses)) {
+        if (this->angel.move(gameStats.misses)) {
 
-        this->puffIndex++;
+          this->puffIndex++;
 
-        if (this->puffIndex == 8) {
+          if (this->puffIndex == 8) {
 
-          this->angel.setEnabled(false);
+            this->angel.setEnabled(false);
+            this->puffIndex = 0;
+
+          }
+
+        }
+        else {
+
           this->puffIndex = 0;
 
         }
+        
+      }
+
+    }
+
+
+    // Update the puff index on any victims mid flight ..
+
+    if (arduboy.everyXFrames(6)) {
+
+      for (auto &victim : victims) {
+
+        if (victim.getEnabled() && victim.getPuffIndex() > 0) {
+
+          victim.incPuffIndex();
+
+        }
 
       }
-      else {
 
-        this->puffIndex = 0;
+    }
 
-      }
-      
+    if (gameStats.misses == 3 && allVictimsDisabled()) {
+
+      this->gameOver = true;
+
+    }
+
+
+
+    // Update ambulance lights ..
+
+    if (arduboy.everyXFrames(8)) {
+      this->lights = (this->lights == LightsState::Lights_1 ? LightsState::Lights_2 : LightsState::Lights_1);
+    }
+
+
+    // Update smoke graphic ..
+
+    if (arduboy.everyXFrames(16)) {
+      this->smokeIndex++;
+      if (this->smokeIndex >= 5) this->smokeIndex = 0;
     }
 
   }
 
 
-  // Update ambulance lights ..
+  // Transition to race ..
 
-  if (arduboy.everyXFrames(8)) {
-    this->lights = (this->lights == LightsState::Lights_1 ? LightsState::Lights_2 : LightsState::Lights_1);
+  if (gameStats.score > 0) {
+
+    this->transitionToRace = true;
+
   }
 
+  if (this->transitionToRace) {
 
-  // Update smoke graphic ..
-
-  if (arduboy.everyXFrames(16)) {
-    this->smokeIndex++;
-    if (this->smokeIndex >= 5) this->smokeIndex = 0;
-  }
-
-
-  if (gameStats.misses == 3 && allVictimsDisabled()) {
-
-    this->gameOver = true;
+    if (allVictimsDisabled()) {
+      gameStats.xPosition = this->player.getX();
+      machine.changeState(GameStateType::GameIntroScreen, GameStateType::PlayRaceScreen);
+    }
 
   }
 
 
-  if (this->gameOver){
+  // Handle other buttons ..
+
+  if (this->gameOver) {
 
     if (justPressed & A_BUTTON) {
-      machine.changeState(GameStateType::HighScoreScreen); 
+      machine.changeState(GameStateType::HighScoreScreen, GameStateType::None); 
+    }
+
+  }
+  else {
+
+    if (justPressed & B_BUTTON) {
+      this->paused = !this->paused; 
     }
 
   }
@@ -277,18 +350,24 @@ void PlayGameState::render(StateMachine & machine) {
 	auto & arduboy = machine.getContext().arduboy;
   auto & gameStats = machine.getContext().gameStats;
 
+  {
+    uint8_t x = cloud_X_Pos[this->smokeIndex];
+    uint8_t y = cloud_Y_Pos[this->smokeIndex];
+
+    if (gameStats.timeOfDay == TimeOfDay::Day) {
+      Sprites::drawErase(89, 0, Images::Scoreboard, 0);
+      Sprites::drawOverwrite(x, y, pgm_read_word_near(&Images::Smoke_Day[this->smokeIndex]), 0);
+    }
+    else {
+      Sprites::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
+      Sprites::drawOverwrite(x, y, pgm_read_word_near(&Images::Smoke_Night[this->smokeIndex]), 0);
+    }
+
+  }
+
   Sprites::drawExternalMask(0, 28, Images::Grass, Images::Grass_Mask, 0, 0);
   Sprites::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
   Sprites::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
-
-  if (gameStats.timeOfDay == TimeOfDay::Day) {
-    Sprites::drawErase(89, 0, Images::Scoreboard, 0);
-  }
-  else {
-    Sprites::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
-  }
-  
-  Sprites::drawOverwrite(16, 0, Images::Smoke, this->smokeIndex);
 
 
   // Render misses ..
@@ -298,8 +377,6 @@ void PlayGameState::render(StateMachine & machine) {
     case 0: break;
 
     case 1:
-      // if (!this->angel.getEnabled()) {
-      // if (this->puffIndex >= 0 || this->puffIndex >= 3) {
       if (!this->angel.getEnabled() || this->puffIndex >= 3) {
         Sprites::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
       }
@@ -307,8 +384,6 @@ void PlayGameState::render(StateMachine & machine) {
 
     case 2:
       Sprites::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
-//      if (!this->angel.getEnabled()) {
-//      if (this->puffIndex >= 0 || this->puffIndex >= 3) {
       if (!this->angel.getEnabled() || this->puffIndex >= 3) {
         Sprites::drawExternalMask(ANGEL_MISS_2_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
       }
@@ -345,7 +420,8 @@ void PlayGameState::render(StateMachine & machine) {
   Sprites::drawExternalMask(this->player.getX(), this->player.getY(), Images::FireMen, Images::FireMen_Mask, i, i);
 
 
-  // Render Foreground grass ..
+  // Render foreground grass ..
+
   Sprites::drawExternalMask(0, 59, Images::Grass, Images::Grass_Mask, 0, 0);
 
 
@@ -355,18 +431,31 @@ void PlayGameState::render(StateMachine & machine) {
 
     if (victim.getEnabled()) {
 
-      uint8_t imageIndex = victim.getRotation();
-      Sprites::drawExternalMask(victim.getX(), victim.getY(), Images::Victims, Images::Victims_Mask, imageIndex, imageIndex);
+      if (victim.getPuffIndex() < 3) {
 
-      uint8_t isAlive = victim.getAlive();
+        uint8_t imageIndex = victim.getRotation();
+        Sprites::drawExternalMask(victim.getX(), victim.getY(), Images::Victims, Images::Victims_Mask, imageIndex, imageIndex);
 
-      if (isAlive >= 2) {
-        
-        uint8_t haloIndexMask = victim.getHaloIndex();
-        uint8_t haloIndex = haloIndexMask * 2;
+        uint8_t isAlive = victim.getAlive();
 
-        if (gameStats.timeOfDay == TimeOfDay::Night) haloIndex++; 
-        Sprites::drawExternalMask(victim.getX(), victim.getY() - 5, Images::Victim_Halos, Images::Victim_Halos_Mask, haloIndex, haloIndexMask);
+        if (isAlive >= 2) {
+          
+          uint8_t haloIndexMask = victim.getHaloIndex();
+          uint8_t haloIndex = haloIndexMask * 2;
+
+          if (gameStats.timeOfDay == TimeOfDay::Night) haloIndex++; 
+          Sprites::drawExternalMask(victim.getX(), victim.getY() - 5, Images::Victim_Halos, Images::Victim_Halos_Mask, haloIndex, haloIndexMask);
+
+        }
+
+      }
+
+      if (victim.getPuffIndex() > 0) {
+
+        uint8_t puffIndex_Mask = victim.getPuffIndex() - 1;
+        uint8_t puffIndex = (puffIndex_Mask * 2) + (gameStats.timeOfDay == TimeOfDay::Night ? 1 : 0);
+
+        Sprites::drawExternalMask(victim.getX(), victim.getY(), Images::Puff, Images::Puff_Mask, puffIndex, puffIndex_Mask);
 
       }
 
@@ -376,8 +465,6 @@ void PlayGameState::render(StateMachine & machine) {
 
 
   // Render victim about to jump ..
-
-  const int8_t edgePos[] = { 5, 0, 22, 1, 5, 16, 22, 17, 5, 31, 22, 32 };
 
   if (this->victimCountdown > 0) {
 
@@ -403,18 +490,7 @@ void PlayGameState::render(StateMachine & machine) {
   }
 
   Sprites::drawExternalMask(96, 31, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
-
-  switch (this->lights) {
-
-    case LightsState::Lights_1:
-      Sprites::drawExternalMask(114, 31, Images::Ambulance_Lights_01, Images::Ambulance_Lights_Mask, 0, 0);
-      break;
-
-    case LightsState::Lights_2:
-      Sprites::drawExternalMask(114, 31, Images::Ambulance_Lights_02, Images::Ambulance_Lights_Mask, 0, 0);
-      break;
-
-  }
+  Sprites::drawExternalMask(114, 31, Images::Ambulance_Lights, Images::Ambulance_Lights_Mask, static_cast<uint8_t>(this->lights), 0);
 
   if (this->puffIndex > 0) {
 
@@ -435,13 +511,15 @@ void PlayGameState::render(StateMachine & machine) {
 
   if (this->gameOver) {
 
-    Sprites::drawExternalMask(32, 20, Images::GameOver, Images::GameOver_Mask, 0, 0); // no need for a time of the day color switch because there's a border.
-//    if (gameStats.timeOfDay == TimeOfDay::Day) {
-//      Sprites::drawErase(32, 20, Images::GameOver, 0);
-//    }
-//    else {
-//      Sprites::drawExternalMask(32, 20, Images::GameOver, Images::GameOver_Mask, 0, 0);
-//    } 
+    Sprites::drawExternalMask(32, 20, Images::GameOver, Images::GameOver_Mask, 0, 0); 
+
+  }
+
+  // Pause?
+
+  if (this->paused) {
+
+    Sprites::drawExternalMask(39, 20, Images::Pause, Images::Pause_Mask, 0, 0); 
 
   }
 

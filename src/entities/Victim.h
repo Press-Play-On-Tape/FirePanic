@@ -14,6 +14,7 @@ class Victim {
     uint8_t getEnabled();
     uint8_t getAlive();
     uint8_t getHaloIndex();
+    uint8_t getPuffIndex();
 
     void setEnabled(bool value);
     void setAlive(uint8_t value);
@@ -21,6 +22,7 @@ class Victim {
     void move();
     void rotate();
     void init();
+    void incPuffIndex();
     
   protected:
 
@@ -28,6 +30,7 @@ class Victim {
     uint8_t y;
     uint8_t posIndex;
     uint8_t rotIndex;
+    uint8_t puffIndex;
     bool enabled;
     uint8_t alive;
 

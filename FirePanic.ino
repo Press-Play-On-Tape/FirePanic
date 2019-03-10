@@ -2,7 +2,9 @@
 
 #include "src/utils/Arduboy2Ext.h"
 
+#ifndef DEBUG
 ARDUBOY_NO_USB 
+#endif
 
 Game game;
 

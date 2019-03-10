@@ -33,8 +33,8 @@ class Game : public GameStateMachine<GameContext, GameStateType> {
     GameIntroState gameIntroState;
     PlayGameState playGameState;
     HighScoreState highScoreState;
-    
-    
+    RaceState raceState;
+        
   public:
 
     void setup(void);

@@ -101,7 +101,7 @@ void HighScoreState::update(StateMachine & machine) {
 
     if (justPressed & A_BUTTON && this->pressACounter == 0) {
 
-      machine.changeState(GameStateType::TitleScreen); 
+      machine.changeState(GameStateType::TitleScreen, GameStateType::None); 
     }
 
   }

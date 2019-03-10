@@ -7,3 +7,4 @@
 #include "Smoke.h"
 #include "Splash.h"
 #include "Victims.h"
+#include "Race.h"
