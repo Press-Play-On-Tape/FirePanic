@@ -353,29 +353,29 @@ void PlayGameState::render(StateMachine & machine) {
       uint8_t y = cloud_Y_Pos[this->smokeIndex];
 
       if (gameStats.timeOfDay == TimeOfDay::Day) {
-        Sprites::drawErase(89, 0, Images::Scoreboard, 0);
-        Sprites::drawOverwrite(x, y, pgm_read_word_near(&Images::Smoke_Day[this->smokeIndex]), 0);
+        SpritesB::drawErase(89, 0, Images::Scoreboard, 0);
+        SpritesB::drawOverwrite(x, y, pgm_read_word_near(&Images::Smoke_Day[this->smokeIndex]), 0);
       }
       else {
-        Sprites::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
-        Sprites::drawOverwrite(x, y, pgm_read_word_near(&Images::Smoke_Night[this->smokeIndex]), 0);
+        SpritesB::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
+        SpritesB::drawOverwrite(x, y, pgm_read_word_near(&Images::Smoke_Night[this->smokeIndex]), 0);
       }
 
     #else
 
       if (gameStats.timeOfDay == TimeOfDay::Day) {
-        Sprites::drawErase(89, 0, Images::Scoreboard, 0);
+        SpritesB::drawErase(89, 0, Images::Scoreboard, 0);
       }
       else {
-        Sprites::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
+        SpritesB::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
       }
-      
+
     #endif
   }
 
-  Sprites::drawExternalMask(0, 28, Images::Grass, Images::Grass_Mask, 0, 0);
-  Sprites::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
-  Sprites::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
+  SpritesB::drawExternalMask(0, 28, Images::Grass, Images::Grass_Mask, 0, 0);
+  SpritesB::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
+  SpritesB::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
 
 
   // Render misses ..
@@ -386,20 +386,20 @@ void PlayGameState::render(StateMachine & machine) {
 
     case 1:
       if (!this->angel.getEnabled() || this->puffIndex >= 3) {
-        Sprites::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+        SpritesB::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
       }
       break;
 
     case 2:
-      Sprites::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+      SpritesB::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
       if (!this->angel.getEnabled() || this->puffIndex >= 3) {
-        Sprites::drawExternalMask(ANGEL_MISS_2_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+        SpritesB::drawExternalMask(ANGEL_MISS_2_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
       }
       break;
       
     default: 
-      Sprites::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
-      Sprites::drawExternalMask(ANGEL_MISS_2_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+      SpritesB::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+      SpritesB::drawExternalMask(ANGEL_MISS_2_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
       break;
 
   }
@@ -413,10 +413,10 @@ void PlayGameState::render(StateMachine & machine) {
 	for (uint8_t j = 6; j > 0; --j) {
 
     if (gameStats.timeOfDay == TimeOfDay::Day) {
-      Sprites::drawErase(124 - (j*5), 3, Images::Scoreboard_Numbers, digits[j - 1]);
+      SpritesB::drawErase(124 - (j*5), 3, Images::Scoreboard_Numbers, digits[j - 1]);
     }
     else {
-      Sprites::drawSelfMasked(124 - (j*5), 3, Images::Scoreboard_Numbers, digits[j - 1]);
+      SpritesB::drawSelfMasked(124 - (j*5), 3, Images::Scoreboard_Numbers, digits[j - 1]);
     }
 
 	}
@@ -425,12 +425,12 @@ void PlayGameState::render(StateMachine & machine) {
 
   uint8_t i = this->player.getImageIndex();
 
-  Sprites::drawExternalMask(this->player.getX(), this->player.getY(), Images::FireMen, Images::FireMen_Mask, i, i);
+  SpritesB::drawExternalMask(this->player.getX(), this->player.getY(), Images::FireMen, Images::FireMen_Mask, i, i);
 
 
   // Render foreground grass ..
 
-  Sprites::drawExternalMask(0, 59, Images::Grass, Images::Grass_Mask, 0, 0);
+  SpritesB::drawExternalMask(0, 59, Images::Grass, Images::Grass_Mask, 0, 0);
 
 
   // Render victims ..
@@ -442,7 +442,7 @@ void PlayGameState::render(StateMachine & machine) {
       if (victim.getPuffIndex() < 3) {
 
         uint8_t imageIndex = victim.getRotation();
-        Sprites::drawExternalMask(victim.getX(), victim.getY(), Images::Victims, Images::Victims_Mask, imageIndex, imageIndex);
+        SpritesB::drawExternalMask(victim.getX(), victim.getY(), Images::Victims, Images::Victims_Mask, imageIndex, imageIndex);
 
         uint8_t isAlive = victim.getAlive();
 
@@ -452,7 +452,7 @@ void PlayGameState::render(StateMachine & machine) {
           uint8_t haloIndex = haloIndexMask * 2;
 
           if (gameStats.timeOfDay == TimeOfDay::Night) haloIndex++; 
-          Sprites::drawExternalMask(victim.getX(), victim.getY() - 5, Images::Victim_Halos, Images::Victim_Halos_Mask, haloIndex, haloIndexMask);
+          SpritesB::drawExternalMask(victim.getX(), victim.getY() - 5, Images::Victim_Halos, Images::Victim_Halos_Mask, haloIndex, haloIndexMask);
 
         }
 
@@ -463,7 +463,7 @@ void PlayGameState::render(StateMachine & machine) {
         uint8_t puffIndex_Mask = victim.getPuffIndex() - 1;
         uint8_t puffIndex = (puffIndex_Mask * 2) + (gameStats.timeOfDay == TimeOfDay::Night ? 1 : 0);
 
-        Sprites::drawExternalMask(victim.getX(), victim.getY(), Images::Puff, Images::Puff_Mask, puffIndex, puffIndex_Mask);
+        SpritesB::drawExternalMask(victim.getX(), victim.getY(), Images::Puff, Images::Puff_Mask, puffIndex, puffIndex_Mask);
 
       }
 
@@ -476,11 +476,11 @@ void PlayGameState::render(StateMachine & machine) {
 
   if (this->victimCountdown > 0) {
 
-    Sprites::drawExternalMask(edgePos[this->victimLevel * 4], edgePos[(this->victimLevel * 4) + 1], Images::Victim_OnEdge_01, Images::Victim_OnEdge_01_Mask, 0, 0);
+    SpritesB::drawExternalMask(edgePos[this->victimLevel * 4], edgePos[(this->victimLevel * 4) + 1], Images::Victim_OnEdge_01, Images::Victim_OnEdge_01_Mask, 0, 0);
 
     if (this->victimCountdown % 2 == 0) {
 
-      Sprites::drawExternalMask(edgePos[(this->victimLevel * 4) + 2], edgePos[(this->victimLevel * 4) + 3], Images::Victim_OnEdge_02, Images::Victim_OnEdge_02_Mask, 0, 0);
+      SpritesB::drawExternalMask(edgePos[(this->victimLevel * 4) + 2], edgePos[(this->victimLevel * 4) + 3], Images::Victim_OnEdge_02, Images::Victim_OnEdge_02_Mask, 0, 0);
 
     }
 
@@ -493,12 +493,12 @@ void PlayGameState::render(StateMachine & machine) {
   if (this->angel.getEnabled() && this->angel.renderImage() && this->puffIndex <= 3) {
 
     uint8_t imageIndex = this->angel.getImageIndex();
-    Sprites::drawExternalMask(this->angel.getX(), this->angel.getY(), Images::Angels, Images::Angels_Mask, imageIndex, imageIndex);
+    SpritesB::drawExternalMask(this->angel.getX(), this->angel.getY(), Images::Angels, Images::Angels_Mask, imageIndex, imageIndex);
 
   }
 
-  Sprites::drawExternalMask(96, 31, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
-  Sprites::drawExternalMask(114, 31, Images::Ambulance_Lights, Images::Ambulance_Lights_Mask, static_cast<uint8_t>(this->lights), 0);
+  SpritesB::drawExternalMask(96, 31, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
+  SpritesB::drawExternalMask(114, 31, Images::Ambulance_Lights, Images::Ambulance_Lights_Mask, static_cast<uint8_t>(this->lights), 0);
 
   if (this->puffIndex > 0) {
 
@@ -507,7 +507,7 @@ void PlayGameState::render(StateMachine & machine) {
       uint8_t puffIndex_Mask = this->puffIndex - 1;
       uint8_t puffIndex = (puffIndex_Mask * 2) + (gameStats.timeOfDay == TimeOfDay::Night ? 1 : 0);
 
-      Sprites::drawExternalMask((gameStats.misses == 1 ? ANGEL_MISS_1_LEFT : ANGEL_MISS_2_LEFT) - 1, ANGEL_MISS_TOP, Images::Puff, Images::Puff_Mask, puffIndex, puffIndex_Mask);
+      SpritesB::drawExternalMask((gameStats.misses == 1 ? ANGEL_MISS_1_LEFT : ANGEL_MISS_2_LEFT) - 1, ANGEL_MISS_TOP, Images::Puff, Images::Puff_Mask, puffIndex, puffIndex_Mask);
 
     }
 
@@ -519,7 +519,7 @@ void PlayGameState::render(StateMachine & machine) {
 
   if (this->gameOver) {
 
-    Sprites::drawExternalMask(32, 20, Images::GameOver, Images::GameOver_Mask, 0, 0); 
+    SpritesB::drawExternalMask(32, 20, Images::GameOver, Images::GameOver_Mask, 0, 0); 
 
   }
 
@@ -527,7 +527,7 @@ void PlayGameState::render(StateMachine & machine) {
 
   if (this->paused) {
 
-    Sprites::drawExternalMask(39, 20, Images::Pause, Images::Pause_Mask, 0, 0); 
+    SpritesB::drawExternalMask(39, 20, Images::Pause, Images::Pause_Mask, 0, 0); 
 
   }
 

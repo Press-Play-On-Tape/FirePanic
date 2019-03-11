@@ -204,7 +204,7 @@ void HighScoreState::render(StateMachine & machine) {
 
   if (this->winnerIdx == NO_WINNER & this->pressACounter == 0) {
 
-    Sprites::drawExternalMask(43, 52, Images::PressA, Images::PressA_Mask, 0, 0);
+    SpritesB::drawExternalMask(43, 52, Images::PressA, Images::PressA_Mask, 0, 0);
 
   }
 

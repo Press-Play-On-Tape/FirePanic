@@ -305,14 +305,14 @@ void RaceState::render(StateMachine & machine) {
 
   for (uint8_t i = 0; i < 17; i++) {
 
-    Sprites::drawOverwrite(this->xScenery + (i*8), 0, Images::Race_Background, 0);
+    SpritesB::drawOverwrite(this->xScenery + (i*8), 0, Images::Race_Background, 0);
 
   }
 
   for (uint8_t i = 0; i < 5; i++) {
 
-    Sprites::drawOverwrite(this->xLine1 + (i*32), 38, Images::Race_Line, 0);
-    Sprites::drawOverwrite(this->xLine1 + (i*32), 52, Images::Race_Line, 0);
+    SpritesB::drawOverwrite(this->xLine1 + (i*32), 38, Images::Race_Line, 0);
+    SpritesB::drawOverwrite(this->xLine1 + (i*32), 52, Images::Race_Line, 0);
 
   }
 
@@ -322,7 +322,7 @@ void RaceState::render(StateMachine & machine) {
 
       if (car.enabled && car.lane == iLane) {
 
-        Sprites::drawExternalMask(car.x, 14 + (car.lane * 14), Images::Race_OtherCar, Images::Race_OtherCar_Mask, 0, 0);
+        SpritesB::drawExternalMask(car.x, 14 + (car.lane * 14), Images::Race_OtherCar, Images::Race_OtherCar_Mask, 0, 0);
 
       }
 
@@ -333,15 +333,15 @@ void RaceState::render(StateMachine & machine) {
         (iLane == 1 && this->ambulance.y >= 14 && this->ambulance.y <= 26) ||
         (iLane == 2 && this->ambulance.y >= 27 && this->ambulance.y <= 33)) {
 
-      Sprites::drawExternalMask(this->ambulance.x, this->ambulance.y, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
-      Sprites::drawExternalMask(this->ambulance.x + 18, this->ambulance.y, Images::Ambulance_Lights, Images::Ambulance_Lights_Mask, static_cast<uint8_t>(this->lights), 0);
+      SpritesB::drawExternalMask(this->ambulance.x, this->ambulance.y, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
+      SpritesB::drawExternalMask(this->ambulance.x + 18, this->ambulance.y, Images::Ambulance_Lights, Images::Ambulance_Lights_Mask, static_cast<uint8_t>(this->lights), 0);
 
       if (this->ambulance.puffIndex > 0) {
 
         uint8_t puffIndex_Mask = this->ambulance.puffIndex - 1;
         uint8_t puffIndex = (puffIndex_Mask * 2);//SJH + (gameStats.timeOfDay == TimeOfDay::Night ? 1 : 0);
 
-        Sprites::drawExternalMask(this->ambulance.x + RACE_AMBULANCE_WIDTH - 8, this->ambulance.y + 16, Images::Puff, Images::Puff_Mask, puffIndex, puffIndex_Mask);
+        SpritesB::drawExternalMask(this->ambulance.x + RACE_AMBULANCE_WIDTH - 8, this->ambulance.y + 16, Images::Puff, Images::Puff_Mask, puffIndex, puffIndex_Mask);
 
       }
 
@@ -353,7 +353,7 @@ void RaceState::render(StateMachine & machine) {
 
   if (this->paused) {
 
-    Sprites::drawExternalMask(39, 20, Images::Pause, Images::Pause_Mask, 0, 0); 
+    SpritesB::drawExternalMask(39, 20, Images::Pause, Images::Pause_Mask, 0, 0); 
 
   }
 

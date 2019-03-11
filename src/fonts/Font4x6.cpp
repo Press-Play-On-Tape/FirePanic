@@ -173,10 +173,10 @@ void Font4x6::printChar(const char c, const int8_t x, int8_t y) {
   if (idx > -1) {
     
     if (_textColor == WHITE) {
-      Sprites::drawSelfMasked(x, y, font_images, idx);
+      SpritesB::drawSelfMasked(x, y, font_images, idx);
     }
     else {
-      Sprites::drawErase(x, y, font_images, idx);
+      SpritesB::drawErase(x, y, font_images, idx);
     }
 
   }
