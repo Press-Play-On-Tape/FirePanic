@@ -20,3 +20,29 @@ void BaseState::renderScore(StateMachine & machine, int16_t score, uint8_t x, ui
 
 }
 
+
+void BaseState::drawCommonScenery(StateMachine & machine) {
+
+	auto & arduboy = machine.getContext().arduboy;
+
+  for (uint8_t i = 0; i <= 120; i = i + 8) {
+    SpritesB::drawExternalMask(i, 28, Images::Grass, Images::Grass_Mask, 0, 0);
+  }
+
+  SpritesB::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
+  SpritesB::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
+
+}
+
+
+
+void BaseState::drawLowerGrass(StateMachine & machine) {
+
+	auto & arduboy = machine.getContext().arduboy;
+
+  for (uint8_t i = 0; i <= 120; i = i + 8) {
+    SpritesB::drawExternalMask(i, 59, Images::Grass, Images::Grass_Mask, 0, 0);
+  }
+
+}
+

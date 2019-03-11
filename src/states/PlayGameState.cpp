@@ -373,9 +373,10 @@ void PlayGameState::render(StateMachine & machine) {
     #endif
   }
 
-  SpritesB::drawExternalMask(0, 28, Images::Grass, Images::Grass_Mask, 0, 0);
-  SpritesB::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
-  SpritesB::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
+  BaseState::drawCommonScenery(machine);
+  // SpritesB::drawExternalMask(0, 28, Images::Grass, Images::Grass_Mask, 0, 0);
+  // SpritesB::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
+  // SpritesB::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
 
 
   // Render misses ..
@@ -430,7 +431,8 @@ void PlayGameState::render(StateMachine & machine) {
 
   // Render foreground grass ..
 
-  SpritesB::drawExternalMask(0, 59, Images::Grass, Images::Grass_Mask, 0, 0);
+  BaseState::drawLowerGrass(machine);
+  // SpritesB::drawExternalMask(0, 59, Images::Grass, Images::Grass_Mask, 0, 0);
 
 
   // Render victims ..

@@ -192,10 +192,12 @@ void GameIntroState::render(StateMachine & machine) {
 	auto & arduboy = machine.getContext().arduboy;
 	auto & gameStats = machine.getContext().gameStats;
 
-  SpritesB::drawExternalMask(0, 28, Images::Grass, Images::Grass_Mask, 0, 0);
-  SpritesB::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
-  SpritesB::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
-  SpritesB::drawExternalMask(0, 59, Images::Grass, Images::Grass_Mask, 0, 0);
+  BaseState::drawCommonScenery(machine);
+  BaseState::drawLowerGrass(machine);
+  // SpritesB::drawExternalMask(0, 28, Images::Grass, Images::Grass_Mask, 0, 0);
+  // SpritesB::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
+  // SpritesB::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
+  //SpritesB::drawExternalMask(0, 59, Images::Grass, Images::Grass_Mask, 0, 0);
 
   {
     #ifndef DEBUG

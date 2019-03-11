@@ -5,8 +5,9 @@
 #include "../utils/Enums.h"
 #include "../entities/Victim.h"
 #include "../entities/Player.h"
+#include "BaseState.h"
 
-class GameIntroState : public GameState<GameContext, GameStateType> {
+class GameIntroState : public BaseState { //GameState<GameContext, GameStateType> {
 
   private:
 

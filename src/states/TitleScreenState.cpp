@@ -84,10 +84,12 @@ void TitleScreenState::render(StateMachine & machine) {
 
   auto & arduboy = machine.getContext().arduboy;
 
-  SpritesB::drawExternalMask(0, 28, Images::Grass, Images::Grass_Mask, 0, 0);
-  SpritesB::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
-  SpritesB::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
-  SpritesB::drawExternalMask(0, 59, Images::Grass, Images::Grass_Mask, 0, 0);  
+  BaseState::drawCommonScenery(machine);
+  BaseState::drawLowerGrass(machine);
+  // SpritesB::drawExternalMask(0, 28, Images::Grass, Images::Grass_Mask, 0, 0);
+  // SpritesB::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
+  // SpritesB::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
+  // SpritesB::drawExternalMask(0, 59, Images::Grass, Images::Grass_Mask, 0, 0);  
   SpritesB::drawOverwrite(112, 0, Images::Building_RHS, 0);
   
   SpritesB::drawExternalMask(33, 1, Images::FirePanic_Logo, Images::FirePanic_Logo_Mask, 0, 0);
