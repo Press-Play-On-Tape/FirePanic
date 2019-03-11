@@ -15,7 +15,6 @@ class PlayGameState : public GameState<GameContext, GameStateType> {
     LightsState lights = LightsState::Lights_1;
 
     uint8_t counter = 0;
-    uint8_t smokeIndex = 0;
     uint8_t puffIndex = 0;
     uint8_t victimCountdown = VICTIM_COUNTDOWN;
     uint8_t victimDelay = 1;
@@ -27,6 +26,10 @@ class PlayGameState : public GameState<GameContext, GameStateType> {
 
     uint8_t getNextAvailable();
     bool allVictimsDisabled();
+
+    #ifndef DEBUG
+    uint8_t smokeIndex = 0;
+    #endif
 
   public:
     void activate(StateMachine & machine) override;

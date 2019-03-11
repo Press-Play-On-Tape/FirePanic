@@ -24,11 +24,14 @@ void GameIntroState::activate(StateMachine & machine) {
   }
 
   this->counter = 0;
-  this->smokeIndex = 0;
   this->ambulanceDoor = false;
   this->playerImageIndex = false;
   this->lights = LightsState::Lights_1;
   this->speedInc = 0;
+
+  #ifndef DEBUG
+  this->smokeIndex = 0;
+  #endif
 
 }
 
@@ -166,11 +169,12 @@ void GameIntroState::update(StateMachine & machine) {
   
   if (justPressed & A_BUTTON) machine.changeState(machine.getContext().nextState, GameStateType::None); 
 
-
+  #ifndef DEBUG
   if (arduboy.everyXFrames(16)) {
     this->smokeIndex++;
     if (this->smokeIndex >= 5) this->smokeIndex = 0;
   }
+  #endif
 
   if (arduboy.everyXFrames(12) && this->xPlayer != PLAYER_MIN_X_POS) {
     this->playerImageIndex = !this->playerImageIndex;
@@ -194,10 +198,11 @@ void GameIntroState::render(StateMachine & machine) {
   Sprites::drawExternalMask(0, 59, Images::Grass, Images::Grass_Mask, 0, 0);
 
   {
+    #ifndef DEBUG
     uint8_t x = cloud_X_Pos[this->smokeIndex];
     uint8_t y = cloud_Y_Pos[this->smokeIndex];
-
     Sprites::drawOverwrite(x, y, pgm_read_word_near(&Images::Smoke_Day[this->smokeIndex]), 0);
+    #endif
   }
 
   if (this->xPlayer < 100) {

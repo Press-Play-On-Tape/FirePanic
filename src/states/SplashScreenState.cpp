@@ -31,8 +31,8 @@ void SplashScreenState::update(StateMachine & machine) {
 
     this->counter = 1;
 
-    TCCR3A = _BV(COM3A0); // set toggle on compare mode (which connects the pin)
-    OCR3A = 3905; // 128 Hz
+    // TCCR3A = _BV(COM3A0); // set toggle on compare mode (which connects the pin)
+    // OCR3A = 3905; // 128 Hz
 
   }
 
@@ -42,13 +42,13 @@ void SplashScreenState::update(StateMachine & machine) {
 
     switch (this->counter) {
 
-      case 2:     
-        OCR3A = 18000;    
-        break;
+      // case 2:     
+      //   OCR3A = 18000;    
+      //   break;
 
-      case 5:     
-        TCCR3A = 0;       
-        break;
+      // case 5:     
+      //   TCCR3A = 0;       
+      //   break;
         
       case 125:   
         machine.changeState(GameStateType::TitleScreen, GameStateType::None); 

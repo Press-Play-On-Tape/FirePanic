@@ -127,7 +127,7 @@ void PlayGameState::update(StateMachine & machine) {
 
     // Launch a new victim?
 
-    if (arduboy.everyXFrames(2) && gameStats.misses < 3 && this) {
+    if (arduboy.everyXFrames(2) && gameStats.misses < 3) {
 
       this->victimDelay--;
 
@@ -137,23 +137,22 @@ void PlayGameState::update(StateMachine & machine) {
 
           case 0 ... 10:
             this->victimDelay = random(VICTIM_DELAY_0_MIN, VICTIM_DELAY_0_MAX);
-            this->victimCountdown = VICTIM_COUNTDOWN;
             this->victimLevel = 0;
             break;
 
           case 11 ... 20:
             this->victimDelay = random(VICTIM_DELAY_1_MIN, VICTIM_DELAY_1_MAX);
-            this->victimCountdown = VICTIM_COUNTDOWN;
             this->victimLevel = random(2);
             break;
 
           default:
             this->victimDelay = random(VICTIM_DELAY_2_MIN, VICTIM_DELAY_2_MAX);
-            this->victimCountdown = VICTIM_COUNTDOWN;
             this->victimLevel = random(3);
             break;
 
         }
+
+        this->victimCountdown = VICTIM_COUNTDOWN;
 
       }
 
@@ -164,21 +163,16 @@ void PlayGameState::update(StateMachine & machine) {
 
     if (arduboy.everyXFrames(30) && !this->transitionToRace) {
 
-      switch (this->victimCountdown) {
+      if (this->victimCountdown > 0) {
 
-        case 0: break;
+        this->victimCountdown--;
 
-        case 1:
-          {
-            this->victimCountdown--;
-            uint8_t nextAvailableVictim = getNextAvailable();
-            this->victims[nextAvailableVictim].init();
-          }
-          break;
+        if (this->victimCountdown == 0) {
 
-        default:
-          this->victimCountdown--;
-          break;
+          uint8_t nextAvailableVictim = getNextAvailable();
+          this->victims[nextAvailableVictim].init();
+
+        }
 
       }
 
@@ -199,10 +193,10 @@ void PlayGameState::update(StateMachine & machine) {
 
 
     // Update angel ..
-    
-    if (this->angel.getEnabled()) {
       
-      if (arduboy.everyXFrames(6)) {
+    if (arduboy.everyXFrames(6)) {
+    
+      if (this->angel.getEnabled()) {
 
         if (this->angel.move(gameStats.misses)) {
 
@@ -224,12 +218,12 @@ void PlayGameState::update(StateMachine & machine) {
         
       }
 
-    }
+    // }
 
 
-    // Update the puff index on any victims mid flight ..
+      // Update the puff index on any victims mid flight ..
 
-    if (arduboy.everyXFrames(6)) {
+    // if (arduboy.everyXFrames(6)) {
 
       for (auto &victim : victims) {
 
@@ -260,10 +254,12 @@ void PlayGameState::update(StateMachine & machine) {
 
     // Update smoke graphic ..
 
+    #ifndef DEBUG
     if (arduboy.everyXFrames(16)) {
       this->smokeIndex++;
       if (this->smokeIndex >= 5) this->smokeIndex = 0;
     }
+    #endif
 
   }
 
@@ -351,18 +347,30 @@ void PlayGameState::render(StateMachine & machine) {
   auto & gameStats = machine.getContext().gameStats;
 
   {
-    uint8_t x = cloud_X_Pos[this->smokeIndex];
-    uint8_t y = cloud_Y_Pos[this->smokeIndex];
+    #ifndef DEBUG
 
-    if (gameStats.timeOfDay == TimeOfDay::Day) {
-      Sprites::drawErase(89, 0, Images::Scoreboard, 0);
-      Sprites::drawOverwrite(x, y, pgm_read_word_near(&Images::Smoke_Day[this->smokeIndex]), 0);
-    }
-    else {
-      Sprites::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
-      Sprites::drawOverwrite(x, y, pgm_read_word_near(&Images::Smoke_Night[this->smokeIndex]), 0);
-    }
+      uint8_t x = cloud_X_Pos[this->smokeIndex];
+      uint8_t y = cloud_Y_Pos[this->smokeIndex];
 
+      if (gameStats.timeOfDay == TimeOfDay::Day) {
+        Sprites::drawErase(89, 0, Images::Scoreboard, 0);
+        Sprites::drawOverwrite(x, y, pgm_read_word_near(&Images::Smoke_Day[this->smokeIndex]), 0);
+      }
+      else {
+        Sprites::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
+        Sprites::drawOverwrite(x, y, pgm_read_word_near(&Images::Smoke_Night[this->smokeIndex]), 0);
+      }
+
+    #else
+
+      if (gameStats.timeOfDay == TimeOfDay::Day) {
+        Sprites::drawErase(89, 0, Images::Scoreboard, 0);
+      }
+      else {
+        Sprites::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
+      }
+      
+    #endif
   }
 
   Sprites::drawExternalMask(0, 28, Images::Grass, Images::Grass_Mask, 0, 0);
