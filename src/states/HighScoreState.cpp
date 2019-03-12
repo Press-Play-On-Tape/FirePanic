@@ -186,21 +186,25 @@ void HighScoreState::render(StateMachine & machine) {
 	const bool flash = arduboy.getFrameCountHalf(FLASH_FRAME_COUNT_2);
 
   BaseState::drawCommonScenery(machine);
+  SpritesB::drawExternalMask(112, 0, Images::Building_RHS, Images::Building_RHS_Mask, 0, 0);
+  SpritesB::drawExternalMask(31, 3, Images::HighscoreText, Images::HighscoreText_Mask, 0, 0);
+  SpritesB::drawExternalMask(29, 16, Images::HighscorePanel, Images::HighscorePanel_Mask, 0, 0);
+  
 
 
   // Render scores ..
 
-  font4x6.setCursor(HS_NAME_LEFT, HS_CHAR_TOP);
+  font4x6.setCursor(HS_NAME_LEFT - 2, HS_CHAR_TOP + 3);
   font4x6.print(this->player1);
-  renderScore(machine, this->score1, HS_SCORE_LEFT, HS_CHAR_TOP);
+  renderScore(machine, this->score1, HS_SCORE_LEFT - 2, HS_CHAR_TOP + 3);
 
-  font4x6.setCursor(HS_NAME_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
+  font4x6.setCursor(HS_NAME_LEFT - 2, HS_CHAR_TOP + HS_CHAR_V_SPACING + 3);
   font4x6.print(this->player2);
-  renderScore(machine, this->score2, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
+  renderScore(machine, this->score2, HS_SCORE_LEFT - 2, HS_CHAR_TOP  + 3 + HS_CHAR_V_SPACING);
 
-  font4x6.setCursor(HS_NAME_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
+  font4x6.setCursor(HS_NAME_LEFT - 2, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING + 3);
   font4x6.print(this->player3);
-  renderScore(machine, this->score3, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
+  renderScore(machine, this->score3, HS_SCORE_LEFT - 2, HS_CHAR_TOP  + 3 + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
 
 
 
@@ -210,9 +214,9 @@ void HighScoreState::render(StateMachine & machine) {
 
     char *player = this->players[this->winnerIdx];
 
-    arduboy.fillRect(HS_NAME_LEFT + (this->charIdx * 6) - 1, HS_CHAR_TOP + (winnerIdx * HS_CHAR_V_SPACING), 6, 8, WHITE);
+    arduboy.fillRect(HS_NAME_LEFT - 2 + (this->charIdx * 6) - 1, HS_CHAR_TOP + 3 + (winnerIdx * HS_CHAR_V_SPACING), 6, 8, WHITE);
     font4x6.setTextColor(BLACK);
-    font4x6.setCursor(HS_NAME_LEFT + (this->charIdx * 6), HS_CHAR_TOP + (HS_CHAR_V_SPACING * this->winnerIdx));
+    font4x6.setCursor(HS_NAME_LEFT - 2 + (this->charIdx * 6), HS_CHAR_TOP + 3 + (HS_CHAR_V_SPACING * this->winnerIdx));
     font4x6.print(player[this->charIdx]);
     font4x6.setTextColor(WHITE);
 
