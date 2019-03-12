@@ -252,7 +252,7 @@ bool RaceState::checkLaunchCollisions(int16_t x, uint8_t lane) {
 
 bool RaceState::checkForCollisions(Arduboy2Ext & arduboy, int16_t x, uint8_t y) {
 
-  Rect ambulanceRect = { x, y + 15, RACE_AMBULANCE_WIDTH, 15 };
+  Rect ambulanceRect = { x, y + 20, RACE_AMBULANCE_WIDTH, 10 };
 
   for (auto &car : this->otherCars) {
 
@@ -322,8 +322,12 @@ void RaceState::render(StateMachine & machine) {
 
       if (car.enabled && car.lane == iLane) {
 
+        #ifndef DEBUG_RACE
         SpritesB::drawExternalMask(car.x, 14 + (car.lane * 14), Images::Race_OtherCar, Images::Race_OtherCar_Mask, 0, 0);
-
+        #else
+        arduboy.drawRect(car.x, 21 + (car.lane * 14), RACE_OTHERCAR_WIDTH, 10);
+        #endif
+        
       }
 
     }
