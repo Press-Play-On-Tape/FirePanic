@@ -325,7 +325,7 @@ void RaceState::render(StateMachine & machine) {
         #ifndef DEBUG_RACE
         SpritesB::drawExternalMask(car.x, 14 + (car.lane * 14), Images::Race_OtherCar, Images::Race_OtherCar_Mask, 0, 0);
         #else
-        arduboy.drawRect(car.x, 21 + (car.lane * 14), RACE_OTHERCAR_WIDTH, 10);
+        arduboy.drawRect(car.x, 27 + (car.lane * 14), RACE_OTHERCAR_WIDTH, 10);
         #endif
         
       }
