@@ -47,8 +47,7 @@ void TitleScreenState::update(StateMachine & machine) {
 	// Handle other input ..
 
 	if (justPressed & A_BUTTON) {
-//SJH		machine.changeState(GameStateType::GameIntroScreen, GameStateType::PlayGameScreen); 
-		machine.changeState(GameStateType::PlayRaceScreen, GameStateType::None); 
+		machine.changeState(GameStateType::GameIntroScreen, GameStateType::PlayGameScreen); 
 	}
 
 

@@ -4,7 +4,7 @@
 #include "Utils.h"
 
 //#define DEBUG
-#define DEBUG_RACE
+//#define DEBUG_RACE
 // #define SOUND
 
 #define ANGEL_MISS_1_LEFT 76
@@ -104,6 +104,15 @@ enum class GameStateType : uint8_t {
 enum class LightsState : uint8_t {
   Lights_1,
   Lights_2
+};
+
+
+enum class Direction : uint8_t {
+  Up,     // 00
+  Down,   // 01
+  Left,   // 02
+  Right,  // 03
+  None
 };
 
 struct GameStats {

@@ -33,9 +33,9 @@ uint8_t Player::getImageIndex() {
 
 }
 
-PlayerDirection Player::getPlayerDirection() {
+Direction Player::getDirection() {
 
-  return this->playerDirection;
+  return this->direction;
 
 }
 
@@ -45,9 +45,9 @@ void Player::setX(uint8_t value) {
 
 }
 
-void Player::setPlayerDirection(PlayerDirection value) {
+void Player::setDirection(Direction value) {
 
-  this->playerDirection = value;
+  this->direction = value;
 
 }
 
@@ -72,9 +72,9 @@ bool Player::canMoveRight() {
 
 void Player::move() {
 
-  switch (this->playerDirection) {
+  switch (this->direction) {
 
-    case PlayerDirection::Left:
+    case Direction::Left:
 
       this->x = this->x - pgm_read_byte(&steps[this->xIdx++]);
       this->image++;
@@ -82,11 +82,11 @@ void Player::move() {
 
       if (this->xIdx == NUM_OF_ELEMENTS) {
         this->xIdx = 0;
-        this->playerDirection = PlayerDirection::None;
+        this->direction = Direction::None;
       }
       break;
 
-    case PlayerDirection::Right:
+    case Direction::Right:
 
       this->x = this->x + pgm_read_byte(&steps[this->xIdx++]);
       this->image++;
@@ -94,7 +94,7 @@ void Player::move() {
 
       if (this->xIdx == NUM_OF_ELEMENTS) {
         this->xIdx = 0;
-        this->playerDirection = PlayerDirection::None;
+        this->direction = Direction::None;
       }
       break;
 
@@ -103,15 +103,3 @@ void Player::move() {
   }
 
 }
-
-// void Player::incX() {
-
-//   if (this->x < PLAYER_MAX_X_POS) this->x++;
-
-// }
-
-// void Player::decX() {
-
-//   if (this->x > PLAYER_MIN_X_POS) this->x--;
-
-// }
