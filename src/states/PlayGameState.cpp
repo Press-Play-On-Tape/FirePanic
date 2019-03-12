@@ -182,8 +182,8 @@ void PlayGameState::update(StateMachine & machine) {
 
     // Update player position ..
 
-    if ((pressed & LEFT_BUTTON) && this->player.canMoveLeft())      { this->player.setPlayerDirection(PlayerDirection::Left); }
-    if ((pressed & RIGHT_BUTTON) && this->player.canMoveRight())    { this->player.setPlayerDirection(PlayerDirection::Right); }
+    if ((pressed & LEFT_BUTTON) && this->player.canMoveLeft())      { this->player.setDirection(Direction::Left); }
+    if ((pressed & RIGHT_BUTTON) && this->player.canMoveRight())    { this->player.setDirection(Direction::Right); }
     
     if (arduboy.everyXFrames(2)) {
 
@@ -266,7 +266,7 @@ void PlayGameState::update(StateMachine & machine) {
 
   // Transition to race ..
 
-  if (gameStats.score > 0) {
+  if (gameStats.score > 5) {
 
     this->transitionToRace = true;
 
@@ -374,9 +374,6 @@ void PlayGameState::render(StateMachine & machine) {
   }
 
   BaseState::drawCommonScenery(machine);
-  // SpritesB::drawExternalMask(0, 28, Images::Grass, Images::Grass_Mask, 0, 0);
-  // SpritesB::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
-  // SpritesB::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
 
 
   // Render misses ..

@@ -158,6 +158,23 @@ void HighScoreState::update(StateMachine & machine) {
 }
 
 
+void HighScoreState::renderScore(StateMachine & machine, int16_t score, uint8_t x, uint8_t y) {
+
+	auto & arduboy = machine.getContext().arduboy;
+
+  for (uint8_t j = 6, x2 = x - 4; j > 0; --j, x2 += 5) {
+    
+    uint8_t digits[6] = {};
+    extractDigits(digits, static_cast<uint16_t>(absT(score)));
+
+    font4x6.setCursor(x2, y);
+    font4x6.print(digits[j - 1]);
+
+  }
+
+}
+
+
 // ----------------------------------------------------------------------------
 //  Render the state .. 
 //
@@ -175,15 +192,16 @@ void HighScoreState::render(StateMachine & machine) {
 
   font4x6.setCursor(HS_NAME_LEFT, HS_CHAR_TOP);
   font4x6.print(this->player1);
-  renderScore(machine, TimeOfDay::Night, this->score1, HS_SCORE_LEFT, HS_CHAR_TOP);
+  renderScore(machine, this->score1, HS_SCORE_LEFT, HS_CHAR_TOP);
 
   font4x6.setCursor(HS_NAME_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
   font4x6.print(this->player2);
-  renderScore(machine, TimeOfDay::Night, this->score2, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
+  renderScore(machine, this->score2, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
 
   font4x6.setCursor(HS_NAME_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
   font4x6.print(this->player3);
-  renderScore(machine, TimeOfDay::Night, this->score3, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
+  renderScore(machine, this->score3, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
+
 
 
   // Render edit field if the slot is being editted ..
@@ -210,6 +228,6 @@ void HighScoreState::render(StateMachine & machine) {
 
   }
 
-  arduboy.display(true);
+  arduboy.displayWithBackground(TimeOfDay::Day);
 
 }
