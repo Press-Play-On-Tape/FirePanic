@@ -194,17 +194,17 @@ void HighScoreState::render(StateMachine & machine) {
 
   // Render scores ..
 
-  font4x6.setCursor(HS_NAME_LEFT - 2, HS_CHAR_TOP + 3);
+  font4x6.setCursor(HS_NAME_LEFT - 2, HS_CHAR_TOP);
   font4x6.print(this->player1);
-  renderScore(machine, this->score1, HS_SCORE_LEFT - 2, HS_CHAR_TOP + 3);
+  renderScore(machine, this->score1, HS_SCORE_LEFT, HS_CHAR_TOP);
 
-  font4x6.setCursor(HS_NAME_LEFT - 2, HS_CHAR_TOP + HS_CHAR_V_SPACING + 3);
+  font4x6.setCursor(HS_NAME_LEFT - 2, HS_CHAR_TOP + HS_CHAR_V_SPACING);
   font4x6.print(this->player2);
-  renderScore(machine, this->score2, HS_SCORE_LEFT - 2, HS_CHAR_TOP  + 3 + HS_CHAR_V_SPACING);
+  renderScore(machine, this->score2, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
 
-  font4x6.setCursor(HS_NAME_LEFT - 2, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING + 3);
+  font4x6.setCursor(HS_NAME_LEFT - 2, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
   font4x6.print(this->player3);
-  renderScore(machine, this->score3, HS_SCORE_LEFT - 2, HS_CHAR_TOP  + 3 + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
+  renderScore(machine, this->score3, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
 
 
 
@@ -214,9 +214,9 @@ void HighScoreState::render(StateMachine & machine) {
 
     char *player = this->players[this->winnerIdx];
 
-    arduboy.fillRect(HS_NAME_LEFT - 2 + (this->charIdx * 6) - 1, HS_CHAR_TOP + 3 + (winnerIdx * HS_CHAR_V_SPACING), 6, 8, WHITE);
+    arduboy.fillRect(HS_NAME_LEFT - 2 + (this->charIdx * 6) - 1, HS_CHAR_TOP + (winnerIdx * HS_CHAR_V_SPACING), 6, 8, WHITE);
     font4x6.setTextColor(BLACK);
-    font4x6.setCursor(HS_NAME_LEFT - 2 + (this->charIdx * 6), HS_CHAR_TOP + 3 + (HS_CHAR_V_SPACING * this->winnerIdx));
+    font4x6.setCursor(HS_NAME_LEFT - 2 + (this->charIdx * 6), HS_CHAR_TOP + (HS_CHAR_V_SPACING * this->winnerIdx));
     font4x6.print(player[this->charIdx]);
     font4x6.setTextColor(WHITE);
 
