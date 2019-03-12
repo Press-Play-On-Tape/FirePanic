@@ -328,13 +328,17 @@ void RaceState::render(StateMachine & machine) {
 
     }
 
-//7,20,33
+
     if ((iLane == 0 && this->ambulance.y >= 6 && this->ambulance.y <= 13) ||
         (iLane == 1 && this->ambulance.y >= 14 && this->ambulance.y <= 26) ||
         (iLane == 2 && this->ambulance.y >= 27 && this->ambulance.y <= 33)) {
 
+      #ifndef DEBUG_RACE
       SpritesB::drawExternalMask(this->ambulance.x, this->ambulance.y, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
       SpritesB::drawExternalMask(this->ambulance.x + 18, this->ambulance.y, Images::Ambulance_Lights, Images::Ambulance_Lights_Mask, static_cast<uint8_t>(this->lights), 0);
+      #else
+      arduboy.drawRect(this->ambulance.x, this->ambulance.y + 20, RACE_AMBULANCE_WIDTH, 10);
+      #endif
 
       if (this->ambulance.puffIndex > 0) {
 
