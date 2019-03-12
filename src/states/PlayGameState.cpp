@@ -408,20 +408,7 @@ void PlayGameState::render(StateMachine & machine) {
 
   // Render score ..
 
-	uint8_t digits[6] = {};
-	extractDigits(digits, gameStats.score);
-
-	for (uint8_t j = 6; j > 0; --j) {
-
-    if (gameStats.timeOfDay == TimeOfDay::Day) {
-      SpritesB::drawErase(124 - (j*5), 3, Images::Scoreboard_Numbers, digits[j - 1]);
-    }
-    else {
-      SpritesB::drawSelfMasked(124 - (j*5), 3, Images::Scoreboard_Numbers, digits[j - 1]);
-    }
-
-	}
-
+  renderScore(machine, gameStats.timeOfDay, gameStats.score, 124, 3);
 
 
   uint8_t i = this->player.getImageIndex();

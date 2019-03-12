@@ -193,7 +193,6 @@ void GameIntroState::render(StateMachine & machine) {
 	auto & gameStats = machine.getContext().gameStats;
 
   BaseState::drawCommonScenery(machine);
-  BaseState::drawLowerGrass(machine);
   // SpritesB::drawExternalMask(0, 28, Images::Grass, Images::Grass_Mask, 0, 0);
   // SpritesB::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
   // SpritesB::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
@@ -215,7 +214,8 @@ void GameIntroState::render(StateMachine & machine) {
 
   SpritesB::drawExternalMask(104, 28, Images::Grass, Images::Grass_Mask, 0, 0);
   SpritesB::drawOverwrite(104, 38, Images::Ground_RHS, 0);
-  SpritesB::drawExternalMask(104, 59, Images::Grass, Images::Grass_Mask, 0, 0);
+//  SpritesB::drawExternalMask(104, 59, Images::Grass, Images::Grass_Mask, 0, 0);
+  BaseState::drawLowerGrass(machine);
 
 
   // Draw Ambulance with lights ..

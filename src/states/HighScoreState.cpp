@@ -168,20 +168,22 @@ void HighScoreState::render(StateMachine & machine) {
 
 	const bool flash = arduboy.getFrameCountHalf(FLASH_FRAME_COUNT_2);
 
+  BaseState::drawCommonScenery(machine);
+
 
   // Render scores ..
 
   font4x6.setCursor(HS_NAME_LEFT, HS_CHAR_TOP);
   font4x6.print(this->player1);
-  renderScore(machine, this->score1, HS_SCORE_LEFT, HS_CHAR_TOP);
+  renderScore(machine, TimeOfDay::Night, this->score1, HS_SCORE_LEFT, HS_CHAR_TOP);
 
   font4x6.setCursor(HS_NAME_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
   font4x6.print(this->player2);
-  renderScore(machine, this->score2, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
+  renderScore(machine, TimeOfDay::Night, this->score2, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
 
   font4x6.setCursor(HS_NAME_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
   font4x6.print(this->player3);
-  renderScore(machine, this->score3, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
+  renderScore(machine, TimeOfDay::Night, this->score3, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
 
 
   // Render edit field if the slot is being editted ..
