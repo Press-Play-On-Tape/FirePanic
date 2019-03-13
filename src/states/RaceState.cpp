@@ -1,6 +1,7 @@
 #include "RaceState.h"
 #include "../images/Images.h"
 #include "../utils/EEPROM_Utils.h"
+#include "../utils/Enums.h"
 
 
 // ----------------------------------------------------------------------------
@@ -162,6 +163,20 @@ void RaceState::update(StateMachine & machine) {
       }
 
 
+      // Launch the frog?
+
+      if (!frog.getEnabled() && frog.getCountdown() == 0) {
+
+        uint8_t moveUpOrDown = random(0, 2);
+
+        this->frog.setX(random(128, 340));
+        this->frog.setY(moveUpOrDown == 0 ? -16 : 80);
+        this->frog.setDirection(moveUpOrDown == 0 ? Direction::Down : Direction::Up);
+        this->frog.setEnabled(true);
+
+      }
+
+
       // Update positions ..
       
       if (arduboy.everyXFrames(8)) {
@@ -173,6 +188,15 @@ void RaceState::update(StateMachine & machine) {
         if (this->xScenery == -8) this->xScenery = 0;
         this->xLine1--;
         if (this->xLine1 == -32) this->xLine1 = 0;
+      }
+
+
+      // Move the frog?
+
+      if (frog.getEnabled() && arduboy.everyXFrames(2)) {
+
+        frog.move();
+
       }
 
 
@@ -373,10 +397,20 @@ void RaceState::render(StateMachine & machine) {
 
     }
 
-    if ((iLane == 0 && this->ambulance.getY() >= 6 && this->ambulance.getY() <= 13) ||
-        (iLane == 1 && this->ambulance.getY() >= 14 && this->ambulance.getY() <= 26) ||
-        (iLane == 2 && this->ambulance.getY() >= 27 && this->ambulance.getY() <= 33)) {
 
+    // Draw frog ..
+
+    if (this->frog.getEnabled() && iLane == this->frog.getLane()) {
+
+      SpritesB::drawExternalMask(this->frog.getX(), this->frog.getY(), Images::Frogger, Images::Frogger_Mask, 0, 0);
+
+    }
+
+
+    // Draw Ambulance ..
+
+    if (iLane == this->ambulance.getLane()) {
+      
 
       // Draw puff above (and behind) the ambulance if it has crashed into something above ..
 

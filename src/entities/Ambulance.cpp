@@ -102,3 +102,15 @@ void Ambulance::incPuffIndexIfZero(Direction direction) {
   if (this->puffIndex[static_cast<uint8_t>(direction)] == 0) this->puffIndex[static_cast<uint8_t>(direction)]++;
 
 }
+
+uint8_t Ambulance::getLane() {
+
+  switch (this->y) {
+
+    case  0 ... 13: return 0;
+    case 14 ... 26: return 1;
+    default:        return 2;
+
+  }
+
+}

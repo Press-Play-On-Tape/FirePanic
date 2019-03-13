@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../entities/Frog.h"
 #include "../entities/OtherCar.h"
 #include "../entities/Ambulance.h"
 #include "../utils/GameContext.h"
@@ -14,6 +15,7 @@ class RaceState : public BaseState {
   private:
 
     Ambulance ambulance;
+    Frog frog;
 
     int8_t xScenery = 0;
     int8_t xLine1 = 0;
