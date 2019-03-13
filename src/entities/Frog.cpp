@@ -2,12 +2,7 @@
 #include "../utils/Enums.h"
 
 
-Frog::Frog() { 
-
-    this->x = 0;
-    this->y = 0;
-
-}
+Frog::Frog() {}
 
 int16_t Frog::getX() {
 
@@ -15,21 +10,9 @@ int16_t Frog::getX() {
 
 }
 
-int8_t Frog::getY() {
+uint8_t Frog::getLane() {
 
-  return this->y;
-
-}
-
-uint8_t Frog::getXDirection() {
-
-  return this->xDirection;
-
-}
-
-Direction Frog::getYDirection() {
-
-  return this->yDirection;
+  return this->lane;
 
 }
 
@@ -51,21 +34,9 @@ void Frog::setX(int16_t value) {
 
 }
 
-void Frog::setY(int8_t value) {
+void Frog::setLane(uint8_t value) {
 
-  this->y = value;
-
-}
-
-void Frog::setXDirection(uint8_t value) {
-
-  this->xDirection = value;
-
-}
-
-void Frog::setYDirection(Direction value) {
-
-  this->yDirection = value;
+  this->lane = value;
 
 }
 
@@ -83,46 +54,12 @@ void Frog::decCountdown() {
 
 void Frog::move() {
 
-  this->x = this->x - xDirection;
+  this->x--;
 
-  if (x == -16) {
+  if (x == -8) {
 
     this->enabled = false;
-
-  }
-  if (x < 128) {
-
-    switch (this->yDirection) {
-
-      case Direction::Up:
-        this->y--;
-        if (this->y == -16) {
-          this->enabled = false;
-          this->countdown = random(0, 100);
-        }
-        break;
-
-      case Direction::Down:
-        this->y++;
-        if (this->y == 80) {
-          this->enabled = false;
-          this->countdown = random(0, 100);
-        }
-        break;
-        
-    }
-
-  }
-
-}
-
-uint8_t Frog::getLane() {
-
-  switch (this->y) {
-
-    case  0 ... 13: return 0;
-    case 14 ... 26: return 1;
-    default:        return 2;
+    this->countdown = random(10, 100);
 
   }
 

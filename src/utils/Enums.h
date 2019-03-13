@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "Utils.h"
 
-// #define DEBUG
+//#define DEBUG
 //#define DEBUG_RACE
 // #define SOUND
 

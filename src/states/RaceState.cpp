@@ -170,13 +170,8 @@ void RaceState::update(StateMachine & machine) {
 
         if (!frog.getEnabled()) {
 
-          uint8_t moveUpOrDown = random(0, 2);
-          uint8_t moveHorizontally = random(1, 4);
-
           this->frog.setX(random(128, 340));
-          this->frog.setY(moveUpOrDown == 0 ? -16 : 80);
-          this->frog.setXDirection(moveHorizontally);
-          this->frog.setYDirection(moveUpOrDown == 0 ? Direction::Down : Direction::Up);
+          this->frog.setLane(random(0, 3));
           this->frog.setEnabled(true);
 
         }
@@ -195,44 +190,59 @@ void RaceState::update(StateMachine & machine) {
 
       if (arduboy.getFrameCount(3) < 2) {
         this->xScenery--;
-        if (this->xScenery == -8) this->xScenery = 0;
+        if (this->xScenery == -64) this->xScenery = 0;
         this->xLine1--;
         if (this->xLine1 == -32) this->xLine1 = 0;
-      }
+        
+        if (this->frog.getEnabled()) {
+          
+          this->frog.move();
 
+          Rect frogRect = { this->frog.getX(), 27 + (this->frog.getLane() * 14), 8, 8 };
+          Rect ambulanceRect = { this->ambulance.getX(), this->ambulance.getY() + 21, RACE_AMBULANCE_WIDTH, 10 };
 
-      // Move the frog?
-
-      if (this->frog.getEnabled() && arduboy.everyXFrames(2)) {
-
-        frog.move();
-
-        Rect frogRect = { this->frog.getX(), this->frog.getY(), 16, 16 };
-        Rect ambulanceRect = { this->ambulance.getX(), this->ambulance.getY() + 21, RACE_AMBULANCE_WIDTH, 10 };
-
-        if (arduboy.collide(frogRect, ambulanceRect)) {
-          gameStats.score++;
-          this->frog.setEnabled(false);
-        }
-        else {
-
-          for (uint8_t i = 0; i < 3; i++) {
-
-            auto &car = this->otherCars[i];
-
-            if (car.getEnabled()) {
-
-              Rect carRect = { car.getX(), 27 + (car.getLane() * 14), RACE_OTHERCAR_WIDTH, 10 };
-
-              if (arduboy.collide(frogRect, carRect)) this->frog.setEnabled(false);
-
-            }
-
+          if (arduboy.collide(frogRect, ambulanceRect)) {
+            gameStats.score++;
+            this->frog.setEnabled(false);
           }
 
         }
 
       }
+
+
+      // // Move the frog?
+
+      // if (this->frog.getEnabled() && arduboy.everyXFrames(2)) {
+
+      //   frog.move();
+
+      //   Rect frogRect = { this->frog.getX(), this->frog.getY(), 16, 16 };
+      //   Rect ambulanceRect = { this->ambulance.getX(), this->ambulance.getY() + 21, RACE_AMBULANCE_WIDTH, 10 };
+
+      //   if (arduboy.collide(frogRect, ambulanceRect)) {
+      //     gameStats.score++;
+      //     this->frog.setEnabled(false);
+      //   }
+      //   else {
+
+      //     for (uint8_t i = 0; i < 3; i++) {
+
+      //       auto &car = this->otherCars[i];
+
+      //       if (car.getEnabled()) {
+
+      //         Rect carRect = { car.getX(), 27 + (car.getLane() * 14), RACE_OTHERCAR_WIDTH, 10 };
+
+      //         if (arduboy.collide(frogRect, carRect)) this->frog.setEnabled(false);
+
+      //       }
+
+      //     }
+
+      //   }
+
+      // }
 
 
       // Update car positions ..
@@ -390,17 +400,28 @@ void RaceState::render(StateMachine & machine) {
 
   // Render background ..
 
-  for (uint8_t i = 0; i < 17; i++) {
+  for (uint8_t i = 0; i < 12; i++) {
 
-    SpritesB::drawOverwrite(this->xScenery + (i*8), 0, Images::Race_Background, 0);
+    SpritesB::drawOverwrite(this->xScenery + (i*16), 0, Images::Race_Background, 0);
 
   }
 
+  for (uint8_t i = 0; i < 4; i++) {
+
+    SpritesB::drawExternalMask(this->xScenery + (i*64), 0, Images::Building_BG, Images::Building_BG_Mask, 0, 0);
+    //SpritesB::drawOverwrite(this->xScenery + (i*64), 0, Images::Building_BG, 0);
+
+  }
+
+  // for (uint8_t i = 0; i <= 120; i = i + 8) {
+  //   SpritesB::drawExternalMask(this->xScenery + i, 28, Images::Grass, Images::Grass_Mask, 0, 0);
+  // }
 
 
   // Render score ..
 
-  SpritesB::drawErase(0, 0, Images::Scoreboard, 0);
+//  SpritesB::drawErase(0, 0, Images::Scoreboard, 0);
+  SpritesB::drawExternalMask(0, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
   renderScore(machine, TimeOfDay::Day, gameStats.score, 124 - 89, 3);
 
 
@@ -418,6 +439,18 @@ void RaceState::render(StateMachine & machine) {
 
   for (uint8_t iLane = 0; iLane < 3; iLane++) {
 
+
+    // Draw frog ..
+
+    if (this->frog.getEnabled() && iLane == this->frog.getLane()) {
+
+      SpritesB::drawExternalMask(this->frog.getX(), 29 + (this->frog.getLane() * 13), Images::Race_Prize, Images::Race_Prize_Mask, static_cast<uint8_t>(this->lights), 0);
+
+    }
+
+
+    // Draw other cars ..
+
     for (auto &car : this->otherCars) {
 
       if (car.getEnabled() && car.getLane() == iLane) {
@@ -432,14 +465,6 @@ void RaceState::render(StateMachine & machine) {
 
     }
 
-
-    // Draw frog ..
-
-    if (this->frog.getEnabled() && iLane == this->frog.getLane()) {
-
-      SpritesB::drawExternalMask(this->frog.getX(), this->frog.getY(), Images::Frogger, Images::Frogger_Mask, 0, 0);
-
-    }
 
 
     // Draw Ambulance ..
