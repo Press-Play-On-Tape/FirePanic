@@ -14,12 +14,15 @@ class Frog {
     uint8_t getCountdown();
     uint8_t getLane();
     bool getEnabled();
-    Direction getDirection();
+    uint8_t getXDirection();
+    Direction getYDirection();
 
     void setX(int16_t value);
     void setY(int8_t value);
-    void setDirection(Direction value);
+    void setXDirection(uint8_t value);
+    void setYDirection(Direction value);
     void setEnabled(bool vlaue);
+    void decCountdown();
 
     void move();
     
@@ -29,7 +32,8 @@ class Frog {
     int8_t y;
     uint8_t countdown;
     bool enabled;
-    Direction direction = Direction::None;
+    uint8_t xDirection;
+    Direction yDirection = Direction::None;
 
 };
 

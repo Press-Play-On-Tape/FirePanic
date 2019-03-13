@@ -21,9 +21,15 @@ int8_t Frog::getY() {
 
 }
 
-Direction Frog::getDirection() {
+uint8_t Frog::getXDirection() {
 
-  return this->direction;
+  return this->xDirection;
+
+}
+
+Direction Frog::getYDirection() {
+
+  return this->yDirection;
 
 }
 
@@ -51,9 +57,15 @@ void Frog::setY(int8_t value) {
 
 }
 
-void Frog::setDirection(Direction value) {
+void Frog::setXDirection(uint8_t value) {
 
-  this->direction = value;
+  this->xDirection = value;
+
+}
+
+void Frog::setYDirection(Direction value) {
+
+  this->yDirection = value;
 
 }
 
@@ -63,18 +75,24 @@ void Frog::setEnabled(bool value) {
 
 }
 
+void Frog::decCountdown() {
+
+  this->countdown--;
+
+}
+
 void Frog::move() {
 
-  this->x--;
+  this->x = this->x - xDirection;
 
   if (x == -16) {
 
     this->enabled = false;
 
   }
-  else {
+  if (x < 128) {
 
-    switch (this->direction) {
+    switch (this->yDirection) {
 
       case Direction::Up:
         this->y--;

@@ -30,6 +30,7 @@ void RaceState::activate(StateMachine & machine) {
 void RaceState::update(StateMachine & machine) {
 
   auto & arduboy = machine.getContext().arduboy;
+  auto & gameStats = machine.getContext().gameStats;
   auto justPressed = arduboy.justPressedButtons();
   auto pressed = arduboy.pressedButtons();
 
@@ -151,7 +152,7 @@ void RaceState::update(StateMachine & machine) {
         if (!car.getEnabled()) {
 
           do {
-            car.setX(random(128, 340));
+            car.setX(random(128, 200));
             car.setLane(random(0, 3));
             car.setSpeed(random(2, 4)); // rnadom(1,4) for fast!
             car.setEnabled(true);
@@ -165,15 +166,24 @@ void RaceState::update(StateMachine & machine) {
 
       // Launch the frog?
 
-      if (!frog.getEnabled() && frog.getCountdown() == 0) {
+      if (frog.getCountdown() == 0) {
 
-        uint8_t moveUpOrDown = random(0, 2);
+        if (!frog.getEnabled()) {
 
-        this->frog.setX(random(128, 340));
-        this->frog.setY(moveUpOrDown == 0 ? -16 : 80);
-        this->frog.setDirection(moveUpOrDown == 0 ? Direction::Down : Direction::Up);
-        this->frog.setEnabled(true);
+          uint8_t moveUpOrDown = random(0, 2);
+          uint8_t moveHorizontally = random(1, 4);
 
+          this->frog.setX(random(128, 340));
+          this->frog.setY(moveUpOrDown == 0 ? -16 : 80);
+          this->frog.setXDirection(moveHorizontally);
+          this->frog.setYDirection(moveUpOrDown == 0 ? Direction::Down : Direction::Up);
+          this->frog.setEnabled(true);
+
+        }
+
+      }
+      else {
+        frog.decCountdown();
       }
 
 
@@ -193,9 +203,34 @@ void RaceState::update(StateMachine & machine) {
 
       // Move the frog?
 
-      if (frog.getEnabled() && arduboy.everyXFrames(2)) {
+      if (this->frog.getEnabled() && arduboy.everyXFrames(2)) {
 
         frog.move();
+
+        Rect frogRect = { this->frog.getX(), this->frog.getY(), 16, 16 };
+        Rect ambulanceRect = { this->ambulance.getX(), this->ambulance.getY() + 21, RACE_AMBULANCE_WIDTH, 10 };
+
+        if (arduboy.collide(frogRect, ambulanceRect)) {
+          gameStats.score++;
+          this->frog.setEnabled(false);
+        }
+        else {
+
+          for (uint8_t i = 0; i < 3; i++) {
+
+            auto &car = this->otherCars[i];
+
+            if (car.getEnabled()) {
+
+              Rect carRect = { car.getX(), 27 + (car.getLane() * 14), RACE_OTHERCAR_WIDTH, 10 };
+
+              if (arduboy.collide(frogRect, carRect)) this->frog.setEnabled(false);
+
+            }
+
+          }
+
+        }
 
       }
 
