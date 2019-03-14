@@ -20,10 +20,6 @@ class GameIntroState : public BaseState { //GameState<GameContext, GameStateType
 
     LightsState lights = LightsState::Lights_1;
 
-    #ifndef DEBUG
-    uint8_t smokeIndex = 0;
-    #endif
-
   public:
     void activate(StateMachine & machine) override;
     void update(StateMachine & machine) override;

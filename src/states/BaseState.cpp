@@ -25,7 +25,7 @@ void BaseState::renderScore(StateMachine & machine, TimeOfDay timeOfDay, uint16_
 }
 
 
-void BaseState::drawCommonScenery(StateMachine & machine) {
+void BaseState::drawCommonScenery(StateMachine & machine, bool incSmoke) {
 
 	auto & arduboy = machine.getContext().arduboy;
 
@@ -36,8 +36,23 @@ void BaseState::drawCommonScenery(StateMachine & machine) {
   SpritesB::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
   SpritesB::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
 
-}
 
+  // Draw smoke if specified ..
+
+  #ifndef DEBUG
+
+  uint8_t x = cloud_X_Pos[this->smokeIndex];
+  uint8_t y = cloud_Y_Pos[this->smokeIndex];
+  SpritesB::drawOverwrite(x, y, pgm_read_word_near(&Images::Smoke_Day[this->smokeIndex]), 0);
+
+  if (arduboy.everyXFrames(16)) {
+    this->smokeIndex++;
+    if (this->smokeIndex >= 5) this->smokeIndex = 0;
+  }
+
+  #endif
+
+}
 
 
 void BaseState::drawLowerGrass(StateMachine & machine) {
@@ -49,4 +64,3 @@ void BaseState::drawLowerGrass(StateMachine & machine) {
   }
 
 }
-

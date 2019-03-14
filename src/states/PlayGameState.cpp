@@ -251,16 +251,6 @@ void PlayGameState::update(StateMachine & machine) {
       this->lights = (this->lights == LightsState::Lights_1 ? LightsState::Lights_2 : LightsState::Lights_1);
     }
 
-
-    // Update smoke graphic ..
-
-    #ifndef DEBUG
-    if (arduboy.everyXFrames(16)) {
-      this->smokeIndex++;
-      if (this->smokeIndex >= 5) this->smokeIndex = 0;
-    }
-    #endif
-
   }
 
 
@@ -346,34 +336,14 @@ void PlayGameState::render(StateMachine & machine) {
 	auto & arduboy = machine.getContext().arduboy;
   auto & gameStats = machine.getContext().gameStats;
 
-  {
-    #ifndef DEBUG
-
-      uint8_t x = cloud_X_Pos[this->smokeIndex];
-      uint8_t y = cloud_Y_Pos[this->smokeIndex];
-
-      if (gameStats.timeOfDay == TimeOfDay::Day) {
-        SpritesB::drawErase(89, 0, Images::Scoreboard, 0);
-        SpritesB::drawOverwrite(x, y, pgm_read_word_near(&Images::Smoke_Day[this->smokeIndex]), 0);
-      }
-      else {
-        SpritesB::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
-        SpritesB::drawOverwrite(x, y, pgm_read_word_near(&Images::Smoke_Night[this->smokeIndex]), 0);
-      }
-
-    #else
-
-      if (gameStats.timeOfDay == TimeOfDay::Day) {
-        SpritesB::drawErase(89, 0, Images::Scoreboard, 0);
-      }
-      else {
-        SpritesB::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
-      }
-
-    #endif
+  if (gameStats.timeOfDay == TimeOfDay::Day) {
+    SpritesB::drawErase(89, 0, Images::Scoreboard, 0);
+  }
+  else {
+    SpritesB::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
   }
 
-  BaseState::drawCommonScenery(machine);
+  BaseState::drawCommonScenery(machine, true);
 
 
   // Render misses ..

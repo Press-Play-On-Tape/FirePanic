@@ -47,8 +47,8 @@ void TitleScreenState::update(StateMachine & machine) {
 	// Handle other input ..
 
 	if (justPressed & A_BUTTON) {
-		// SJH machine.changeState(GameStateType::GameIntroScreen, GameStateType::PlayGameScreen); 
-		machine.changeState(GameStateType::PlayRaceScreen, GameStateType::PlayGameScreen); 
+		machine.changeState(GameStateType::GameIntroScreen, GameStateType::PlayGameScreen); 
+		//machine.changeState(GameStateType::PlayRaceScreen, GameStateType::PlayGameScreen); 
 	}
 
 
@@ -85,7 +85,7 @@ void TitleScreenState::render(StateMachine & machine) {
 
   auto & arduboy = machine.getContext().arduboy;
 
-  BaseState::drawCommonScenery(machine);
+  BaseState::drawCommonScenery(machine, false);
   SpritesB::drawExternalMask(112, 0, Images::Building_RHS, Images::Building_RHS_Mask, 0, 0);
   BaseState::drawLowerGrass(machine);
   

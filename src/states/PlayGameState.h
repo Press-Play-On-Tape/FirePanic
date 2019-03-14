@@ -28,10 +28,6 @@ class PlayGameState : public BaseState { //GameState<GameContext, GameStateType>
     uint8_t getNextAvailable();
     bool allVictimsDisabled();
 
-    #ifndef DEBUG
-    uint8_t smokeIndex = 0;
-    #endif
-
   public:
     void activate(StateMachine & machine) override;
     void update(StateMachine & machine) override;
