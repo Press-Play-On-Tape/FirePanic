@@ -15,6 +15,7 @@ class BaseState : public GameState<GameContext, GameStateType> {
     void drawCommonScenery(StateMachine & machine, bool incSmoke);
     void drawLowerGrass(StateMachine & machine);
     void drawAmbulance(StateMachine & machine, int8_t x, int8_t y, LightsState lightState, bool doorOpen);
+    void drawPuff(int8_t x, int8_t y, uint8_t puffIndex, uint8_t puffIndex_Mask);
 
 	private:
 

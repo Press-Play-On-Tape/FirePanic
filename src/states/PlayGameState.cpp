@@ -419,7 +419,7 @@ void PlayGameState::render(StateMachine & machine) {
         uint8_t puffIndex_Mask = victim.getPuffIndex() - 1;
         uint8_t puffIndex = (puffIndex_Mask * 2) + (gameStats.timeOfDay == TimeOfDay::Night ? 1 : 0);
 
-        SpritesB::drawExternalMask(victim.getX(), victim.getY(), Images::Puff, Images::Puff_Mask, puffIndex, puffIndex_Mask);
+        BaseState::drawPuff(victim.getX(), victim.getY(), puffIndex, puffIndex_Mask);
 
       }
 
@@ -464,7 +464,7 @@ void PlayGameState::render(StateMachine & machine) {
       uint8_t puffIndex_Mask = this->puffIndex - 1;
       uint8_t puffIndex = (puffIndex_Mask * 2) + (gameStats.timeOfDay == TimeOfDay::Night ? 1 : 0);
 
-      SpritesB::drawExternalMask((gameStats.misses == 1 ? ANGEL_MISS_1_LEFT : ANGEL_MISS_2_LEFT) - 1, ANGEL_MISS_TOP, Images::Puff, Images::Puff_Mask, puffIndex, puffIndex_Mask);
+      BaseState::drawPuff((gameStats.misses == 1 ? ANGEL_MISS_1_LEFT : ANGEL_MISS_2_LEFT) - 1, ANGEL_MISS_TOP, puffIndex, puffIndex_Mask);
 
     }
 

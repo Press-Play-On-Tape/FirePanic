@@ -479,7 +479,7 @@ void RaceState::render(StateMachine & machine) {
         uint8_t puffIndex_Mask = this->ambulance.getPuffIndex(Direction::Up) - 1;
         uint8_t puffIndex = (puffIndex_Mask * 2);
 
-        SpritesB::drawExternalMask(this->ambulance.getX() + (RACE_AMBULANCE_WIDTH / 2) - 16, this->ambulance.getY(), Images::Puff, Images::Puff_Mask, puffIndex, puffIndex_Mask);
+        BaseState::drawPuff(this->ambulance.getX() + (RACE_AMBULANCE_WIDTH / 2) - 16, this->ambulance.getY(), puffIndex, puffIndex_Mask);
 
       }
 
@@ -500,7 +500,7 @@ void RaceState::render(StateMachine & machine) {
         uint8_t puffIndex_Mask = this->ambulance.getPuffIndex(Direction::Right) - 1;
         uint8_t puffIndex = (puffIndex_Mask * 2);
 
-        SpritesB::drawExternalMask(this->ambulance.getX() + RACE_AMBULANCE_WIDTH - 8, this->ambulance.getY() + 16, Images::Puff, Images::Puff_Mask, puffIndex, puffIndex_Mask);
+        BaseState::drawPuff(this->ambulance.getX() + RACE_AMBULANCE_WIDTH - 8, this->ambulance.getY() + 16, puffIndex, puffIndex_Mask);
 
       }
 
@@ -509,7 +509,7 @@ void RaceState::render(StateMachine & machine) {
         uint8_t puffIndex_Mask = this->ambulance.getPuffIndex(Direction::Left) - 1;
         uint8_t puffIndex = (puffIndex_Mask * 2);
 
-        SpritesB::drawExternalMask(this->ambulance.getX() - 8, this->ambulance.getY() + 16, Images::Puff, Images::Puff_Mask, puffIndex, puffIndex_Mask);
+        BaseState::drawPuff(this->ambulance.getX() - 8, this->ambulance.getY() + 16, puffIndex, puffIndex_Mask);
 
       }
 
@@ -521,7 +521,7 @@ void RaceState::render(StateMachine & machine) {
         uint8_t puffIndex_Mask = this->ambulance.getPuffIndex(Direction::Down) - 1;
         uint8_t puffIndex = (puffIndex_Mask * 2);
 
-        SpritesB::drawExternalMask(this->ambulance.getX() + (RACE_AMBULANCE_WIDTH / 2) - 8, this->ambulance.getY() + 12, Images::Puff, Images::Puff_Mask, puffIndex, puffIndex_Mask);
+        BaseState::drawPuff(this->ambulance.getX() + (RACE_AMBULANCE_WIDTH / 2) - 8, this->ambulance.getY() + 12, puffIndex, puffIndex_Mask);
 
       }
 

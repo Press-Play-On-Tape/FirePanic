@@ -81,3 +81,9 @@ void BaseState::drawAmbulance(StateMachine & machine, int8_t x, int8_t y, Lights
   }
 
 }
+
+void BaseState::drawPuff(int8_t x, int8_t y, uint8_t puffIndex, uint8_t puffIndex_Mask) {
+
+  SpritesB::drawExternalMask(x, y, Images::Puff, Images::Puff_Mask, puffIndex, puffIndex_Mask);
+
+}
