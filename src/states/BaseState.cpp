@@ -25,7 +25,7 @@ void BaseState::renderScore(StateMachine & machine, TimeOfDay timeOfDay, uint16_
 }
 
 
-void BaseState::drawCommonScenery(StateMachine & machine, bool incSmoke) {
+void BaseState::renderCommonScenery(StateMachine & machine, bool incSmoke, bool incRHSBuilding) {
 
 	auto & arduboy = machine.getContext().arduboy;
 
@@ -35,6 +35,10 @@ void BaseState::drawCommonScenery(StateMachine & machine, bool incSmoke) {
 
   SpritesB::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
   SpritesB::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
+
+  if (incRHSBuilding) {
+    SpritesB::drawExternalMask(112, 0, Images::Building_RHS, Images::Building_RHS_Mask, 0, 0);
+  }
 
 
   // Draw smoke if specified ..
@@ -55,7 +59,7 @@ void BaseState::drawCommonScenery(StateMachine & machine, bool incSmoke) {
 }
 
 
-void BaseState::drawLowerGrass(StateMachine & machine) {
+void BaseState::renderLowerGrass(StateMachine & machine) {
 
 	auto & arduboy = machine.getContext().arduboy;
 
@@ -66,7 +70,7 @@ void BaseState::drawLowerGrass(StateMachine & machine) {
 }
 
 
-void BaseState::drawAmbulance(StateMachine & machine, int8_t x, int8_t y, LightsState lightState, bool doorOpen) {
+void BaseState::renderAmbulance(StateMachine & machine, int8_t x, int8_t y, LightsState lightState, bool doorOpen) {
 
 	auto & arduboy = machine.getContext().arduboy;
 
@@ -82,7 +86,7 @@ void BaseState::drawAmbulance(StateMachine & machine, int8_t x, int8_t y, Lights
 
 }
 
-void BaseState::drawPuff(int8_t x, int8_t y, uint8_t puffIndex, uint8_t puffIndex_Mask) {
+void BaseState::renderPuff(int8_t x, int8_t y, uint8_t puffIndex, uint8_t puffIndex_Mask) {
 
   SpritesB::drawExternalMask(x, y, Images::Puff, Images::Puff_Mask, puffIndex, puffIndex_Mask);
 

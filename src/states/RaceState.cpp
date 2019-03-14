@@ -400,16 +400,16 @@ void RaceState::render(StateMachine & machine) {
 
   // Render background ..
 
-  for (uint8_t i = 0; i < 12; i++) {
+  // for (uint8_t i = 0; i < 12; i++) {
 
-    SpritesB::drawOverwrite(this->xScenery + (i*16), 0, Images::Race_Background, 0);
+  //   SpritesB::drawOverwrite(this->xScenery + (i*16), 0, Images::Race_Background, 0);
 
-  }
+  // }
 
   for (uint8_t i = 0; i < 4; i++) {
 
-    SpritesB::drawExternalMask(this->xScenery + (i*64), 0, Images::Building_BG, Images::Building_BG_Mask, 0, 0);
-    //SpritesB::drawOverwrite(this->xScenery + (i*64), 0, Images::Building_BG, 0);
+    //SpritesB::drawExternalMask(this->xScenery + (i*64), 0, Images::Building_BG, Images::Building_BG_Mask, 0, 0);
+    SpritesB::drawOverwrite(this->xScenery + (i*64), 0, Images::Building_BG, 0);
 
   }
 
@@ -479,15 +479,13 @@ void RaceState::render(StateMachine & machine) {
         uint8_t puffIndex_Mask = this->ambulance.getPuffIndex(Direction::Up) - 1;
         uint8_t puffIndex = (puffIndex_Mask * 2);
 
-        BaseState::drawPuff(this->ambulance.getX() + (RACE_AMBULANCE_WIDTH / 2) - 16, this->ambulance.getY(), puffIndex, puffIndex_Mask);
+        BaseState::renderPuff(this->ambulance.getX() + (RACE_AMBULANCE_WIDTH / 2) - 16, this->ambulance.getY(), puffIndex, puffIndex_Mask);
 
       }
 
 
       #ifndef DEBUG_RACE
-      BaseState::drawAmbulance(machine, this->ambulance.getX(), this->ambulance.getY(), this->lights, false);
-      // SpritesB::drawExternalMask(this->ambulance.getX(), this->ambulance.getY(), Images::Ambulance, Images::Ambulance_Mask, 0, 0);
-      // SpritesB::drawExternalMask(this->ambulance.getX() + 18, this->ambulance.getY(), Images::Ambulance_Lights, Images::Ambulance_Lights_Mask, static_cast<uint8_t>(this->lights), 0);
+      BaseState::renderAmbulance(machine, this->ambulance.getX(), this->ambulance.getY(), this->lights, false);
       #else
       arduboy.drawRect(this->ambulance.getX(), this->ambulance.getY() + 21, RACE_AMBULANCE_WIDTH, 10);
       #endif
@@ -500,7 +498,7 @@ void RaceState::render(StateMachine & machine) {
         uint8_t puffIndex_Mask = this->ambulance.getPuffIndex(Direction::Right) - 1;
         uint8_t puffIndex = (puffIndex_Mask * 2);
 
-        BaseState::drawPuff(this->ambulance.getX() + RACE_AMBULANCE_WIDTH - 8, this->ambulance.getY() + 16, puffIndex, puffIndex_Mask);
+        BaseState::renderPuff(this->ambulance.getX() + RACE_AMBULANCE_WIDTH - 8, this->ambulance.getY() + 16, puffIndex, puffIndex_Mask);
 
       }
 
@@ -509,7 +507,7 @@ void RaceState::render(StateMachine & machine) {
         uint8_t puffIndex_Mask = this->ambulance.getPuffIndex(Direction::Left) - 1;
         uint8_t puffIndex = (puffIndex_Mask * 2);
 
-        BaseState::drawPuff(this->ambulance.getX() - 8, this->ambulance.getY() + 16, puffIndex, puffIndex_Mask);
+        BaseState::renderPuff(this->ambulance.getX() - 8, this->ambulance.getY() + 16, puffIndex, puffIndex_Mask);
 
       }
 
@@ -521,7 +519,7 @@ void RaceState::render(StateMachine & machine) {
         uint8_t puffIndex_Mask = this->ambulance.getPuffIndex(Direction::Down) - 1;
         uint8_t puffIndex = (puffIndex_Mask * 2);
 
-        BaseState::drawPuff(this->ambulance.getX() + (RACE_AMBULANCE_WIDTH / 2) - 8, this->ambulance.getY() + 12, puffIndex, puffIndex_Mask);
+        BaseState::renderPuff(this->ambulance.getX() + (RACE_AMBULANCE_WIDTH / 2) - 8, this->ambulance.getY() + 12, puffIndex, puffIndex_Mask);
 
       }
 

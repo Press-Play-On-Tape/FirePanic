@@ -47,8 +47,8 @@ void TitleScreenState::update(StateMachine & machine) {
 	// Handle other input ..
 
 	if (justPressed & A_BUTTON) {
-		machine.changeState(GameStateType::GameIntroScreen, GameStateType::PlayGameScreen); 
-		//machine.changeState(GameStateType::PlayRaceScreen, GameStateType::PlayGameScreen); 
+		//machine.changeState(GameStateType::GameIntroScreen, GameStateType::PlayGameScreen); 
+		machine.changeState(GameStateType::PlayRaceScreen, GameStateType::PlayGameScreen); 
 	}
 
 
@@ -85,9 +85,8 @@ void TitleScreenState::render(StateMachine & machine) {
 
   auto & arduboy = machine.getContext().arduboy;
 
-  BaseState::drawCommonScenery(machine, false);
-  SpritesB::drawExternalMask(112, 0, Images::Building_RHS, Images::Building_RHS_Mask, 0, 0);
-  BaseState::drawLowerGrass(machine);
+  BaseState::renderCommonScenery(machine, false, true);
+  BaseState::renderLowerGrass(machine);
   
   SpritesB::drawExternalMask(33, 1, Images::FirePanic_Logo, Images::FirePanic_Logo_Mask, 0, 0);
   SpritesB::drawSelfMasked(42, 13, Images::FirePanic_Logo_Anim, this->flameCounter);

@@ -343,7 +343,7 @@ void PlayGameState::render(StateMachine & machine) {
     SpritesB::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
   }
 
-  BaseState::drawCommonScenery(machine, true);
+  BaseState::renderCommonScenery(machine, true, false);
 
 
   // Render misses ..
@@ -385,8 +385,7 @@ void PlayGameState::render(StateMachine & machine) {
 
   // Render foreground grass ..
 
-  BaseState::drawLowerGrass(machine);
-  // SpritesB::drawExternalMask(0, 59, Images::Grass, Images::Grass_Mask, 0, 0);
+  BaseState::renderLowerGrass(machine);
 
 
   // Render victims ..
@@ -419,7 +418,7 @@ void PlayGameState::render(StateMachine & machine) {
         uint8_t puffIndex_Mask = victim.getPuffIndex() - 1;
         uint8_t puffIndex = (puffIndex_Mask * 2) + (gameStats.timeOfDay == TimeOfDay::Night ? 1 : 0);
 
-        BaseState::drawPuff(victim.getX(), victim.getY(), puffIndex, puffIndex_Mask);
+        BaseState::renderPuff(victim.getX(), victim.getY(), puffIndex, puffIndex_Mask);
 
       }
 
@@ -443,7 +442,6 @@ void PlayGameState::render(StateMachine & machine) {
   }
 
 
-
   // Render angel if required ..
 
   if (this->angel.getEnabled() && this->angel.renderImage() && this->puffIndex <= 3) {
@@ -453,9 +451,7 @@ void PlayGameState::render(StateMachine & machine) {
 
   }
 
-  BaseState::drawAmbulance(machine, 96, 31, this->lights, false);
-  // SpritesB::drawExternalMask(96, 31, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
-  // SpritesB::drawExternalMask(114, 31, Images::Ambulance_Lights, Images::Ambulance_Lights_Mask, static_cast<uint8_t>(this->lights), 0);
+  BaseState::renderAmbulance(machine, 96, 31, this->lights, false);
 
   if (this->puffIndex > 0) {
 
@@ -464,12 +460,11 @@ void PlayGameState::render(StateMachine & machine) {
       uint8_t puffIndex_Mask = this->puffIndex - 1;
       uint8_t puffIndex = (puffIndex_Mask * 2) + (gameStats.timeOfDay == TimeOfDay::Night ? 1 : 0);
 
-      BaseState::drawPuff((gameStats.misses == 1 ? ANGEL_MISS_1_LEFT : ANGEL_MISS_2_LEFT) - 1, ANGEL_MISS_TOP, puffIndex, puffIndex_Mask);
+      BaseState::renderPuff((gameStats.misses == 1 ? ANGEL_MISS_1_LEFT : ANGEL_MISS_2_LEFT) - 1, ANGEL_MISS_TOP, puffIndex, puffIndex_Mask);
 
     }
 
   }
-
 
 
   // Game Over?

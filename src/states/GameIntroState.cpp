@@ -181,7 +181,7 @@ void GameIntroState::render(StateMachine & machine) {
 	auto & arduboy = machine.getContext().arduboy;
 	auto & gameStats = machine.getContext().gameStats;
 
-  BaseState::drawCommonScenery(machine, true);
+  BaseState::renderCommonScenery(machine, true, false);
 
   if (this->xPlayer < 100) {
 
@@ -192,12 +192,12 @@ void GameIntroState::render(StateMachine & machine) {
 
   SpritesB::drawExternalMask(104, 28, Images::Grass, Images::Grass_Mask, 0, 0);
   SpritesB::drawOverwrite(104, 38, Images::Ground_RHS, 0);
-  BaseState::drawLowerGrass(machine);
+  BaseState::renderLowerGrass(machine);
 
 
   // Draw Ambulance with lights ..
 
-  BaseState::drawAmbulance(machine, this->xAmbulance, 31, this->lights, this->ambulanceDoor);
+  BaseState::renderAmbulance(machine, this->xAmbulance, 31, this->lights, this->ambulanceDoor);
 
   arduboy.displayWithBackground(gameStats.timeOfDay);
 
