@@ -3,11 +3,11 @@
 #include "../Utils/Arduboy2Ext.h"
 #include "../Utils/Enums.h"
 
-class Frog {
+class Jewel {
 
   public:
 
-    Frog();
+    Jewel();
      
     int16_t getX();
     uint8_t getCountdown();

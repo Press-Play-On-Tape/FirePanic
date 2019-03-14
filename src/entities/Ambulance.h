@@ -8,13 +8,13 @@ class Ambulance {
 
     Ambulance();
      
-    int8_t getX();
+    int16_t getX();
     uint8_t getY();
     uint8_t getPuffIndex(Direction direction);
     uint8_t getLane();
     Direction getDirection();
 
-    void setX(int8_t value);
+    void setX(int16_t value);
     void setY(uint8_t value);
     void setPuffIndex(Direction direction, uint8_t value);
     void setDirection(Direction value);
@@ -29,9 +29,10 @@ class Ambulance {
 
   protected:
 
-    int8_t x;
+    int16_t x;
     uint8_t y;
     uint8_t puffIndex[4];
+    
 
     Direction direction = Direction::None;
 

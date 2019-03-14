@@ -12,6 +12,7 @@ int16_t OtherCar::getX() {
 void OtherCar::setX(int16_t value) {
 
   this->x = value;
+  if (this->x <= -RACE_OTHERCAR_WIDTH) this->enabled = false;
 
 }
 

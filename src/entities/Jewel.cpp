@@ -1,58 +1,58 @@
-#include "Frog.h"
+#include "Jewel.h"
 #include "../utils/Enums.h"
 
 
-Frog::Frog() {}
+Jewel::Jewel() {}
 
-int16_t Frog::getX() {
+int16_t Jewel::getX() {
 
   return this->x;
 
 }
 
-uint8_t Frog::getLane() {
+uint8_t Jewel::getLane() {
 
   return this->lane;
 
 }
 
-uint8_t Frog::getCountdown() {
+uint8_t Jewel::getCountdown() {
 
   return this->countdown;
 
 }
 
-bool Frog::getEnabled() {
+bool Jewel::getEnabled() {
 
   return this->enabled;
 
 }
 
-void Frog::setX(int16_t value) {
+void Jewel::setX(int16_t value) {
 
   this->x = value;
 
 }
 
-void Frog::setLane(uint8_t value) {
+void Jewel::setLane(uint8_t value) {
 
   this->lane = value;
 
 }
 
-void Frog::setEnabled(bool value) {
+void Jewel::setEnabled(bool value) {
 
   this->enabled = value;
 
 }
 
-void Frog::decCountdown() {
+void Jewel::decCountdown() {
 
   this->countdown--;
 
 }
 
-void Frog::move() {
+void Jewel::move() {
 
   this->x--;
 

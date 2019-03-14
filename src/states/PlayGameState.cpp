@@ -256,7 +256,7 @@ void PlayGameState::update(StateMachine & machine) {
 
   // Transition to race ..
 
-  if (gameStats.score > 5) {
+  if (gameStats.score > 3) {
 
     this->transitionToRace = true;
 
@@ -336,13 +336,6 @@ void PlayGameState::render(StateMachine & machine) {
 	auto & arduboy = machine.getContext().arduboy;
   auto & gameStats = machine.getContext().gameStats;
 
-  if (gameStats.timeOfDay == TimeOfDay::Day) {
-    SpritesB::drawErase(89, 0, Images::Scoreboard, 0);
-  }
-  else {
-    SpritesB::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
-  }
-
   BaseState::renderCommonScenery(machine, true, false);
 
 
@@ -375,7 +368,7 @@ void PlayGameState::render(StateMachine & machine) {
 
   // Render score ..
 
-  renderScore(machine, gameStats.timeOfDay, gameStats.score, 124, 3);
+  BaseState::renderScore(machine, gameStats.timeOfDay, gameStats.score, 89, 0);
 
 
   uint8_t i = this->player.getImageIndex();

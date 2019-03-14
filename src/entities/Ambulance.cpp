@@ -3,7 +3,7 @@
 
 Ambulance::Ambulance() { }
 
-int8_t Ambulance::getX() {
+int16_t Ambulance::getX() {
 
   return this->x;
 
@@ -27,7 +27,7 @@ Direction Ambulance::getDirection() {
 
 }
 
-void Ambulance::setX(int8_t value) {
+void Ambulance::setX(int16_t value) {
 
   this->x = value;
 

@@ -96,6 +96,7 @@ enum class GameStateType : uint8_t {
 	SplashScreen,
 	TitleScreen,
   GameIntroScreen,
+  GameIntroScreen_ChangeDay,
   PlayGameScreen,
   PlayRaceScreen,
   HighScoreScreen
