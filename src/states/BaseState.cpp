@@ -64,3 +64,20 @@ void BaseState::drawLowerGrass(StateMachine & machine) {
   }
 
 }
+
+
+void BaseState::drawAmbulance(StateMachine & machine, int8_t x, int8_t y, LightsState lightState, bool doorOpen) {
+
+	auto & arduboy = machine.getContext().arduboy;
+
+
+  // Draw Ambulance with lights ..
+
+  SpritesB::drawExternalMask(x, y, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
+  SpritesB::drawExternalMask(x + 18, y, Images::Ambulance_Lights, Images::Ambulance_Lights_Mask, static_cast<uint8_t>(lightState), 0);
+
+  if (doorOpen) {
+    SpritesB::drawExternalMask(x - 4, y + 5, Images::Ambulance_Door, Images::Ambulance_Door_Mask, 0, 0);
+  }
+
+}

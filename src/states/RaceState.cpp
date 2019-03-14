@@ -485,8 +485,9 @@ void RaceState::render(StateMachine & machine) {
 
 
       #ifndef DEBUG_RACE
-      SpritesB::drawExternalMask(this->ambulance.getX(), this->ambulance.getY(), Images::Ambulance, Images::Ambulance_Mask, 0, 0);
-      SpritesB::drawExternalMask(this->ambulance.getX() + 18, this->ambulance.getY(), Images::Ambulance_Lights, Images::Ambulance_Lights_Mask, static_cast<uint8_t>(this->lights), 0);
+      BaseState::drawAmbulance(machine, this->ambulance.getX(), this->ambulance.getY(), this->lights, false);
+      // SpritesB::drawExternalMask(this->ambulance.getX(), this->ambulance.getY(), Images::Ambulance, Images::Ambulance_Mask, 0, 0);
+      // SpritesB::drawExternalMask(this->ambulance.getX() + 18, this->ambulance.getY(), Images::Ambulance_Lights, Images::Ambulance_Lights_Mask, static_cast<uint8_t>(this->lights), 0);
       #else
       arduboy.drawRect(this->ambulance.getX(), this->ambulance.getY() + 21, RACE_AMBULANCE_WIDTH, 10);
       #endif

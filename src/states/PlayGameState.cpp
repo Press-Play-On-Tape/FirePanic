@@ -453,8 +453,9 @@ void PlayGameState::render(StateMachine & machine) {
 
   }
 
-  SpritesB::drawExternalMask(96, 31, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
-  SpritesB::drawExternalMask(114, 31, Images::Ambulance_Lights, Images::Ambulance_Lights_Mask, static_cast<uint8_t>(this->lights), 0);
+  BaseState::drawAmbulance(machine, 96, 31, this->lights, false);
+  // SpritesB::drawExternalMask(96, 31, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
+  // SpritesB::drawExternalMask(114, 31, Images::Ambulance_Lights, Images::Ambulance_Lights_Mask, static_cast<uint8_t>(this->lights), 0);
 
   if (this->puffIndex > 0) {
 

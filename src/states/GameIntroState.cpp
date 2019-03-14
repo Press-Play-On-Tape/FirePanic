@@ -184,6 +184,7 @@ void GameIntroState::render(StateMachine & machine) {
   BaseState::drawCommonScenery(machine, true);
 
   if (this->xPlayer < 100) {
+
     uint8_t image = this->playerImageIndex ? 1 : 0;
     SpritesB::drawExternalMask(xPlayer, PLAYER_Y_POS, Images::FireMen, Images::FireMen_Mask, image, image);
 
@@ -191,18 +192,12 @@ void GameIntroState::render(StateMachine & machine) {
 
   SpritesB::drawExternalMask(104, 28, Images::Grass, Images::Grass_Mask, 0, 0);
   SpritesB::drawOverwrite(104, 38, Images::Ground_RHS, 0);
-//  SpritesB::drawExternalMask(104, 59, Images::Grass, Images::Grass_Mask, 0, 0);
   BaseState::drawLowerGrass(machine);
 
 
   // Draw Ambulance with lights ..
 
-  SpritesB::drawExternalMask(xAmbulance, 31, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
-  SpritesB::drawExternalMask(this->xAmbulance + 18, 31, Images::Ambulance_Lights, Images::Ambulance_Lights_Mask, static_cast<uint8_t>(this->lights), 0);
-
-  if (this->ambulanceDoor) {
-    SpritesB::drawExternalMask(this->xAmbulance - 4, 36, Images::Ambulance_Door, Images::Ambulance_Door_Mask, 0, 0);
-  }
+  BaseState::drawAmbulance(machine, this->xAmbulance, 31, this->lights, this->ambulanceDoor);
 
   arduboy.displayWithBackground(gameStats.timeOfDay);
 
