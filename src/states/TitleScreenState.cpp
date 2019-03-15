@@ -48,7 +48,11 @@ void TitleScreenState::update(StateMachine & machine) {
 
 	if (justPressed & A_BUTTON) {
 		machine.changeState(GameStateType::GameIntroScreen, GameStateType::PlayGameScreen); 
-		//machine.changeState(GameStateType::PlayRaceScreen, GameStateType::PlayGameScreen); 
+	}
+
+  // SJH Remove for production ..
+	if (justPressed & B_BUTTON) {
+		machine.changeState(GameStateType::PlayRaceScreen, GameStateType::PlayGameScreen); 
 	}
 
 

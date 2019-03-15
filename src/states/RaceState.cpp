@@ -189,6 +189,7 @@ void RaceState::update(StateMachine & machine) {
             do {
               car.setX(random(128, 300));
               car.setLane(random(0, 3));
+              car.setType(random(0, 2));
               car.setSpeed(random(2, 4)); // rnadom(1,4) for fast!
               car.setEnabled(true);
             }
@@ -480,7 +481,7 @@ void RaceState::render(StateMachine & machine) {
       if (car.getEnabled() && car.getLane() == iLane) {
 
         #ifndef DEBUG_RACE
-        SpritesB::drawExternalMask(car.getX(), 14 + (car.getLane() * 14), Images::Race_OtherCar, Images::Race_OtherCar_Mask, 0, 0);
+        SpritesB::drawExternalMask(car.getX(), 14 + (car.getLane() * 14), Images::Race_OtherCar, Images::Race_OtherCar_Mask, car.getType(), car.getType());
         #else
         arduboy.drawRect(car.getX(), 27 + (car.getLane() * 14), RACE_OTHERCAR_WIDTH, 10);
         #endif

@@ -40,6 +40,18 @@ void OtherCar::setSpeed(uint8_t value) {
 
 }
 
+uint8_t OtherCar::getType() {
+
+  return this->type;
+
+}
+
+void OtherCar::setType(uint8_t value) {
+
+  this->type = value;
+
+}
+
 bool OtherCar::getEnabled() {
 
   return this->enabled;
