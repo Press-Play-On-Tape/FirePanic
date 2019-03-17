@@ -9,8 +9,6 @@
 //
 void PlayGameState::activate(StateMachine & machine) {
 
-  auto & gameStats = machine.getContext().gameStats;
-
   this->gameOver = false;
   this->angel.setEnabled(false);
   this->paused = false;
