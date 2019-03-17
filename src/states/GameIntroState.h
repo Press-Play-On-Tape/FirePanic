@@ -18,8 +18,6 @@ class GameIntroState : public BaseState { //GameState<GameContext, GameStateType
     bool ambulanceDoor = false;
     bool playerImageIndex = false;
 
-    LightsState lights = LightsState::Lights_1;
-
   public:
     void activate(StateMachine & machine) override;
     void update(StateMachine & machine) override;

@@ -25,15 +25,15 @@ class Ambulance {
     void incPuffIndexes();
     void decX();
     void decY();
-    void incPuffIndexIfZero(Direction direction);
+    bool incPuffIndexIfZero(Direction direction);
 
   protected:
 
     int16_t x;
     uint8_t y;
+    uint8_t health;
     uint8_t puffIndex[4];
     
-
     Direction direction = Direction::None;
 
 };

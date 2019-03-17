@@ -218,12 +218,8 @@ void PlayGameState::update(StateMachine & machine) {
         
       }
 
-    // }
-
 
       // Update the puff index on any victims mid flight ..
-
-    // if (arduboy.everyXFrames(6)) {
 
       for (auto &victim : victims) {
 
@@ -243,14 +239,6 @@ void PlayGameState::update(StateMachine & machine) {
 
     }
 
-
-
-    // Update ambulance lights ..
-
-    if (arduboy.everyXFrames(8)) {
-      this->lights = (this->lights == LightsState::Lights_1 ? LightsState::Lights_2 : LightsState::Lights_1);
-    }
-
   }
 
 
@@ -266,6 +254,7 @@ void PlayGameState::update(StateMachine & machine) {
 
     if (allVictimsDisabled()) {
       gameStats.xPosition = this->player.getX();
+      gameStats.level++;
       machine.changeState(GameStateType::GameIntroScreen, GameStateType::PlayRaceScreen);
     }
 
@@ -444,7 +433,7 @@ void PlayGameState::render(StateMachine & machine) {
 
   }
 
-  BaseState::renderAmbulance(machine, 96, 31, this->lights, false);
+  BaseState::renderAmbulance(machine, 96, 31, false);
 
   if (this->puffIndex > 0) {
 

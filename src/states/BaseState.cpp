@@ -4,15 +4,35 @@
 #include "../utils/Utils.h"
 #include "../utils/Enums.h"
 
-void BaseState::renderScore(StateMachine & machine, TimeOfDay timeOfDay, uint16_t score, uint8_t x, uint8_t y) {
+void BaseState::renderScore(StateMachine & machine, TimeOfDay timeOfDay, uint16_t score, uint8_t x, uint8_t y, uint8_t health) {
   	
 	auto & arduboy = machine.getContext().arduboy;
+  auto & context = machine.getContext();
 
-  if (timeOfDay == TimeOfDay::Day) {
-    SpritesB::drawExternalMask(x, y, Images::Scoreboard, Images::Scoreboard_Mask, 1, 0);
+	const bool flash = arduboy.getFrameCountHalf(FLASH_FRAME_COUNT_2);
+
+  if (context.getCurrentState() != GameStateType::PlayRaceScreen) {
+
+    if (timeOfDay == TimeOfDay::Day) {
+      SpritesB::drawExternalMask(x, y, Images::Scoreboard, Images::Scoreboard_Mask, 1, 0);
+    }
+    else {
+      SpritesB::drawExternalMask(x, y, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
+    }
+
   }
   else {
-    SpritesB::drawExternalMask(x, y, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
+
+    SpritesB::drawExternalMask(x - 8, y, Images::Scoreboard_Race, Images::Scoreboard_Race_Mask, 0, 0);
+
+    if (flash || health > 2) {
+     
+      for (uint8_t z = 0; z < health; z++) {
+        arduboy.drawFastHLine(x - 3, y + 10 - (z * 2), 6, BLACK);
+      }
+
+    }
+
   }
 
 	uint8_t digits[6] = {};
@@ -89,15 +109,22 @@ void BaseState::renderLowerGrass(StateMachine & machine) {
 }
 
 
-void BaseState::renderAmbulance(StateMachine & machine, int8_t x, int8_t y, LightsState lightState, bool doorOpen) {
+void BaseState::renderAmbulance(StateMachine & machine, int8_t x, int8_t y, bool doorOpen) {
 
 	auto & arduboy = machine.getContext().arduboy;
+
+
+  // Alternate lights ..
+
+  if (arduboy.everyXFrames(8)) {
+    this->lights = (this->lights == LightsState::Lights_1 ? LightsState::Lights_2 : LightsState::Lights_1);
+  }
 
 
   // Draw Ambulance with lights ..
 
   SpritesB::drawExternalMask(x, y, Images::Ambulance, Images::Ambulance_Mask, 0, 0);
-  SpritesB::drawExternalMask(x + 18, y, Images::Ambulance_Lights, Images::Ambulance_Lights_Mask, static_cast<uint8_t>(lightState), 0);
+  SpritesB::drawExternalMask(x + 18, y, Images::Ambulance_Lights, Images::Ambulance_Lights_Mask, static_cast<uint8_t>(this->lights), 0);
 
   if (doorOpen) {
     SpritesB::drawExternalMask(x - 4, y + 5, Images::Ambulance_Door, Images::Ambulance_Door_Mask, 0, 0);

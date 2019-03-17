@@ -13,7 +13,6 @@ class PlayGameState : public BaseState { //GameState<GameContext, GameStateType>
     Victim victims[VICTIMS_MAX_NUMBER];
     Player player;
     Angel angel;
-    LightsState lights = LightsState::Lights_1;
 
     uint8_t counter = 0;
     uint8_t puffIndex = 0;

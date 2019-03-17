@@ -97,9 +97,15 @@ void Ambulance::incPuffIndexes() {
 
 }
 
-void Ambulance::incPuffIndexIfZero(Direction direction) {
+bool Ambulance::incPuffIndexIfZero(Direction direction) {
 
-  if (this->puffIndex[static_cast<uint8_t>(direction)] == 0) this->puffIndex[static_cast<uint8_t>(direction)]++;
+  if (this->puffIndex[static_cast<uint8_t>(direction)] == 0) {
+    this->puffIndex[static_cast<uint8_t>(direction)]++;
+    return true;
+  }
+  else {
+    return false;
+  }
 
 }
 

@@ -3,10 +3,22 @@
 #include "../utils/EEPROM_Utils.h"
 #include "../utils/Enums.h"
 
-#define DIST_MAXIMUM 1000
+#define DIST_MAXIMUM 5000
+#define DIST_INTERVAL DIST_MAXIMUM / 10
 #define DIST_NO_NEW_CARS 300
 #define DIST_GO_TO_HOSPITAL 128
 #define DIST_DELAY_AFTER_AMBULANCE_LEAVES_SCREEN 200
+
+#define RACE_PLAYER_HEALTH_MAX 200
+#define RACE_PLAYER_HEALTH_DEC 20
+
+#define OTHER_CAR_LAUNCH_MAX 400
+#define OTHER_CAR_LAUNCH_MAX_DEC 10
+#define OTHER_CAR_LAUNCH_MAX_FLOOR 180
+
+#define OTHER_CAR_LAUNCH_MIN 200
+#define OTHER_CAR_LAUNCH_MIN_DEC 5
+#define OTHER_CAR_LAUNCH_MIN_FLOOR 100
 
 
 // ----------------------------------------------------------------------------
@@ -14,7 +26,7 @@
 //
 void RaceState::activate(StateMachine & machine) {
 
-  (void)machine;
+  auto & gameStats = machine.getContext().gameStats;
 
   this->ambulance.setX(-40);
   this->ambulance.setY(31);
@@ -22,6 +34,13 @@ void RaceState::activate(StateMachine & machine) {
   this->distance = DIST_MAXIMUM;
   this->slowDown = 3;
   this->showHospital = false;
+  this->health = RACE_PLAYER_HEALTH_MAX;
+
+  this->carLaunch_RandomMax = OTHER_CAR_LAUNCH_MAX - (gameStats.level * OTHER_CAR_LAUNCH_MAX_DEC * 3);
+  this->carLaunch_RandomMin = OTHER_CAR_LAUNCH_MIN - (gameStats.level * OTHER_CAR_LAUNCH_MIN_DEC * 3);
+
+  if (this->carLaunch_RandomMax > OTHER_CAR_LAUNCH_MAX_FLOOR) this->carLaunch_RandomMax = OTHER_CAR_LAUNCH_MAX_FLOOR; 
+  if (this->carLaunch_RandomMin > OTHER_CAR_LAUNCH_MIN_FLOOR) this->carLaunch_RandomMin = OTHER_CAR_LAUNCH_MIN_FLOOR; 
 
   for (auto &car : this->otherCars) {
 
@@ -44,8 +63,20 @@ void RaceState::update(StateMachine & machine) {
 
   if (!this->paused) {
 
-    if(this->distance > 0) this->distance--;
+    if (this->distance > 0) this->distance--;
 
+
+    // Make the game a little harder ..
+
+    if (this->distance % DIST_INTERVAL == 0) {
+
+      this->carLaunch_RandomMax = OTHER_CAR_LAUNCH_MAX - (gameStats.level * OTHER_CAR_LAUNCH_MAX_DEC);
+      this->carLaunch_RandomMin = OTHER_CAR_LAUNCH_MIN - (gameStats.level * OTHER_CAR_LAUNCH_MIN_DEC);
+
+      if (this->carLaunch_RandomMax > OTHER_CAR_LAUNCH_MAX_FLOOR) this->carLaunch_RandomMax = OTHER_CAR_LAUNCH_MAX_FLOOR; 
+      if (this->carLaunch_RandomMin > OTHER_CAR_LAUNCH_MIN_FLOOR) this->carLaunch_RandomMin = OTHER_CAR_LAUNCH_MIN_FLOOR; 
+
+    }
 
 
     // Ambulance is still entering screen ..
@@ -76,6 +107,7 @@ void RaceState::update(StateMachine & machine) {
 
     else if (this->distance == 0 && this->ambulance.getX() >= DIST_DELAY_AFTER_AMBULANCE_LEAVES_SCREEN) {
 
+      gameStats.level++;
       machine.changeState(GameStateType::GameIntroScreen_ChangeDay, GameStateType::PlayGameScreen); 
 
     }
@@ -104,8 +136,8 @@ void RaceState::update(StateMachine & machine) {
 
         uint8_t carCollision = checkForCollisions(arduboy, this->ambulance.getX() + 1, this->ambulance.getY());
 
-        if (carCollision > 0) {
-          this->ambulance.incPuffIndexIfZero(Direction::Right);
+        if (carCollision < CAR_COLLISION_NONE) {
+          if (this->ambulance.incPuffIndexIfZero(Direction::Right)) decHealth(machine);
           this->otherCars[carCollision].setX(this->ambulance.getX() + RACE_AMBULANCE_WIDTH);
           this->otherCars[carCollision].setDoNotMove(true);
         }
@@ -120,8 +152,8 @@ void RaceState::update(StateMachine & machine) {
  
       if (pressed & UP_BUTTON && this->ambulance.getY() > 6) {
 
-        if (checkForCollisions(arduboy, this->ambulance.getX(), this->ambulance.getY() - 1) > 0) {
-          this->ambulance.incPuffIndexIfZero(Direction::Up);
+        if (checkForCollisions(arduboy, this->ambulance.getX(), this->ambulance.getY() - 1) < CAR_COLLISION_NONE) {
+          if (this->ambulance.incPuffIndexIfZero(Direction::Up)) decHealth(machine);
         }
         else {
           this->ambulance.decY();
@@ -132,8 +164,8 @@ void RaceState::update(StateMachine & machine) {
       if (this->ambulance.getDirection() == Direction::Up) {
 
         if (!(pressed & UP_BUTTON)) {
-          if (checkForCollisions(arduboy, this->ambulance.getX(), this->ambulance.getY() - 1) > 0) {
-            this->ambulance.incPuffIndexIfZero(Direction::Up);
+          if (checkForCollisions(arduboy, this->ambulance.getX(), this->ambulance.getY() - 1) < CAR_COLLISION_NONE) {
+            if (this->ambulance.incPuffIndexIfZero(Direction::Up)) decHealth(machine);
           }
           else {
             this->ambulance.decY();
@@ -151,8 +183,8 @@ void RaceState::update(StateMachine & machine) {
 
       if (pressed & DOWN_BUTTON && this->ambulance.getY() < 33) {
 
-        if (checkForCollisions(arduboy, this->ambulance.getX(), this->ambulance.getY() + 1) > 0) {
-          this->ambulance.incPuffIndexIfZero(Direction::Down);
+        if (checkForCollisions(arduboy, this->ambulance.getX(), this->ambulance.getY() + 1) < CAR_COLLISION_NONE) {
+          if (this->ambulance.incPuffIndexIfZero(Direction::Down)) decHealth(machine);
         }
         else {
           this->ambulance.incY();
@@ -163,8 +195,8 @@ void RaceState::update(StateMachine & machine) {
       if (this->ambulance.getDirection() == Direction::Down) {
 
         if (!(pressed & DOWN_BUTTON)) {
-          if (checkForCollisions(arduboy, this->ambulance.getX(), this->ambulance.getY() + 1) > 0) {
-            this->ambulance.incPuffIndexIfZero(Direction::Down);
+          if (checkForCollisions(arduboy, this->ambulance.getX(), this->ambulance.getY() + 1) < CAR_COLLISION_NONE) {
+            if (this->ambulance.incPuffIndexIfZero(Direction::Down)) decHealth(machine);
           }
           else {
             this->ambulance.incY();
@@ -222,10 +254,6 @@ void RaceState::update(StateMachine & machine) {
 
       // Update positions ..
 
-      if (arduboy.everyXFrames(8)) {
-        this->lights = (this->lights == LightsState::Lights_1 ? LightsState::Lights_2 : LightsState::Lights_1);
-      }
-
       if (arduboy.getFrameCount(3) < 2) {        
 
         if (this->jewel.getEnabled()) {
@@ -253,7 +281,7 @@ void RaceState::update(StateMachine & machine) {
 
           if (checkForCollision(arduboy, this->ambulance.getX(), this->ambulance.getY(), car.getX(), car.getLane())) {
             car.setX(ambulance.getX() + RACE_AMBULANCE_WIDTH);
-            ambulance.incPuffIndexIfZero(Direction::Right);
+            if (this->ambulance.incPuffIndexIfZero(Direction::Right)) decHealth(machine);
           }
           else {
             car.setX(car.getX() - (arduboy.getFrameCount(car.getSpeed()) == 0/*< car.speed - 1*/ ? 2 : 1));
@@ -321,6 +349,23 @@ void RaceState::update(StateMachine & machine) {
 
   if (justPressed & B_BUTTON) {
     this->paused = !this->paused; 
+  }
+
+}
+
+
+// ----------------------------------------------------------------------------
+//  Decrease player health if they have had an accident .. 
+//
+void RaceState::decHealth(StateMachine & machine) {
+  
+  auto & gameStats = machine.getContext().gameStats;
+
+  this->health = this->health - RACE_PLAYER_HEALTH_DEC;
+  
+  if (this->health <= 0) {
+    this->health = RACE_PLAYER_HEALTH_MAX;
+    if (gameStats.score > 0) gameStats.score--;
   }
 
 }
@@ -401,7 +446,7 @@ uint8_t RaceState::checkForCollisions(Arduboy2Ext & arduboy, int16_t x, uint8_t 
 
   }
 
-  return 0;
+  return CAR_COLLISION_NONE;
 
 }
 
@@ -447,7 +492,7 @@ void RaceState::render(StateMachine & machine) {
 
   // Render score ..
 
-  BaseState::renderScore(machine, TimeOfDay::Day, gameStats.score, 0, 0);
+  BaseState::renderScore(machine, TimeOfDay::Day, gameStats.score, 89, 0, this->health / 40);
 
 
   // Render road lines ..
@@ -511,7 +556,7 @@ void RaceState::render(StateMachine & machine) {
 
       #ifndef DEBUG_RACE
       if (this->ambulance.getX() > -RACE_AMBULANCE_WIDTH && this->ambulance.getX() < WIDTH) {
-        BaseState::renderAmbulance(machine, this->ambulance.getX(), this->ambulance.getY(), this->lights, false);
+        BaseState::renderAmbulance(machine, this->ambulance.getX(), this->ambulance.getY(), false);
       }
       #else
       arduboy.drawRect(this->ambulance.getX(), this->ambulance.getY() + 21, RACE_AMBULANCE_WIDTH, 10);

@@ -26,7 +26,6 @@ void GameIntroState::activate(StateMachine & machine) {
   this->counter = 0;
   this->ambulanceDoor = false;
   this->playerImageIndex = false;
-  this->lights = LightsState::Lights_1;
   this->speedInc = 0;
 
 }
@@ -39,11 +38,6 @@ void GameIntroState::update(StateMachine & machine) {
 
 	auto & arduboy = machine.getContext().arduboy;
 	auto justPressed = arduboy.justPressedButtons();
-
-
-  if (arduboy.everyXFrames(8)) {
-    this->lights = (this->lights == LightsState::Lights_1 ? LightsState::Lights_2 : LightsState::Lights_1);
-  }
     
   if (arduboy.everyXFrames(2)) {
 
@@ -197,7 +191,7 @@ void GameIntroState::render(StateMachine & machine) {
 
   // Draw Ambulance with lights ..
 
-  BaseState::renderAmbulance(machine, this->xAmbulance, 31, this->lights, this->ambulanceDoor);
+  BaseState::renderAmbulance(machine, this->xAmbulance, 31, this->ambulanceDoor);
 
   arduboy.displayWithBackground(gameStats.timeOfDay);
 

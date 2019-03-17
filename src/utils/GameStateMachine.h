@@ -21,7 +21,7 @@ class GameStateMachine {
 		virtual ~GameStateMachine(void) = default;
 		Context & getContext(void) { return this->context; }
 		const Context & getContext(void) const { return this->context; }
-		
+    const StateId getCurrentState() { return this->currentState; }
     void changeState(StateId stateId, StateId nextId) { 
       this->currentState = stateId; 
       this->nextState = nextId; 
