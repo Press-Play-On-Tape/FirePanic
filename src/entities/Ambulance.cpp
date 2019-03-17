@@ -3,7 +3,7 @@
 
 Ambulance::Ambulance() { }
 
-int8_t Ambulance::getX() {
+int16_t Ambulance::getX() {
 
   return this->x;
 
@@ -27,7 +27,7 @@ Direction Ambulance::getDirection() {
 
 }
 
-void Ambulance::setX(int8_t value) {
+void Ambulance::setX(int16_t value) {
 
   this->x = value;
 
@@ -97,8 +97,26 @@ void Ambulance::incPuffIndexes() {
 
 }
 
-void Ambulance::incPuffIndexIfZero(Direction direction) {
+bool Ambulance::incPuffIndexIfZero(Direction direction) {
 
-  if (this->puffIndex[static_cast<uint8_t>(direction)] == 0) this->puffIndex[static_cast<uint8_t>(direction)]++;
+  if (this->puffIndex[static_cast<uint8_t>(direction)] == 0) {
+    this->puffIndex[static_cast<uint8_t>(direction)]++;
+    return true;
+  }
+  else {
+    return false;
+  }
+
+}
+
+uint8_t Ambulance::getLane() {
+
+  switch (this->y) {
+
+    case  0 ... 13: return 0;
+    case 14 ... 26: return 1;
+    default:        return 2;
+
+  }
 
 }

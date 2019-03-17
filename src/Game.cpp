@@ -50,9 +50,8 @@ void Game::loop(void) {
 	if (!arduboy.nextFrame()) return;
 
 	arduboy.pollButtons();
-	//arduboy.clear();
 
-	switch (currentState) {
+	switch (this->currentState) {
 
 		case GameStateType::SplashScreen:
 
@@ -91,6 +90,12 @@ void Game::loop(void) {
 			break;
 
 		case GameStateType::GameIntroScreen: 
+		case GameStateType::GameIntroScreen_ChangeDay: 
+
+      if (currentState == GameStateType::GameIntroScreen_ChangeDay) {
+        this->currentState = GameStateType::GameIntroScreen;
+        this->context.gameStats.timeOfDay = (this->context.gameStats.timeOfDay == TimeOfDay::Day ? TimeOfDay::Night : TimeOfDay::Day);
+      }
 
 			if (currentState != savedCurrentState) {
 				this->context.gameState = this->currentState;

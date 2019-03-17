@@ -32,5 +32,6 @@ class GameContext {
 
     GameContext();
     void resetGame();
+    GameStateType getCurrentState();
 
 };

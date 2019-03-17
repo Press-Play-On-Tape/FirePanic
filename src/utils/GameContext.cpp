@@ -27,4 +27,7 @@ void GameContext::resetGame() {
 
 }
 
+GameStateType GameContext::getCurrentState() {
+  return this->gameState;
+}
 

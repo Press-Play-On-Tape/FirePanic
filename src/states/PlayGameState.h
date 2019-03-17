@@ -13,7 +13,6 @@ class PlayGameState : public BaseState { //GameState<GameContext, GameStateType>
     Victim victims[VICTIMS_MAX_NUMBER];
     Player player;
     Angel angel;
-    LightsState lights = LightsState::Lights_1;
 
     uint8_t counter = 0;
     uint8_t puffIndex = 0;
@@ -27,10 +26,6 @@ class PlayGameState : public BaseState { //GameState<GameContext, GameStateType>
 
     uint8_t getNextAvailable();
     bool allVictimsDisabled();
-
-    #ifndef DEBUG
-    uint8_t smokeIndex = 0;
-    #endif
 
   public:
     void activate(StateMachine & machine) override;

@@ -12,6 +12,7 @@ int16_t OtherCar::getX() {
 void OtherCar::setX(int16_t value) {
 
   this->x = value;
+  if (this->x <= -RACE_OTHERCAR_WIDTH) this->enabled = false;
 
 }
 
@@ -36,6 +37,18 @@ uint8_t OtherCar::getSpeed() {
 void OtherCar::setSpeed(uint8_t value) {
 
   this->speed = value;
+
+}
+
+uint8_t OtherCar::getType() {
+
+  return this->type;
+
+}
+
+void OtherCar::setType(uint8_t value) {
+
+  this->type = value;
 
 }
 

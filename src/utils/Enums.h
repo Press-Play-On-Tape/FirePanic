@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "Utils.h"
 
-//#define DEBUG
+#define DEBUG
 //#define DEBUG_RACE
 // #define SOUND
 
@@ -81,6 +81,7 @@
 #define EEPROM_END                    121
 
 #define FLASH_FRAME_COUNT_2 56
+#define CAR_COLLISION_NONE 255
 
 const int8_t edgePos[] = { 5, 0, 22, 1, 5, 16, 22, 17, 5, 31, 22, 32 };
 const uint8_t cloud_X_Pos[] = { 16, 16, 18, 18, 46 };
@@ -96,6 +97,7 @@ enum class GameStateType : uint8_t {
 	SplashScreen,
 	TitleScreen,
   GameIntroScreen,
+  GameIntroScreen_ChangeDay,
   PlayGameScreen,
   PlayRaceScreen,
   HighScoreScreen
@@ -123,12 +125,13 @@ struct GameStats {
 
     uint16_t score = 0;
     uint16_t misses = 0;
+    uint16_t level = 0;
     uint8_t xPosition = 0;
     TimeOfDay timeOfDay = TimeOfDay::Day;
 
     void resetGame() {
 
-      score = 0;
+      level = 0;
       misses = 0;
       timeOfDay = TimeOfDay::Day;
 
