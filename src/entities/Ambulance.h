@@ -11,6 +11,7 @@ class Ambulance {
     int16_t getX();
     uint8_t getY();
     uint8_t getPuffIndex(Direction direction);
+    uint8_t getPuffIndexes();
     uint8_t getLane();
     Direction getDirection();
 
@@ -19,7 +20,7 @@ class Ambulance {
     void setPuffIndex(Direction direction, uint8_t value);
     void setDirection(Direction value);
 
-    void incX();
+    void incX(uint8_t value = 1);
     void incY();
     void incPuffIndex(Direction direction);
     void incPuffIndexes();

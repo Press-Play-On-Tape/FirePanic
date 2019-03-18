@@ -23,6 +23,12 @@ uint8_t Victim::getY() {
 
 }
 
+uint8_t Victim::getPosIndex() {
+
+  return this->posIndex;
+
+}
+
 uint8_t Victim::getRotation() {
 
   if (this->alive == 0) {

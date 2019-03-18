@@ -50,7 +50,6 @@ void SplashScreenState::update(StateMachine & machine) {
 void SplashScreenState::render(StateMachine & machine) {
 
 	auto & arduboy = machine.getContext().arduboy;
-  auto & gameStats = machine.getContext().gameStats;
 
   arduboy.drawCompressed(47, 17, Images::Ppot_Buttons, WHITE);
   arduboy.drawCompressed(43, 26, Images::Ppot_ButtonUp, WHITE);

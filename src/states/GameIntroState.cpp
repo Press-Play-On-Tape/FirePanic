@@ -14,6 +14,7 @@ void GameIntroState::activate(StateMachine & machine) {
 
     this->xAmbulance = 156;
     this->xPlayer = PLAYER_MIN_X_POS + 6 + (30 * 3);
+    gameStats.targetScore = gameStats.score + TARGET_SCORE_BASE + (gameStats.level * TARGET_SCORE_PER_LEVEL);
 
   }
   else {
@@ -185,7 +186,7 @@ void GameIntroState::render(StateMachine & machine) {
   }
 
   SpritesB::drawExternalMask(104, 28, Images::Grass, Images::Grass_Mask, 0, 0);
-  SpritesB::drawOverwrite(104, 38, Images::Ground_RHS, 0);
+  SpritesB::drawOverwrite(104, 38, Images::Ground_RHS, static_cast<uint8_t>(gameStats.timeOfDay));
   BaseState::renderLowerGrass(machine);
 
 

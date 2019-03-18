@@ -4,8 +4,11 @@
 #include "Utils.h"
 
 //#define DEBUG
-//#define DEBUG_RACE
-// #define SOUND
+
+//#define TARGET_SCORE_BASE 2
+//#define TARGET_SCORE_PER_LEVEL 1
+#define TARGET_SCORE_BASE 10
+#define TARGET_SCORE_PER_LEVEL 5
 
 #define ANGEL_MISS_1_LEFT 76
 #define ANGEL_MISS_2_LEFT 63
@@ -22,14 +25,9 @@
 #define VICTIM_WIDTH_HALF 8
 #define VICTIM_IN_AMBULANCE 102
 
-
-#define VICTIM_DELAY_0_MIN 150
-#define VICTIM_DELAY_0_MAX 200
-#define VICTIM_DELAY_1_MIN 120
-#define VICTIM_DELAY_1_MAX 170
-#define VICTIM_DELAY_2_MIN 80
-#define VICTIM_DELAY_2_MAX 130
-#define VICTIM_COUNTDOWN 6
+#define VICTIM_COUNTDOWN 180
+#define VICTIM_COUNTDOWN_NONE 255
+#define VICTIM_NONE_AVAILABLE 255
 
 #define PLAYER_MIN_X_POS 18
 #define PLAYER_MID_X_POS 39
@@ -67,7 +65,6 @@
 #define HS_PRESS_A_DELAY 100
 
 #define NO_WINNER 255
-// #define NUMBER_OF_FIREWORKS 5
 
 #define EEPROM_START                  100
 #define EEPROM_START_C1               101
@@ -126,14 +123,17 @@ struct GameStats {
     uint16_t score = 0;
     uint16_t misses = 0;
     uint16_t level = 0;
-    uint8_t xPosition = 0;
+    uint8_t xPosition = 0;  // Player x position between sequences ..
+    uint16_t targetScore = 0;
+
     TimeOfDay timeOfDay = TimeOfDay::Day;
 
     void resetGame() {
 
-      level = 0;
-      misses = 0;
-      timeOfDay = TimeOfDay::Day;
+      this->level = 0;
+      this->misses = 0;
+      this->score = 0; //SJH
+      this->timeOfDay = TimeOfDay::Day;
 
     }
 

@@ -19,6 +19,7 @@ class RaceState : public BaseState {
 
     int8_t xScenery = 0;
     int16_t xHospital = 0;
+    int8_t xGrass = 0;
     int8_t xLine1 = 0;
     int8_t xLine2 = 0;
     int16_t distance = 0;
@@ -31,7 +32,6 @@ class RaceState : public BaseState {
     OtherCar otherCars[3];
     
     bool showHospital = false;
-    bool paused = false;
 
     bool checkLaunchCollisions(int16_t x, uint8_t lane);
     uint8_t checkForCollisions(Arduboy2Ext & arduboy, int16_t x, uint8_t y);
