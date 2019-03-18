@@ -121,8 +121,30 @@ void BaseState::renderPuff(int8_t x, int8_t y, uint8_t puffIndex, uint8_t puffIn
 
 }
 
+bool BaseState::getPaused() {
 
-void BaseState::renderGameOverOrPause(bool gameOver, bool paused) {
+  return this->paused;
+
+}
+
+void BaseState::setPaused(bool value) {
+  
+  this->paused = value;
+
+}
+
+void BaseState::handlePauseButton(StateMachine & machine) {
+
+	auto & arduboy = machine.getContext().arduboy;
+  auto justPressed = arduboy.justPressedButtons();
+
+  if (justPressed & B_BUTTON) {
+    this->paused = !this->paused; 
+  }
+
+}
+
+void BaseState::renderGameOverOrPause(bool gameOver) {
 
 
   // Game Over?
@@ -135,7 +157,7 @@ void BaseState::renderGameOverOrPause(bool gameOver, bool paused) {
 
   // Pause?
 
-  if (paused) {
+  if (this->paused) {
 
     SpritesB::drawExternalMask(39, 20, Images::Pause, Images::Pause_Mask, 0, 0); 
 

@@ -21,7 +21,6 @@ class PlayGameState : public BaseState { //GameState<GameContext, GameStateType>
     uint8_t victimLevel = 0;
 
     bool gameOver = false;
-    bool paused = false;
     bool transitionToRace = false;
 
     uint8_t getNextAvailable();

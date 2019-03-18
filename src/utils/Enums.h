@@ -124,7 +124,8 @@ struct GameStats {
     uint16_t score = 0;
     uint16_t misses = 0;
     uint16_t level = 0;
-    uint8_t xPosition = 0;
+    uint8_t xPosition = 0;  // Player x position between sequences ..
+
     TimeOfDay timeOfDay = TimeOfDay::Day;
 
     void resetGame() {

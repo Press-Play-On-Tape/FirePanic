@@ -30,7 +30,6 @@ void RaceState::activate(StateMachine & machine) {
 
   this->ambulance.setX(-40);
   this->ambulance.setY(31);
-  this->paused = false;
   this->distance = DIST_MAXIMUM;
   this->slowDown = 3;
   this->showHospital = false;
@@ -48,6 +47,8 @@ void RaceState::activate(StateMachine & machine) {
 
   }
 
+  BaseState::setPaused(false);
+
 }
 
 
@@ -61,7 +62,7 @@ void RaceState::update(StateMachine & machine) {
   auto justPressed = arduboy.justPressedButtons();
   auto pressed = arduboy.pressedButtons();
 
-  if (!this->paused) {
+  if (!BaseState::getPaused()) {
 
     if (this->distance > 0) this->distance--;
 
@@ -347,9 +348,7 @@ void RaceState::update(StateMachine & machine) {
 
   // Pause the game?
 
-  if (justPressed & B_BUTTON) {
-    this->paused = !this->paused; 
-  }
+  BaseState::handlePauseButton(machine);
 
 }
 
@@ -627,8 +626,9 @@ void RaceState::render(StateMachine & machine) {
 
   // Pause?
 
-  BaseState::renderGameOverOrPause(false, this->paused);
+  BaseState::renderGameOverOrPause(false);
 
 	arduboy.displayWithBackground(TimeOfDay::Night);
 
 }
+

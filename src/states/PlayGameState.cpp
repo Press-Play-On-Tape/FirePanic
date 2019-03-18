@@ -9,10 +9,13 @@
 //
 void PlayGameState::activate(StateMachine & machine) {
 
+  (void)machine;
+
   this->gameOver = false;
   this->angel.setEnabled(false);
-  this->paused = false;
   this->transitionToRace = false;
+
+  BaseState::setPaused(false);
 
 }
 
@@ -27,7 +30,7 @@ void PlayGameState::update(StateMachine & machine) {
 	auto justPressed = arduboy.justPressedButtons();
 	auto pressed = arduboy.pressedButtons();
 
-  if (!this->paused) {
+  if (!BaseState::getPaused()) {
 
     // Update victim positions ..
     {
@@ -270,9 +273,7 @@ void PlayGameState::update(StateMachine & machine) {
   }
   else {
 
-    if (justPressed & B_BUTTON) {
-      this->paused = !this->paused; 
-    }
+    BaseState::handlePauseButton(machine);
 
   }
 
@@ -446,7 +447,7 @@ void PlayGameState::render(StateMachine & machine) {
 
   }
 
-  BaseState::renderGameOverOrPause(this->gameOver, this->paused);
+  BaseState::renderGameOverOrPause(this->gameOver);
   arduboy.displayWithBackground(gameStats.timeOfDay);
 
 }
