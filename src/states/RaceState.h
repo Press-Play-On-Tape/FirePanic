@@ -19,6 +19,7 @@ class RaceState : public BaseState {
 
     int8_t xScenery = 0;
     int16_t xHospital = 0;
+    int8_t xGrass = 0;
     int8_t xLine1 = 0;
     int8_t xLine2 = 0;
     int16_t distance = 0;

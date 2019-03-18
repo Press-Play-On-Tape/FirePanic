@@ -113,8 +113,8 @@ uint8_t Ambulance::getLane() {
 
   switch (this->y) {
 
-    case  0 ... 13: return 0;
-    case 14 ... 26: return 1;
+    case  0 ... 14: return 0;
+    case 15 ... 27: return 1;
     default:        return 2;
 
   }

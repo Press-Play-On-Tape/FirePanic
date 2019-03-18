@@ -150,7 +150,7 @@ void RaceState::update(StateMachine & machine) {
  
       // Up ----------------------------------------------------------------------------------------------
  
-      if (pressed & UP_BUTTON && this->ambulance.getY() > 6) {
+      if (pressed & UP_BUTTON && this->ambulance.getY() > 7) {
 
         if (checkForCollisions(arduboy, this->ambulance.getX(), this->ambulance.getY() - 1) < CAR_COLLISION_NONE) {
           if (this->ambulance.incPuffIndexIfZero(Direction::Up)) decHealth(machine);
@@ -172,7 +172,7 @@ void RaceState::update(StateMachine & machine) {
           }
         }
 
-        if (this->ambulance.getY() == 6 || this->ambulance.getY() == 20 || this->ambulance.getY() == 33) {
+        if (this->ambulance.getY() == 7 || this->ambulance.getY() == 20 || this->ambulance.getY() == 33) {
           this->ambulance.setDirection(Direction::None);
         }
 
@@ -203,7 +203,7 @@ void RaceState::update(StateMachine & machine) {
           }
         }
 
-        if (this->ambulance.getY() == 6 || this->ambulance.getY() == 20 || this->ambulance.getY() == 33) {
+        if (this->ambulance.getY() == 7 || this->ambulance.getY() == 20 || this->ambulance.getY() == 33) {
           this->ambulance.setDirection(Direction::None);
         }
 
@@ -376,7 +376,8 @@ void RaceState::decHealth(StateMachine & machine) {
 //
 void RaceState::updateSceneryPositions(Arduboy2Ext & arduboy) {
 
-  if (arduboy.getFrameCount(3) < 2) {
+//  if (arduboy.getFrameCount(3) < 2) {
+  if (arduboy.getFrameCount(2) < 1) {
 
     this->xScenery--;
     if (this->xScenery == -64) this->xScenery = 0;
@@ -386,6 +387,14 @@ void RaceState::updateSceneryPositions(Arduboy2Ext & arduboy) {
       this->showHospital = true;
       this->xHospital = this->xScenery + (64 * 3);
     }
+
+  }
+
+//  if (arduboy.getFrameCount(2) < 1) {
+  if (arduboy.getFrameCount(3) < 2) {
+
+    this->xGrass--;
+    if (this->xGrass == -16) this->xGrass = 0;
 
   }
 
@@ -489,6 +498,12 @@ void RaceState::render(StateMachine & machine) {
 
   }
 
+  for (uint8_t i = 0; i < 10; i++) {
+
+    SpritesB::drawExternalMask(this->xGrass + (i*16), 21, Images::Race_Grass, Images::Race_Grass_Mask, 0, 0);
+
+  }
+  
 
   // Render score ..
 
@@ -499,8 +514,8 @@ void RaceState::render(StateMachine & machine) {
 
   for (uint8_t i = 0; i < 5; i++) {
 
-    SpritesB::drawOverwrite(this->xLine1 + (i*32), 38, Images::Race_Line, 0);
-    SpritesB::drawOverwrite(this->xLine2 + (i*32), 52, Images::Race_Line, 0);
+    SpritesB::drawOverwrite(this->xLine1 + (i*32), 40, Images::Race_Line, 0);
+    SpritesB::drawOverwrite(this->xLine2 + (i*32), 53, Images::Race_Line, 0);
 
   }
 
@@ -514,7 +529,7 @@ void RaceState::render(StateMachine & machine) {
 
     if (this->jewel.getEnabled() && iLane == this->jewel.getLane()) {
 
-      SpritesB::drawExternalMask(this->jewel.getX(), 29 + (this->jewel.getLane() * 13), Images::Race_Prize, Images::Race_Prize_Mask, static_cast<uint8_t>(this->lights), 0);
+      SpritesB::drawExternalMask(this->jewel.getX(), 31 + (this->jewel.getLane() * 13), Images::Race_Prize, Images::Race_Prize_Mask, static_cast<uint8_t>(this->lights), 0);
 
     }
 
@@ -526,9 +541,9 @@ void RaceState::render(StateMachine & machine) {
       if (car.getEnabled() && car.getLane() == iLane) {
 
         #ifndef DEBUG_RACE
-        SpritesB::drawExternalMask(car.getX(), 14 + (car.getLane() * 14), Images::Race_OtherCar, Images::Race_OtherCar_Mask, car.getType(), car.getType());
+        SpritesB::drawExternalMask(car.getX(), 16 + (car.getLane() * 13), Images::Race_OtherCar, Images::Race_OtherCar_Mask, car.getType(), car.getType());
         #else
-        arduboy.drawRect(car.getX(), 27 + (car.getLane() * 14), RACE_OTHERCAR_WIDTH, 10);
+        arduboy.drawRect(car.getX(), 28 + (car.getLane() * 14), RACE_OTHERCAR_WIDTH, 10);
         #endif
         
       }
