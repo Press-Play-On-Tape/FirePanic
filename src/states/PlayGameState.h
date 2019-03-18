@@ -16,14 +16,14 @@ class PlayGameState : public BaseState { //GameState<GameContext, GameStateType>
 
     uint8_t counter = 0;
     uint8_t puffIndex = 0;
-    uint8_t victimCountdown = VICTIM_COUNTDOWN;
+    uint8_t victimCountdown = 200;
     uint8_t victimDelay = 1;
     uint8_t victimLevel = 0;
 
     bool gameOver = false;
     bool transitionToRace = false;
 
-    uint8_t getNextAvailable();
+    uint8_t getNextAvailable(uint8_t gap);
     bool allVictimsDisabled();
 
   public:

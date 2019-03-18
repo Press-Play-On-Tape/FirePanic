@@ -134,26 +134,32 @@ void PlayGameState::update(StateMachine & machine) {
 
       if (this->victimDelay == 0) {
 
+        uint8_t maxDelay = 110;
+        uint8_t minDelay = 80;
+        uint8_t countdown = 30;
+        
+        if (gameStats.score < 180)  { maxDelay = 200 - (gameStats.score / 2); }
+        if (gameStats.score < 140)  { minDelay = 150 - (gameStats.score / 2); }
+        if (gameStats.score < 280)  { countdown = 100 - (gameStats.score / 4); }
+
+        this->victimDelay = random(minDelay, maxDelay);
+        this->victimCountdown = countdown;
+
         switch (gameStats.score) {
 
-          case 0 ... 10:
-            this->victimDelay = random(VICTIM_DELAY_0_MIN, VICTIM_DELAY_0_MAX);
+          case 0 ... 20:
             this->victimLevel = 0;
             break;
 
-          case 11 ... 20:
-            this->victimDelay = random(VICTIM_DELAY_1_MIN, VICTIM_DELAY_1_MAX);
+          case 21 ... 40:
             this->victimLevel = random(2);
             break;
 
           default:
-            this->victimDelay = random(VICTIM_DELAY_2_MIN, VICTIM_DELAY_2_MAX);
             this->victimLevel = random(3);
             break;
 
         }
-
-        this->victimCountdown = VICTIM_COUNTDOWN;
 
       }
 
@@ -162,17 +168,22 @@ void PlayGameState::update(StateMachine & machine) {
 
     // Is a victim ready to jump?
 
-    if (arduboy.everyXFrames(30) && !this->transitionToRace) {
+    if (!this->transitionToRace) {
 
-      if (this->victimCountdown > 0) {
+      if (this->victimCountdown > 0 && this->victimCountdown < VICTIM_COUNTDOWN_NONE) {
 
         this->victimCountdown--;
 
-        if (this->victimCountdown == 0) {
+      }
 
-          uint8_t nextAvailableVictim = getNextAvailable();
+      if (this->victimCountdown == 0) {
+
+        uint8_t gap = (gameStats.score > 120 ? 2 : (180 - gameStats.score) / 30);
+        uint8_t nextAvailableVictim = getNextAvailable(gap);
+
+        if (nextAvailableVictim != VICTIM_NONE_AVAILABLE) {
           this->victims[nextAvailableVictim].init();
-
+          this->victimCountdown = VICTIM_COUNTDOWN_NONE;
         }
 
       }
@@ -283,7 +294,31 @@ void PlayGameState::update(StateMachine & machine) {
 // ----------------------------------------------------------------------------
 //  Get index of next available victim.
 //
-uint8_t PlayGameState::getNextAvailable() {
+uint8_t PlayGameState::getNextAvailable(uint8_t gap) {
+
+  // Serial.print(" ");
+  // for (auto &victim : this->victims) {
+  //   Serial.print(victim.getPosIndex());
+  //   if (victim.getEnabled()) {
+  //     Serial.print("E ");
+  //   }
+  //   else {
+  //     Serial.print("D ");
+  //   }
+  // }
+  // Serial.println(" ");
+
+  for (auto &victim : this->victims) {
+
+    uint8_t posIndex = victim.getPosIndex();
+
+    if ( victim.getEnabled() && 
+       (((posIndex < 23) && (absT(posIndex - 23) <= gap)) || ((posIndex < 45) && (absT(posIndex - 45) <= gap))) 
+       ) {
+      return VICTIM_NONE_AVAILABLE;
+    }
+
+  }
 
   for (uint8_t i = 0; i < VICTIMS_MAX_NUMBER; i++) {
 
@@ -293,7 +328,7 @@ uint8_t PlayGameState::getNextAvailable() {
 
   }
 
-  return 255;
+  return VICTIM_NONE_AVAILABLE;
 
 }
 
@@ -359,8 +394,9 @@ void PlayGameState::render(StateMachine & machine) {
   BaseState::renderScore(machine, gameStats.timeOfDay);
 
 
-  uint8_t i = this->player.getImageIndex();
+  // Render firemen ..
 
+  uint8_t i = this->player.getImageIndex();
   SpritesB::drawExternalMask(this->player.getX(), this->player.getY(), Images::FireMen, Images::FireMen_Mask, i, i);
 
 
@@ -410,11 +446,11 @@ void PlayGameState::render(StateMachine & machine) {
 
   // Render victim about to jump ..
 
-  if (this->victimCountdown > 0) {
+  if (this->victimCountdown < VICTIM_COUNTDOWN_NONE) {
 
     SpritesB::drawExternalMask(edgePos[this->victimLevel * 4], edgePos[(this->victimLevel * 4) + 1], Images::Victim_OnEdge_01, Images::Victim_OnEdge_01_Mask, 0, 0);
 
-    if (this->victimCountdown % 2 == 0) {
+    if (this->victimCountdown % 30 < 15) {
 
       SpritesB::drawExternalMask(edgePos[(this->victimLevel * 4) + 2], edgePos[(this->victimLevel * 4) + 3], Images::Victim_OnEdge_02, Images::Victim_OnEdge_02_Mask, 0, 0);
 

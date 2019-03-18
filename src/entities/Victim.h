@@ -10,6 +10,7 @@ class Victim {
      
     uint8_t getX();
     uint8_t getY();
+    uint8_t getPosIndex();
     uint8_t getRotation();
     uint8_t getEnabled();
     uint8_t getAlive();
