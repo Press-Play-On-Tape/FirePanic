@@ -158,7 +158,7 @@ void HighScoreState::update(StateMachine & machine) {
 }
 
 
-void HighScoreState::renderScore(StateMachine & machine, int16_t score, uint8_t x, uint8_t y) {
+void HighScoreState::renderHighScore(StateMachine & machine, int16_t score, uint8_t x, uint8_t y) {
 
 	auto & arduboy = machine.getContext().arduboy;
 
@@ -195,15 +195,15 @@ void HighScoreState::render(StateMachine & machine) {
 
   font4x6.setCursor(HS_NAME_LEFT - 2, HS_CHAR_TOP);
   font4x6.print(this->player1);
-  renderScore(machine, this->score1, HS_SCORE_LEFT, HS_CHAR_TOP);
+  renderHighScore(machine, this->score1, HS_SCORE_LEFT, HS_CHAR_TOP);
 
   font4x6.setCursor(HS_NAME_LEFT - 2, HS_CHAR_TOP + HS_CHAR_V_SPACING);
   font4x6.print(this->player2);
-  renderScore(machine, this->score2, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
+  renderHighScore(machine, this->score2, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
 
   font4x6.setCursor(HS_NAME_LEFT - 2, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
   font4x6.print(this->player3);
-  renderScore(machine, this->score3, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
+  renderHighScore(machine, this->score3, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
 
 
 
@@ -225,7 +225,7 @@ void HighScoreState::render(StateMachine & machine) {
 
   // Display Press A message?
 
-  if (this->winnerIdx == NO_WINNER & this->pressACounter == 0) {
+  if (this->winnerIdx == NO_WINNER && this->pressACounter == 0) {
 
     SpritesB::drawExternalMask(43, 52, Images::PressA, Images::PressA_Mask, 0, 0);
 

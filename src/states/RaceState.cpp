@@ -59,7 +59,6 @@ void RaceState::update(StateMachine & machine) {
 
   auto & arduboy = machine.getContext().arduboy;
   auto & gameStats = machine.getContext().gameStats;
-  auto justPressed = arduboy.justPressedButtons();
   auto pressed = arduboy.pressedButtons();
 
   if (!BaseState::getPaused()) {
@@ -485,11 +484,11 @@ void RaceState::render(StateMachine & machine) {
 
   for (uint8_t i = 0; i < 4; i++) {
 
-    SpritesB::drawOverwrite(this->xScenery + (i*64), 0, Images::Building_BG, 0);
+    SpritesB::drawOverwrite(this->xScenery + (i*64), 0, Images::Building_BG, static_cast<uint8_t>(gameStats.timeOfDay));
 
     if (this->showHospital) {
 
-      SpritesB::drawOverwrite(this->xHospital, 0, Images::Hospital, 0);
+      SpritesB::drawOverwrite(this->xHospital, 0, Images::Hospital, static_cast<uint8_t>(gameStats.timeOfDay));
 
     }
 
@@ -504,7 +503,7 @@ void RaceState::render(StateMachine & machine) {
 
   // Render score ..
 
-  BaseState::renderScore(machine, TimeOfDay::Day, gameStats.score, 89, 0);
+  BaseState::renderScore(machine, TimeOfDay::Night);
 
 
   // Render road lines ..
@@ -621,6 +620,7 @@ void RaceState::render(StateMachine & machine) {
     }
 
   }
+
 
   // Pause?
 

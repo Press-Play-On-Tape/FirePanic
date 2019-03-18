@@ -245,7 +245,7 @@ void PlayGameState::update(StateMachine & machine) {
 
   // Transition to race ..
 
-  if (gameStats.score > 3) {
+  if (gameStats.score > gameStats.targetScore) {
 
     this->transitionToRace = true;
 
@@ -356,7 +356,7 @@ void PlayGameState::render(StateMachine & machine) {
 
   // Render score ..
 
-  BaseState::renderScore(machine, gameStats.timeOfDay, gameStats.score, 89, 0);
+  BaseState::renderScore(machine, gameStats.timeOfDay);
 
 
   uint8_t i = this->player.getImageIndex();

@@ -4,30 +4,27 @@
 #include "../utils/Utils.h"
 #include "../utils/Enums.h"
 
-void BaseState::renderScore(StateMachine & machine, TimeOfDay timeOfDay, uint16_t score, uint8_t x, uint8_t y) {
+void BaseState::renderScore(StateMachine & machine, TimeOfDay timeOfDay) {
   	
-	auto & arduboy = machine.getContext().arduboy;
-  auto & context = machine.getContext();
-
-	const bool flash = arduboy.getFrameCountHalf(FLASH_FRAME_COUNT_2);
+  auto & gameStats = machine.getContext().gameStats;
 
   if (timeOfDay == TimeOfDay::Day) {
-    SpritesB::drawExternalMask(x, y, Images::Scoreboard, Images::Scoreboard_Mask, 1, 0);
+    SpritesB::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 1, 0);
   }
   else {
-    SpritesB::drawExternalMask(x, y, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
+    SpritesB::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
   }
 
 	uint8_t digits[6] = {};
-	extractDigits(digits, score);
+	extractDigits(digits, gameStats.score);
 
 	for (uint8_t j = 6; j > 0; --j) {
 
     if (timeOfDay == TimeOfDay::Day) {
-      SpritesB::drawErase(35 + x - (j*5), y + 3, Images::Scoreboard_Numbers, digits[j - 1]);
+      SpritesB::drawErase(124 - (j*5), 3, Images::Scoreboard_Numbers, digits[j - 1]);
     }
     else {
-      SpritesB::drawSelfMasked(35 + x - (j*5), y + 3, Images::Scoreboard_Numbers, digits[j - 1]);
+      SpritesB::drawSelfMasked(124 - (j*5), 3, Images::Scoreboard_Numbers, digits[j - 1]);
     }
 
 	}
@@ -56,12 +53,7 @@ void BaseState::renderCommonScenery(StateMachine & machine, bool incSmoke, bool 
     uint8_t x = cloud_X_Pos[this->smokeIndex];
     uint8_t y = cloud_Y_Pos[this->smokeIndex];
 
-    if (gameStats.timeOfDay == TimeOfDay::Day) {
-      SpritesB::drawOverwrite(x, y, pgm_read_word_near(&Images::Smoke_Day[this->smokeIndex]), 0);
-    }
-    else {
-      SpritesB::drawOverwrite(x, y, pgm_read_word_near(&Images::Smoke_Night[this->smokeIndex]), 0);
-    }
+    SpritesB::drawOverwrite(x, y, pgm_read_word_near(&Images::Smoke[this->smokeIndex]), static_cast<uint8_t>(gameStats.timeOfDay));
 
     if (arduboy.everyXFrames(16)) {
       this->smokeIndex++;
