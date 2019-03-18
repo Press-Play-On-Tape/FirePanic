@@ -20,7 +20,7 @@ class Ambulance {
     void setPuffIndex(Direction direction, uint8_t value);
     void setDirection(Direction value);
 
-    void incX();
+    void incX(uint8_t value = 1);
     void incY();
     void incPuffIndex(Direction direction);
     void incPuffIndexes();

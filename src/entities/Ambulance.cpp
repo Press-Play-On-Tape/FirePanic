@@ -60,9 +60,9 @@ void Ambulance::setDirection(Direction value) {
 
 }
 
-void Ambulance::incX() {
+void Ambulance::incX(uint8_t value) {
 
-  this->x++;
+  this->x = this->x + value;
 
 }
 

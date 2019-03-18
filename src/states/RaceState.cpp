@@ -85,8 +85,7 @@ void RaceState::update(StateMachine & machine) {
     if (this->ambulance.getX() < 0) {
 
       if (arduboy.everyXFrames(5)) {
-        this->ambulance.incX();
-        this->ambulance.incX();
+        this->ambulance.incX(2);
       }
 
     }
@@ -97,8 +96,7 @@ void RaceState::update(StateMachine & machine) {
     else if (this->distance == 0 && this->ambulance.getX() < DIST_DELAY_AFTER_AMBULANCE_LEAVES_SCREEN) {
 
       if (arduboy.everyXFrames(5)) {
-        this->ambulance.incX();
-        this->ambulance.incX();
+        this->ambulance.incX(2);
       }
 
     }
@@ -610,13 +608,13 @@ void RaceState::render(StateMachine & machine) {
 
   if (this->ambulance.getPuffIndexes() > 0) {
 
-    Sprites::drawExternalMask(this->ambulance.getX() + 2, this->ambulance.getY() - 7, Images::armour_gauge, Images::armour_gauge_mask, 0, 0);
+    SpritesB::drawExternalMask(this->ambulance.getX() + 2, this->ambulance.getY() - 7, Images::armour_gauge, Images::armour_gauge_mask, 0, 0);
 
     if ((this->health <= 20 && flash) || this->health > 20) {
 
       for (int i = 0, xOffset = this->ambulance.getX() + 2; i < this->health; i = i + 10, xOffset = xOffset + 2) {
 
-        Sprites::drawExternalMask(xOffset, this->ambulance.getY() - 7 + 2, Images::armour_gauge_item, Images::armour_gauge_item_mask, 0, 0);
+        SpritesB::drawExternalMask(xOffset, this->ambulance.getY() - 7 + 2, Images::armour_gauge_item, Images::armour_gauge_item_mask, 0, 0);
 
       }
 
