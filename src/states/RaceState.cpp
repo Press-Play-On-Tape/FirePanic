@@ -376,7 +376,6 @@ void RaceState::decHealth(StateMachine & machine) {
 //
 void RaceState::updateSceneryPositions(Arduboy2Ext & arduboy) {
 
-//  if (arduboy.getFrameCount(3) < 2) {
   if (arduboy.getFrameCount(2) < 1) {
 
     this->xScenery--;
@@ -390,7 +389,6 @@ void RaceState::updateSceneryPositions(Arduboy2Ext & arduboy) {
 
   }
 
-//  if (arduboy.getFrameCount(2) < 1) {
   if (arduboy.getFrameCount(3) < 2) {
 
     this->xGrass--;
@@ -629,11 +627,7 @@ void RaceState::render(StateMachine & machine) {
 
   // Pause?
 
-  if (this->paused) {
-
-    SpritesB::drawExternalMask(39, 20, Images::Pause, Images::Pause_Mask, 0, 0); 
-
-  }
+  BaseState::renderGameOverOrPause(false, this->paused);
 
 	arduboy.displayWithBackground(TimeOfDay::Night);
 

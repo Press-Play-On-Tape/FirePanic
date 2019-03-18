@@ -16,6 +16,8 @@ class BaseState : public GameState<GameContext, GameStateType> {
     void renderLowerGrass(StateMachine & machine);
     void renderAmbulance(StateMachine & machine, int8_t x, int8_t y, bool doorOpen);
     void renderPuff(int8_t x, int8_t y, uint8_t puffIndex, uint8_t puffIndex_Mask);
+    void renderGameOverOrPause(bool gameOver, bool paused);
+
     LightsState lights = LightsState::Lights_1;
 
 	private:

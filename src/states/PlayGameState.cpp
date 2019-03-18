@@ -446,23 +446,7 @@ void PlayGameState::render(StateMachine & machine) {
 
   }
 
-
-  // Game Over?
-
-  if (this->gameOver) {
-
-    SpritesB::drawExternalMask(32, 20, Images::GameOver, Images::GameOver_Mask, 0, 0); 
-
-  }
-
-  // Pause?
-
-  if (this->paused) {
-
-    SpritesB::drawExternalMask(39, 20, Images::Pause, Images::Pause_Mask, 0, 0); 
-
-  }
-
+  BaseState::renderGameOverOrPause(this->gameOver, this->paused);
   arduboy.displayWithBackground(gameStats.timeOfDay);
 
 }

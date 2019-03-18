@@ -120,3 +120,25 @@ void BaseState::renderPuff(int8_t x, int8_t y, uint8_t puffIndex, uint8_t puffIn
   SpritesB::drawExternalMask(x, y, Images::Puff, Images::Puff_Mask, puffIndex, puffIndex_Mask);
 
 }
+
+
+void BaseState::renderGameOverOrPause(bool gameOver, bool paused) {
+
+
+  // Game Over?
+
+  if (gameOver) {
+
+    SpritesB::drawExternalMask(32, 20, Images::GameOver, Images::GameOver_Mask, 0, 0); 
+
+  }
+
+  // Pause?
+
+  if (paused) {
+
+    SpritesB::drawExternalMask(39, 20, Images::Pause, Images::Pause_Mask, 0, 0); 
+
+  }
+
+}
