@@ -4,35 +4,18 @@
 #include "../utils/Utils.h"
 #include "../utils/Enums.h"
 
-void BaseState::renderScore(StateMachine & machine, TimeOfDay timeOfDay, uint16_t score, uint8_t x, uint8_t y, uint8_t health) {
+void BaseState::renderScore(StateMachine & machine, TimeOfDay timeOfDay, uint16_t score, uint8_t x, uint8_t y) {
   	
 	auto & arduboy = machine.getContext().arduboy;
   auto & context = machine.getContext();
 
 	const bool flash = arduboy.getFrameCountHalf(FLASH_FRAME_COUNT_2);
 
-  if (context.getCurrentState() != GameStateType::PlayRaceScreen) {
-
-    if (timeOfDay == TimeOfDay::Day) {
-      SpritesB::drawExternalMask(x, y, Images::Scoreboard, Images::Scoreboard_Mask, 1, 0);
-    }
-    else {
-      SpritesB::drawExternalMask(x, y, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
-    }
-
+  if (timeOfDay == TimeOfDay::Day) {
+    SpritesB::drawExternalMask(x, y, Images::Scoreboard, Images::Scoreboard_Mask, 1, 0);
   }
   else {
-
-    SpritesB::drawExternalMask(x - 8, y, Images::Scoreboard_Race, Images::Scoreboard_Race_Mask, 0, 0);
-
-    if (flash || health > 2) {
-     
-      for (uint8_t z = 0; z < health; z++) {
-        arduboy.drawFastHLine(x - 3, y + 10 - (z * 2), 6, BLACK);
-      }
-
-    }
-
+    SpritesB::drawExternalMask(x, y, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
   }
 
 	uint8_t digits[6] = {};

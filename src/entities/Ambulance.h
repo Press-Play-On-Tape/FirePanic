@@ -11,6 +11,7 @@ class Ambulance {
     int16_t getX();
     uint8_t getY();
     uint8_t getPuffIndex(Direction direction);
+    uint8_t getPuffIndexes();
     uint8_t getLane();
     Direction getDirection();
 

@@ -9,8 +9,8 @@
 #define DIST_GO_TO_HOSPITAL 128
 #define DIST_DELAY_AFTER_AMBULANCE_LEAVES_SCREEN 200
 
-#define RACE_PLAYER_HEALTH_MAX 200
-#define RACE_PLAYER_HEALTH_DEC 20
+#define RACE_PLAYER_HEALTH_MAX 140
+#define RACE_PLAYER_HEALTH_DEC 10
 
 #define OTHER_CAR_LAUNCH_MAX 400
 #define OTHER_CAR_LAUNCH_MAX_DEC 10
@@ -483,6 +483,8 @@ void RaceState::render(StateMachine & machine) {
 	auto & arduboy = machine.getContext().arduboy;
   auto & gameStats = machine.getContext().gameStats;
 
+	const bool flash = arduboy.getFrameCountHalf(FLASH_FRAME_COUNT_2);
+
 
   // Render background ..
 
@@ -507,7 +509,7 @@ void RaceState::render(StateMachine & machine) {
 
   // Render score ..
 
-  BaseState::renderScore(machine, TimeOfDay::Day, gameStats.score, 89, 0, this->health / 40);
+  BaseState::renderScore(machine, TimeOfDay::Day, gameStats.score, 89, 0);
 
 
   // Render road lines ..
@@ -529,7 +531,7 @@ void RaceState::render(StateMachine & machine) {
 
     if (this->jewel.getEnabled() && iLane == this->jewel.getLane()) {
 
-      SpritesB::drawExternalMask(this->jewel.getX(), 31 + (this->jewel.getLane() * 13), Images::Race_Prize, Images::Race_Prize_Mask, static_cast<uint8_t>(this->lights), 0);
+      SpritesB::drawExternalMask(this->jewel.getX(), 30 + (this->jewel.getLane() * 13), Images::Race_Prize, Images::Race_Prize_Mask, static_cast<uint8_t>(this->lights), 0);
 
     }
 
@@ -540,11 +542,7 @@ void RaceState::render(StateMachine & machine) {
 
       if (car.getEnabled() && car.getLane() == iLane) {
 
-        #ifndef DEBUG_RACE
         SpritesB::drawExternalMask(car.getX(), 16 + (car.getLane() * 13), Images::Race_OtherCar, Images::Race_OtherCar_Mask, car.getType(), car.getType());
-        #else
-        arduboy.drawRect(car.getX(), 28 + (car.getLane() * 14), RACE_OTHERCAR_WIDTH, 10);
-        #endif
         
       }
 
@@ -568,14 +566,9 @@ void RaceState::render(StateMachine & machine) {
 
       }
 
-
-      #ifndef DEBUG_RACE
       if (this->ambulance.getX() > -RACE_AMBULANCE_WIDTH && this->ambulance.getX() < WIDTH) {
         BaseState::renderAmbulance(machine, this->ambulance.getX(), this->ambulance.getY(), false);
       }
-      #else
-      arduboy.drawRect(this->ambulance.getX(), this->ambulance.getY() + 21, RACE_AMBULANCE_WIDTH, 10);
-      #endif
 
 
       // Draw puffs if the ambulance has crashed into something ..
@@ -614,6 +607,25 @@ void RaceState::render(StateMachine & machine) {
 
   }
 
+
+  // Render armour gauge ..
+
+
+  if (this->ambulance.getPuffIndexes() > 0) {
+
+    Sprites::drawExternalMask(this->ambulance.getX() + 2, this->ambulance.getY() - 7, Images::armour_gauge, Images::armour_gauge_mask, 0, 0);
+
+    if ((this->health <= 20 && flash) || this->health > 20) {
+
+      for (int i = 0, xOffset = this->ambulance.getX() + 2; i < this->health; i = i + 10, xOffset = xOffset + 2) {
+
+        Sprites::drawExternalMask(xOffset, this->ambulance.getY() - 7 + 2, Images::armour_gauge_item, Images::armour_gauge_item_mask, 0, 0);
+
+      }
+
+    }
+
+  }
 
   // Pause?
 

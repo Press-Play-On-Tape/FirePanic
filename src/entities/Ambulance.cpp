@@ -21,6 +21,15 @@ uint8_t Ambulance::getPuffIndex(Direction direction) {
 
 }
 
+uint8_t Ambulance::getPuffIndexes() {
+
+  return this->puffIndex[static_cast<uint8_t>(Direction::Down)] + 
+         this->puffIndex[static_cast<uint8_t>(Direction::Up)] +
+         this->puffIndex[static_cast<uint8_t>(Direction::Right)] +
+         this->puffIndex[static_cast<uint8_t>(Direction::Left)];
+
+}
+
 Direction Ambulance::getDirection() {
 
   return this->direction;

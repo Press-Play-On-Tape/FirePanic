@@ -4,8 +4,6 @@
 #include "Utils.h"
 
 //#define DEBUG
-//#define DEBUG_RACE
-// #define SOUND
 
 #define ANGEL_MISS_1_LEFT 76
 #define ANGEL_MISS_2_LEFT 63
