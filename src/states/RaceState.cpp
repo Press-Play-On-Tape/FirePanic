@@ -63,6 +63,15 @@ void RaceState::update(StateMachine & machine) {
 
   if (!BaseState::getPaused()) {
 
+
+    // Update coin index ..
+
+    if (arduboy.everyXFrames(8)) {
+      this->coin_index++;
+      if (this->coin_index == 4) this->coin_index = 0;
+    }
+
+
     if (this->distance > 0) this->distance--;
 
 
@@ -232,21 +241,21 @@ void RaceState::update(StateMachine & machine) {
       }
 
 
-      // Launch the jewel?  Not if we are about to finish the race ..
+      // Launch the coin?  Not if we are about to finish the race ..
 
-      if (this->distance > DIST_NO_NEW_CARS && jewel.getCountdown() == 0) {
+      if (this->distance > DIST_NO_NEW_CARS && coin.getCountdown() == 0) {
 
-        if (!jewel.getEnabled()) {
+        if (!coin.getEnabled()) {
 
-          this->jewel.setX(random(128, 340));
-          this->jewel.setLane(random(0, 3));
-          this->jewel.setEnabled(true);
+          this->coin.setX(random(128, 340));
+          this->coin.setLane(random(0, 3));
+          this->coin.setEnabled(true);
 
         }
 
       }
       else {
-        jewel.decCountdown();
+        coin.decCountdown();
       }
 
 
@@ -254,16 +263,16 @@ void RaceState::update(StateMachine & machine) {
 
       if (arduboy.getFrameCount(3) < 2) {        
 
-        if (this->jewel.getEnabled()) {
+        if (this->coin.getEnabled()) {
           
-          this->jewel.move();
+          this->coin.move();
 
-          Rect jewelRect = { this->jewel.getX(), 27 + (this->jewel.getLane() * 14), 8, 8 };
+          Rect coinRect = { this->coin.getX(), 27 + (this->coin.getLane() * 14), 8, 8 };
           Rect ambulanceRect = { this->ambulance.getX(), this->ambulance.getY() + 21, RACE_AMBULANCE_WIDTH, 10 };
 
-          if (arduboy.collide(jewelRect, ambulanceRect)) {
+          if (arduboy.collide(coinRect, ambulanceRect)) {
             gameStats.score++;
-            this->jewel.setEnabled(false);
+            this->coin.setEnabled(false);
           }
 
         }
@@ -521,11 +530,11 @@ void RaceState::render(StateMachine & machine) {
   for (uint8_t iLane = 0; iLane < 3; iLane++) {
 
 
-    // Draw jewel ..
+    // Draw coin ..
 
-    if (this->jewel.getEnabled() && iLane == this->jewel.getLane()) {
+    if (this->coin.getEnabled() && iLane == this->coin.getLane()) {
 
-      SpritesB::drawExternalMask(this->jewel.getX(), 30 + (this->jewel.getLane() * 13), Images::Race_Prize, Images::Race_Prize_Mask, static_cast<uint8_t>(this->lights), 0);
+      SpritesB::drawExternalMask(this->coin.getX(), 30 + (this->coin.getLane() * 13), Images::Race_Prize, Images::Race_Prize_Mask, this->coin_index, this->coin_index);
 
     }
 

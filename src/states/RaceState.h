@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../entities/Jewel.h"
+#include "../entities/Coin.h"
 #include "../entities/OtherCar.h"
 #include "../entities/Ambulance.h"
 #include "../utils/GameContext.h"
@@ -15,7 +15,7 @@ class RaceState : public BaseState {
   private:
 
     Ambulance ambulance;
-    Jewel jewel;
+    Coin coin;
 
     int8_t xScenery = 0;
     int16_t xHospital = 0;
@@ -25,6 +25,7 @@ class RaceState : public BaseState {
     int16_t distance = 0;
     uint8_t slowDown = 0;
     uint8_t health = 0;
+    uint8_t coin_index = 0;
 
     uint16_t carLaunch_RandomMax;
     uint16_t carLaunch_RandomMin;

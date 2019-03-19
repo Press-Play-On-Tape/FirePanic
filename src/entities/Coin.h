@@ -3,11 +3,11 @@
 #include "../Utils/Arduboy2Ext.h"
 #include "../Utils/Enums.h"
 
-class Jewel {
+class Coin {
 
   public:
 
-    Jewel();
+    Coin();
      
     int16_t getX();
     uint8_t getCountdown();
