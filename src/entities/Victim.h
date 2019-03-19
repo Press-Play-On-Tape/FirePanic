@@ -16,9 +16,11 @@ class Victim {
     uint8_t getAlive();
     uint8_t getHaloIndex();
     uint8_t getPuffIndex();
+    bool getPrevBounce();
 
     void setEnabled(bool value);
     void setAlive(uint8_t value);
+    void setPrevBounce(bool value);
 
     void move();
     void rotate();
@@ -32,8 +34,10 @@ class Victim {
     uint8_t posIndex;
     uint8_t rotIndex;
     uint8_t puffIndex;
-    bool enabled;
     uint8_t alive;
+
+    bool enabled;
+    bool prevBounce;  // Bounced on tramp one position before lowest?
 
 };
 

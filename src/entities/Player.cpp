@@ -3,10 +3,13 @@
 #include "../utils/Physics.h"
 #include "../utils/Enums.h"
 
-#define NUM_OF_ELEMENTS 9
+#define NUM_OF_ELEMENTS 6
 
 const uint8_t PROGMEM steps[] = { // 21 steps between positions.
-  1, 2, 3, 3, 3, 3, 3, 2, 1
+//  1, 2, 3, 3, 3, 3, 3, 2, 1
+//  1, 2, 4, 4, 4, 3, 2, 1
+  2, 3, 6, 5, 3, 2
+//  2, 5, 7, 5, 2
 };
 
 Player::Player() { 

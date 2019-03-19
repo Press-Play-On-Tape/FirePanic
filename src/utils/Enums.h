@@ -3,12 +3,14 @@
 #include <stdint.h>
 #include "Utils.h"
 
-//#define DEBUG
+#define DEBUG
 
 //#define TARGET_SCORE_BASE 2
 //#define TARGET_SCORE_PER_LEVEL 1
-#define TARGET_SCORE_BASE 10
-#define TARGET_SCORE_PER_LEVEL 5
+// #define TARGET_SCORE_BASE 10
+// #define TARGET_SCORE_PER_LEVEL 5
+#define TARGET_SCORE_BASE 100
+#define TARGET_SCORE_PER_LEVEL 50
 
 #define ANGEL_MISS_1_LEFT 76
 #define ANGEL_MISS_2_LEFT 63
@@ -132,7 +134,7 @@ struct GameStats {
 
       this->level = 0;
       this->misses = 0;
-      this->score = 0; //SJH
+      this->score = 100; //SJH
       this->timeOfDay = TimeOfDay::Day;
 
     }

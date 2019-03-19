@@ -49,37 +49,60 @@ void PlayGameState::update(StateMachine & machine) {
             }
             else {
 
+              uint8_t posIndex = victim.getPosIndex();
               uint8_t victimXCentre = victimX + VICTIM_WIDTH_HALF;
               uint8_t delta = absT(victimXCentre - playerXCentre);
 
-              if (victim.getY() == VICTIM_BOUNCE_HEIGHT && delta > ACCURACY_TOLERANCE) {
+              if (posIndex == 10 || posIndex == 34 || posIndex == 55) {
 
-                victim.setAlive(VICTIM_MISSED_TRAMPOLINE);
-                gameStats.misses++;
-
-                switch (victim.getX()) {
-
-                  case PLAYER_MIN_X_POS ... PLAYER_MID_X_POS - 1:
-                    if (gameStats.misses < 3) {
-                      this->angel.init(0, gameStats.misses);
-                    }
-                    break;
-
-                  case PLAYER_MID_X_POS ... PLAYER_MAX_X_POS - 1:
-                    if (gameStats.misses < 3) {
-                      this->angel.init(1, gameStats.misses);
-                    }
-                    break;
-
-                  case PLAYER_MAX_X_POS ... WIDTH:
-                    if (gameStats.misses < 3) {
-                      this->angel.init(2, gameStats.misses);
-                    }
-                    break;
-
+                if (delta <= ACCURACY_TOLERANCE) {
+// Serial.println("T-1");
+                  victim.setPrevBounce(true);
                 }
                 
-              }  
+              }
+
+              else if (posIndex == 11 || posIndex == 35 || posIndex == 56) {
+// Serial.print("PB: ");
+// Serial.print(victim.getPrevBounce());
+// Serial.print(", delta : ");
+// Serial.println(delta);
+                if (!victim.getPrevBounce() && delta > ACCURACY_TOLERANCE) {
+
+                  victim.setAlive(VICTIM_MISSED_TRAMPOLINE);
+                  gameStats.misses++;
+
+                  switch (victim.getX()) {
+
+                    case PLAYER_MIN_X_POS ... PLAYER_MID_X_POS - 1:
+                      if (gameStats.misses < 3) {
+                        this->angel.init(0, gameStats.misses);
+                      }
+                      break;
+
+                    case PLAYER_MID_X_POS ... PLAYER_MAX_X_POS - 1:
+                      if (gameStats.misses < 3) {
+                        this->angel.init(1, gameStats.misses);
+                      }
+                      break;
+
+                    case PLAYER_MAX_X_POS ... WIDTH:
+                      if (gameStats.misses < 3) {
+                        this->angel.init(2, gameStats.misses);
+                      }
+                      break;
+
+                  }
+                  
+                }  
+
+              }
+
+              else {
+
+                victim.setPrevBounce(false);
+
+              }
 
             }
 
@@ -134,13 +157,13 @@ void PlayGameState::update(StateMachine & machine) {
 
       if (this->victimDelay == 0) {
 
-        uint8_t maxDelay = 110;
-        uint8_t minDelay = 80;
-        uint8_t countdown = 30;
+        uint8_t maxDelay = 75;
+        uint8_t minDelay = 50;
+        uint8_t countdown = 20;
         
-        if (gameStats.score < 180)  { maxDelay = 200 - (gameStats.score / 2); }
-        if (gameStats.score < 140)  { minDelay = 150 - (gameStats.score / 2); }
-        if (gameStats.score < 280)  { countdown = 100 - (gameStats.score / 4); }
+        if (gameStats.score < 150)  { maxDelay = 150 - (gameStats.score / 2); }
+        if (gameStats.score < 100)  { minDelay = 100 - (gameStats.score / 2); }
+        if (gameStats.score < 100)  { countdown = 200 - (gameStats.score / 2) - 125; }
 
         this->victimDelay = random(minDelay, maxDelay);
         this->victimCountdown = countdown;
@@ -178,7 +201,11 @@ void PlayGameState::update(StateMachine & machine) {
 
       if (this->victimCountdown == 0) {
 
-        uint8_t gap = (gameStats.score > 120 ? 2 : (180 - gameStats.score) / 30);
+        uint16_t gap = 3;
+        if (gameStats.score < 200) {
+          gap = ((200 - gameStats.score) / 70) + 3;
+        }
+
         uint8_t nextAvailableVictim = getNextAvailable(gap);
 
         if (nextAvailableVictim != VICTIM_NONE_AVAILABLE) {
@@ -310,12 +337,15 @@ uint8_t PlayGameState::getNextAvailable(uint8_t gap) {
 
   for (auto &victim : this->victims) {
 
-    uint8_t posIndex = victim.getPosIndex();
+    if (victim.getEnabled()) {
 
-    if ( victim.getEnabled() && 
-       (((posIndex < 23) && (absT(posIndex - 23) <= gap)) || ((posIndex < 45) && (absT(posIndex - 45) <= gap))) 
-       ) {
-      return VICTIM_NONE_AVAILABLE;
+      uint8_t posIndex = victim.getPosIndex();
+      int8_t bottom1Gap = 23 - posIndex;
+      int8_t bottom2Gap = 45 - posIndex;
+      
+      if (posIndex == 23 || posIndex == 45)       return VICTIM_NONE_AVAILABLE;
+      if (bottom1Gap < gap || bottom2Gap < gap)   return VICTIM_NONE_AVAILABLE;
+
     }
 
   }
@@ -323,6 +353,20 @@ uint8_t PlayGameState::getNextAvailable(uint8_t gap) {
   for (uint8_t i = 0; i < VICTIMS_MAX_NUMBER; i++) {
 
     if (!this->victims[i].getEnabled()) {
+
+  Serial.print(" ");
+  for (auto &victim : this->victims) {
+    Serial.print(victim.getPosIndex());
+    if (victim.getEnabled()) {
+      Serial.print("E ");
+    }
+    else {
+      Serial.print("D ");
+    }
+  }
+  Serial.print(" - ");      
+  Serial.println(gap);      
+
       return i;
     }
 
