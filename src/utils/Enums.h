@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "Utils.h"
 
-#define DEBUG
+//#define DEBUG
 
 //#define TARGET_SCORE_BASE 2
 //#define TARGET_SCORE_PER_LEVEL 1
@@ -28,7 +28,7 @@
 #define VICTIM_IN_AMBULANCE 102
 
 #define VICTIM_COUNTDOWN 180
-#define VICTIM_COUNTDOWN_NONE 255
+#define VICTIM_COUNTDOWN_NONE 65535
 #define VICTIM_NONE_AVAILABLE 255
 
 #define PLAYER_MIN_X_POS 18
@@ -123,7 +123,7 @@ struct GameStats {
     GameStats() { };
 
     uint16_t score = 0;
-    uint16_t misses = 0;
+    uint8_t misses = 0;
     uint16_t level = 0;
     uint8_t xPosition = 0;  // Player x position between sequences ..
     uint16_t targetScore = 0;
@@ -134,7 +134,7 @@ struct GameStats {
 
       this->level = 0;
       this->misses = 0;
-      this->score = 100; //SJH
+      this->score = 0; //SJH
       this->timeOfDay = TimeOfDay::Day;
 
     }

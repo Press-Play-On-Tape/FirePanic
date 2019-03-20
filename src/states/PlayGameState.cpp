@@ -147,51 +147,52 @@ void PlayGameState::update(StateMachine & machine) {
     }
 
 
-    Serial.print("Delay: ");
-    Serial.print(this->victimDelay);
+    #ifdef DEBUG
+    Serial.print("misses: ");
+    Serial.print(gameStats.misses);
     Serial.print(", Countdown: ");
     Serial.print(this->victimCountdown);
     Serial.println("");
-
+    #endif
 
     // Launch a new victim?
 
-    if (arduboy.everyXFrames(2) && gameStats.misses < 3) {
+    // if (arduboy.everyXFrames(2) && gameStats.misses < 3) {
 
-      this->victimDelay--;
+    //   this->victimDelay--;
 
-      if (this->victimDelay == 0) {
+    //   if (this->victimDelay == 0) {
 
-        uint8_t maxDelay = 75;
-        uint8_t minDelay = 50;
-        uint8_t countdown = 20;
+    //     uint8_t maxDelay = 75;
+    //     uint8_t minDelay = 50;
+    //     uint8_t countdown = 20;
         
-        if (gameStats.score < 150)  { maxDelay = 150 - (gameStats.score / 2); }
-        if (gameStats.score < 100)  { minDelay = 100 - (gameStats.score / 2); }
-        if (gameStats.score < 100)  { countdown = 200 - (gameStats.score / 2) - 125; }
+    //     if (gameStats.score < 150)  { maxDelay = 150 - (gameStats.score / 2); }
+    //     if (gameStats.score < 100)  { minDelay = 100 - (gameStats.score / 2); }
+    //     if (gameStats.score < 100)  { countdown = 200 - (gameStats.score / 2) - 125; }
 
-        this->victimDelay = random(minDelay, maxDelay);
-        this->victimCountdown = countdown;
+    //     this->victimDelay = random(minDelay, maxDelay);
+    //     this->victimCountdown = countdown;
 
-        switch (gameStats.score) {
+    //     switch (gameStats.score) {
 
-          case 0 ... 20:
-            this->victimLevel = 0;
-            break;
+    //       case 0 ... 20:
+    //         this->victimLevel = 0;
+    //         break;
 
-          case 21 ... 40:
-            this->victimLevel = random(2);
-            break;
+    //       case 21 ... 40:
+    //         this->victimLevel = random(2);
+    //         break;
 
-          default:
-            this->victimLevel = random(3);
-            break;
+    //       default:
+    //         this->victimLevel = random(3);
+    //         break;
 
-        }
+    //     }
 
-      }
+    //   }
 
-    }
+    // }
 
 
     // Is a victim ready to jump?
@@ -215,7 +216,56 @@ void PlayGameState::update(StateMachine & machine) {
 
         if (nextAvailableVictim != VICTIM_NONE_AVAILABLE) {
           this->victims[nextAvailableVictim].init();
-          this->victimCountdown = VICTIM_COUNTDOWN_NONE;
+          //this->victimCountdown = VICTIM_COUNTDOWN_NONE;
+
+          if (gameStats.misses < 3) {
+
+                  uint16_t maxDelay = 200;
+                  uint16_t minDelay = 100;
+                  
+                  if (gameStats.score < 400)  { maxDelay = 400 - (gameStats.score / 2); }
+                  if (gameStats.score < 200)  { minDelay = 200 - (gameStats.score / 2); }
+
+#ifdef DEBUG
+                  Serial.print("random(");
+                  Serial.print(minDelay);
+                  Serial.print(",");
+                  Serial.print(maxDelay);
+                  Serial.print(") = ");
+#endif                  
+//                  if (gameStats.score < 100)  { countdown = 200 - (gameStats.score / 2) - 125; }
+
+                  // this->victimDelay = random(minDelay, maxDelay);
+                  // this->victimCountdown = countdown;
+                  this->victimCountdown = random(minDelay, maxDelay);
+
+#ifdef DEBUG
+                  Serial.println(this->victimCountdown);
+#endif                  
+
+                  switch (gameStats.score) {
+
+                    case 0 ... 20:
+                      this->victimLevel = 0;
+                      break;
+
+                    case 21 ... 40:
+                      this->victimLevel = random(2);
+                      break;
+
+                    default:
+                      this->victimLevel = random(3);
+                      break;
+
+                  }
+
+          }
+          else {
+
+            this->victimCountdown = VICTIM_COUNTDOWN_NONE;
+
+          }
+
         }
 
       }
@@ -328,21 +378,12 @@ void PlayGameState::update(StateMachine & machine) {
 //
 uint8_t PlayGameState::getNextAvailable(uint8_t gap) {
 
-  // Serial.print(" ");
-  // for (auto &victim : this->victims) {
-  //   Serial.print(victim.getPosIndex());
-  //   if (victim.getEnabled()) {
-  //     Serial.print("E ");
-  //   }
-  //   else {
-  //     Serial.print("D ");
-  //   }
-  // }
-  // Serial.println(" ");
-
+#ifdef DEBUG
 Serial.print("getNextAvailable(");
 Serial.print(gap);
 Serial.print(") - ");
+#endif
+
   for (auto &victim : this->victims) {
 
     if (victim.getEnabled()) {
@@ -350,48 +391,68 @@ Serial.print(") - ");
       uint8_t posIndex = victim.getPosIndex();
       int8_t bottom1Gap = TOP_ARC_1_2 - posIndex;
       int8_t bottom2Gap = TOP_ARC_2_3 - posIndex;
+
+#ifdef DEBUG
 Serial.print(bottom1Gap);
 Serial.print(",");
 Serial.print(bottom2Gap);
 Serial.print(" ");
+#endif
       
       if (posIndex == TOP_ARC_1_2 || posIndex == TOP_ARC_2_3)       {
+#ifdef DEBUG
 Serial.println(" - VN1");
+#endif
         return VICTIM_NONE_AVAILABLE;
       }
       if ((bottom1Gap > 0 && bottom1Gap < gap) || (bottom2Gap > 0 && bottom2Gap < gap))   {
+#ifdef DEBUG
 Serial.println(" - VN2");
+#endif
         return VICTIM_NONE_AVAILABLE;
       }
 
     }
 
   }
+#ifdef DEBUG
 Serial.println(". ");
+#endif
 
   for (uint8_t i = 0; i < VICTIMS_MAX_NUMBER; i++) {
 
     if (!this->victims[i].getEnabled()) {
 
-  Serial.print(" ");
+#ifdef DEBUG
+Serial.print(" ");
+#endif
   for (auto &victim : this->victims) {
-    Serial.print(victim.getPosIndex());
+#ifdef DEBUG
+Serial.print(victim.getPosIndex());
+#endif
     if (victim.getEnabled()) {
-      Serial.print("E ");
+#ifdef DEBUG
+Serial.print("E ");
+#endif
     }
     else {
-      Serial.print("D ");
+#ifdef DEBUG
+Serial.print("D ");
+#endif
     }
   }
-  Serial.print(" - ");      
-  Serial.println(i);      
-
+#ifdef DEBUG
+Serial.print(" - ");      
+Serial.println(i);      
+#endif
       return i;
     }
 
   }
 
-  Serial.println(VICTIM_NONE_AVAILABLE);      
+#ifdef DEBUG
+Serial.println(VICTIM_NONE_AVAILABLE);      
+#endif
   return VICTIM_NONE_AVAILABLE;
 
 }
