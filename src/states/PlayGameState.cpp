@@ -1,6 +1,7 @@
 #include "PlayGameState.h"
 
 #include "../utils/Arduboy2Ext.h"
+#include "../utils/Physics.h"
 #include "../images/Images.h"
 
 
@@ -32,6 +33,7 @@ void PlayGameState::update(StateMachine & machine) {
 
   if (!BaseState::getPaused()) {
 
+
     // Update victim positions ..
     {
       uint8_t playerXCentre = this->player.getX() + PLAYER_WIDTH_HALF;
@@ -53,20 +55,16 @@ void PlayGameState::update(StateMachine & machine) {
               uint8_t victimXCentre = victimX + VICTIM_WIDTH_HALF;
               uint8_t delta = absT(victimXCentre - playerXCentre);
 
-              if (posIndex == 10 || posIndex == 34 || posIndex == 55) {
+              if (posIndex == (BOTTOM_ARC_1 - 1) || posIndex == (BOTTOM_ARC_2 - 1) || posIndex == (BOTTOM_ARC_3 - 1)) {
 
                 if (delta <= ACCURACY_TOLERANCE) {
-// Serial.println("T-1");
                   victim.setPrevBounce(true);
                 }
                 
               }
 
-              else if (posIndex == 11 || posIndex == 35 || posIndex == 56) {
-// Serial.print("PB: ");
-// Serial.print(victim.getPrevBounce());
-// Serial.print(", delta : ");
-// Serial.println(delta);
+              else if (posIndex == BOTTOM_ARC_1 || posIndex == BOTTOM_ARC_2 || posIndex == BOTTOM_ARC_3) {
+
                 if (!victim.getPrevBounce() && delta > ACCURACY_TOLERANCE) {
 
                   victim.setAlive(VICTIM_MISSED_TRAMPOLINE);
@@ -149,6 +147,13 @@ void PlayGameState::update(StateMachine & machine) {
     }
 
 
+    Serial.print("Delay: ");
+    Serial.print(this->victimDelay);
+    Serial.print(", Countdown: ");
+    Serial.print(this->victimCountdown);
+    Serial.println("");
+
+
     // Launch a new victim?
 
     if (arduboy.everyXFrames(2) && gameStats.misses < 3) {
@@ -192,7 +197,7 @@ void PlayGameState::update(StateMachine & machine) {
     // Is a victim ready to jump?
 
     if (!this->transitionToRace) {
-
+      
       if (this->victimCountdown > 0 && this->victimCountdown < VICTIM_COUNTDOWN_NONE) {
 
         this->victimCountdown--;
@@ -335,20 +340,34 @@ uint8_t PlayGameState::getNextAvailable(uint8_t gap) {
   // }
   // Serial.println(" ");
 
+Serial.print("getNextAvailable(");
+Serial.print(gap);
+Serial.print(") - ");
   for (auto &victim : this->victims) {
 
     if (victim.getEnabled()) {
 
       uint8_t posIndex = victim.getPosIndex();
-      int8_t bottom1Gap = 23 - posIndex;
-      int8_t bottom2Gap = 45 - posIndex;
+      int8_t bottom1Gap = TOP_ARC_1_2 - posIndex;
+      int8_t bottom2Gap = TOP_ARC_2_3 - posIndex;
+Serial.print(bottom1Gap);
+Serial.print(",");
+Serial.print(bottom2Gap);
+Serial.print(" ");
       
-      if (posIndex == 23 || posIndex == 45)       return VICTIM_NONE_AVAILABLE;
-      if (bottom1Gap < gap || bottom2Gap < gap)   return VICTIM_NONE_AVAILABLE;
+      if (posIndex == TOP_ARC_1_2 || posIndex == TOP_ARC_2_3)       {
+Serial.println(" - VN1");
+        return VICTIM_NONE_AVAILABLE;
+      }
+      if ((bottom1Gap > 0 && bottom1Gap < gap) || (bottom2Gap > 0 && bottom2Gap < gap))   {
+Serial.println(" - VN2");
+        return VICTIM_NONE_AVAILABLE;
+      }
 
     }
 
   }
+Serial.println(". ");
 
   for (uint8_t i = 0; i < VICTIMS_MAX_NUMBER; i++) {
 
@@ -365,13 +384,14 @@ uint8_t PlayGameState::getNextAvailable(uint8_t gap) {
     }
   }
   Serial.print(" - ");      
-  Serial.println(gap);      
+  Serial.println(i);      
 
       return i;
     }
 
   }
 
+  Serial.println(VICTIM_NONE_AVAILABLE);      
   return VICTIM_NONE_AVAILABLE;
 
 }

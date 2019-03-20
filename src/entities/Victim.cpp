@@ -114,7 +114,7 @@ void Victim::move() {
   
   this->posIndex++;  
 
-  if (this->posIndex == 76) {
+  if (this->posIndex == PYHSICS_ARC_NO_OF_ELEM) {
     this->posIndex = 0;
     this->enabled = false;
     return;
