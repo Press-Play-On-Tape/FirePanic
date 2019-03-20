@@ -64,6 +64,12 @@ uint8_t Victim::getAlive() {
 
 }
 
+bool Victim::getPrevBounce() {
+
+  return this->prevBounce;
+
+}
+
 void Victim::setEnabled(bool value) {
 
   this->enabled = value;
@@ -73,6 +79,12 @@ void Victim::setEnabled(bool value) {
 void Victim::setAlive(uint8_t value) {
 
   this->alive = value;
+
+}
+
+void Victim::setPrevBounce(bool value) {
+
+  this->prevBounce = value;
 
 }
 
@@ -102,7 +114,7 @@ void Victim::move() {
   
   this->posIndex++;  
 
-  if (this->posIndex == 76) {
+  if (this->posIndex == PYHSICS_ARC_NO_OF_ELEM) {
     this->posIndex = 0;
     this->enabled = false;
     return;
