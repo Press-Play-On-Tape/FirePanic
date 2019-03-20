@@ -493,11 +493,26 @@ void RaceState::render(StateMachine & machine) {
 
   for (uint8_t i = 0; i < 4; i++) {
 
-    SpritesB::drawOverwrite(this->xScenery + (i*64), 0, Images::Building_BG, static_cast<uint8_t>(gameStats.timeOfDay));
+    if (gameStats.timeOfDay == TimeOfDay::Day) {
 
-    if (this->showHospital) {
+      SpritesB::drawOverwrite(this->xScenery + (i*64), 0, Images::Building_BG, 0);
 
-      SpritesB::drawOverwrite(this->xHospital, 0, Images::Hospital, static_cast<uint8_t>(gameStats.timeOfDay));
+      if (this->showHospital) {
+
+        SpritesB::drawOverwrite(this->xHospital, 0, Images::Hospital, 0);
+
+      }
+
+    }
+    else {
+
+      SpritesB::drawErase(this->xScenery + (i*64), 0, Images::Building_BG, 0);
+
+      if (this->showHospital) {
+
+        SpritesB::drawErase(this->xHospital, 0, Images::Hospital, 0);
+
+      }
 
     }
 
@@ -505,7 +520,7 @@ void RaceState::render(StateMachine & machine) {
 
   for (uint8_t i = 0; i < 10; i++) {
 
-    SpritesB::drawExternalMask(this->xGrass + (i*16), 21, Images::Race_Grass, Images::Race_Grass_Mask, 0, 0);
+    SpritesB::drawExternalMask(this->xGrass + (i*16), 20, Images::Race_Grass, Images::Race_Grass_Mask, 0, 0);
 
   }
   
@@ -635,7 +650,7 @@ void RaceState::render(StateMachine & machine) {
 
   BaseState::renderGameOverOrPause(false);
 
-	arduboy.displayWithBackground(TimeOfDay::Night);
+	arduboy.displayWithBackground(TimeOfDay::Mixed);
 
 }
 

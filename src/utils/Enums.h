@@ -87,6 +87,7 @@ const uint8_t cloud_Y_Pos[] = { 10, 7, 0, 0, 0 };
 enum class TimeOfDay : uint8_t {
   Day,
   Night,
+  Mixed
 };
 
 enum class GameStateType : uint8_t {
