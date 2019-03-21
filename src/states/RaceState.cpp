@@ -139,7 +139,7 @@ void RaceState::update(StateMachine & machine) {
 
       // Right -------------------------------------------------------------------------------------------
 
-      if ((pressed & RIGHT_BUTTON) && this->ambulance.getX() < 70) { 
+      if (arduboy.getFrameCount(3) < 2 && (pressed & RIGHT_BUTTON) && this->ambulance.getX() < 70) { 
 
         uint8_t carCollision = checkForCollisions(arduboy, this->ambulance.getX() + 1, this->ambulance.getY());
 
@@ -426,7 +426,7 @@ bool RaceState::checkLaunchCollisions(int16_t x, uint8_t lane) {
 
   for (auto &car : this->otherCars) {
 
-    if (car.getEnabled() && car.getLane() == lane && absT(car.getX() - x) <= RACE_OTHERCAR_WIDTH) {
+    if (car.getEnabled() && car.getLane() == lane && absT(car.getX() - x) <= (RACE_OTHERCAR_WIDTH + 20)) {
       collision++;
     }
 
@@ -559,7 +559,7 @@ void RaceState::render(StateMachine & machine) {
 
     if (this->coin.getEnabled() && iLane == this->coin.getLane()) {
 
-      SpritesB::drawExternalMask(this->coin.getX(), 30 + (this->coin.getLane() * 13), Images::Race_Prize, Images::Race_Prize_Mask, this->coin_index, this->coin_index);
+      SpritesB::drawExternalMask(this->coin.getX(), 30 + (this->coin.getLane() * 13) + (this->coin.getLane() == 0 ? 1 : 0), Images::Race_Prize, Images::Race_Prize_Mask, this->coin_index, this->coin_index);
 
     }
 
