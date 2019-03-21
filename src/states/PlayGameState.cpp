@@ -15,8 +15,17 @@ void PlayGameState::activate(StateMachine & machine) {
   this->gameOver = false;
   this->angel.setEnabled(false);
   this->transitionToRace = false;
+  this->player.setX(PLAYER_MIN_X_POS);
 
   BaseState::setPaused(false);
+
+  for (auto &victim : victims) {
+
+    victim.setEnabled(false);
+    victim.setAlive(0);
+    victim.setAlive(0);
+
+  }
 
 }
 
@@ -47,7 +56,7 @@ void PlayGameState::update(StateMachine & machine) {
             uint8_t victimX = victim.getX();
 
             if (victimX == VICTIM_IN_AMBULANCE) {
-              gameStats.score++;
+              gameStats.score = gameStats.score + 5;
             }
             else {
 
@@ -115,7 +124,7 @@ void PlayGameState::update(StateMachine & machine) {
 
       // If its the end of the game, remove all other victims ..
 
-      if (gameStats.misses == 3) {
+      if (gameStats.misses >= 3) {
 
         for (auto &victim : victims) {
 
@@ -147,7 +156,7 @@ void PlayGameState::update(StateMachine & machine) {
     }
 
 
-    #ifdef DEBUG
+    #ifdef DEBUG_PLAYGAME
     Serial.print("misses: ");
     Serial.print(gameStats.misses);
     Serial.print(", Countdown: ");
@@ -208,8 +217,8 @@ void PlayGameState::update(StateMachine & machine) {
       if (this->victimCountdown == 0) {
 
         uint16_t gap = 3;
-        if (gameStats.score < 200) {
-          gap = ((200 - gameStats.score) / 70) + 3;
+        if (gameStats.score < 1000) {
+          gap = ((1000 - gameStats.score) / 250) + 3;
         }
 
         uint8_t nextAvailableVictim = getNextAvailable(gap);
@@ -220,13 +229,13 @@ void PlayGameState::update(StateMachine & machine) {
 
           if (gameStats.misses < 3) {
 
-                  uint16_t maxDelay = 200;
-                  uint16_t minDelay = 100;
+                  uint16_t maxDelay = 150;
+                  uint16_t minDelay = 75;
                   
-                  if (gameStats.score < 400)  { maxDelay = 400 - (gameStats.score / 2); }
-                  if (gameStats.score < 200)  { minDelay = 200 - (gameStats.score / 2); }
+                  if (gameStats.score < 1500)  { maxDelay = (1500 - (gameStats.score / 2)) / 5; }
+                  if (gameStats.score < 750)   { minDelay = (750 - (gameStats.score / 2)) / 5; }
 
-#ifdef DEBUG
+#ifdef DEBUG_PLAYGAME
                   Serial.print("random(");
                   Serial.print(minDelay);
                   Serial.print(",");
@@ -239,7 +248,7 @@ void PlayGameState::update(StateMachine & machine) {
                   // this->victimCountdown = countdown;
                   this->victimCountdown = random(minDelay, maxDelay);
 
-#ifdef DEBUG
+#ifdef DEBUG_PLAYGAME
                   Serial.println(this->victimCountdown);
 #endif                  
 
@@ -327,7 +336,7 @@ void PlayGameState::update(StateMachine & machine) {
 
     }
 
-    if (gameStats.misses == 3 && allVictimsDisabled()) {
+    if (gameStats.misses >= 3 && allVictimsDisabled()) {
 
       this->gameOver = true;
 
@@ -349,7 +358,14 @@ void PlayGameState::update(StateMachine & machine) {
     if (allVictimsDisabled()) {
       gameStats.xPosition = this->player.getX();
       gameStats.level++;
-      machine.changeState(GameStateType::GameIntroScreen, GameStateType::PlayRaceScreen);
+
+      if (gameStats.misses < 3) {
+        machine.changeState(GameStateType::GameIntroScreen, GameStateType::PlayRaceScreen);
+      }
+      else {
+        this->gameOver = true;
+      }
+      
     }
 
   }
@@ -378,7 +394,7 @@ void PlayGameState::update(StateMachine & machine) {
 //
 uint8_t PlayGameState::getNextAvailable(uint8_t gap) {
 
-#ifdef DEBUG
+#ifdef DEBUG_PLAYGAME
 Serial.print("getNextAvailable(");
 Serial.print(gap);
 Serial.print(") - ");
@@ -389,33 +405,45 @@ Serial.print(") - ");
     if (victim.getEnabled()) {
 
       uint8_t posIndex = victim.getPosIndex();
-      int8_t bottom1Gap = TOP_ARC_1_2 - posIndex;
-      int8_t bottom2Gap = TOP_ARC_2_3 - posIndex;
+      // int8_t bottom1Gap = (posIndex < TOP_ARC_1_2 ? TOP_ARC_1_2 - posIndex : 0);
+      // int8_t bottom2Gap = (posIndex < TOP_ARC_2_3 ? TOP_ARC_2_3 - posIndex : 0);
 
-#ifdef DEBUG
+#ifdef DEBUG_PLAYGAME
+Serial.print("PosIndex: ");
+Serial.print(posIndex);
+Serial.print(",");
+#endif
+      
+      if (posIndex == TOP_ARC_1_2 || posIndex == TOP_ARC_2_3) { //22, 44,  b1g = -22, b2g = -1
+#ifdef DEBUG_PLAYGAME
+Serial.println(" - VN1");
+#endif
+        return VICTIM_NONE_AVAILABLE;
+      }
+
+      {
+        int8_t bottom1Gap = absT(TOP_ARC_1_2 - posIndex);
+        int8_t bottom2Gap = absT(TOP_ARC_2_3 - posIndex);
+#ifdef DEBUG_PLAYGAME
 Serial.print(bottom1Gap);
 Serial.print(",");
 Serial.print(bottom2Gap);
 Serial.print(" ");
 #endif
-      
-      if (posIndex == TOP_ARC_1_2 || posIndex == TOP_ARC_2_3)       {
-#ifdef DEBUG
-Serial.println(" - VN1");
-#endif
-        return VICTIM_NONE_AVAILABLE;
-      }
-      if ((bottom1Gap > 0 && bottom1Gap < gap) || (bottom2Gap > 0 && bottom2Gap < gap))   {
-#ifdef DEBUG
-Serial.println(" - VN2");
-#endif
-        return VICTIM_NONE_AVAILABLE;
+//        if ((bottom1Gap <= 0 || (bottom1Gap > 0 && bottom1Gap < gap)) || (bottom2Gap <=0 || (bottom2Gap > 0 && bottom2Gap < gap))   {
+        if (bottom1Gap < gap || bottom2Gap < gap)   {
+  #ifdef DEBUG_PLAYGAME
+  Serial.println(" - VN2");
+  #endif
+          return VICTIM_NONE_AVAILABLE;
+        }
+
       }
 
     }
 
   }
-#ifdef DEBUG
+#ifdef DEBUG_PLAYGAME
 Serial.println(". ");
 #endif
 
@@ -423,25 +451,25 @@ Serial.println(". ");
 
     if (!this->victims[i].getEnabled()) {
 
-#ifdef DEBUG
+#ifdef DEBUG_PLAYGAME
 Serial.print(" ");
 #endif
   for (auto &victim : this->victims) {
-#ifdef DEBUG
+#ifdef DEBUG_PLAYGAME
 Serial.print(victim.getPosIndex());
 #endif
     if (victim.getEnabled()) {
-#ifdef DEBUG
+#ifdef DEBUG_PLAYGAME
 Serial.print("E ");
 #endif
     }
     else {
-#ifdef DEBUG
+#ifdef DEBUG_PLAYGAME
 Serial.print("D ");
 #endif
     }
   }
-#ifdef DEBUG
+#ifdef DEBUG_PLAYGAME
 Serial.print(" - ");      
 Serial.println(i);      
 #endif
@@ -450,7 +478,7 @@ Serial.println(i);
 
   }
 
-#ifdef DEBUG
+#ifdef DEBUG_PLAYGAME
 Serial.println(VICTIM_NONE_AVAILABLE);      
 #endif
   return VICTIM_NONE_AVAILABLE;
@@ -571,7 +599,7 @@ void PlayGameState::render(StateMachine & machine) {
 
   // Render victim about to jump ..
 
-  if (this->victimCountdown < VICTIM_COUNTDOWN_NONE) {
+  if (this->victimCountdown < 75) {//VICTIM_COUNTDOWN_NONE) {
 
     SpritesB::drawExternalMask(edgePos[this->victimLevel * 4], edgePos[(this->victimLevel * 4) + 1], Images::Victim_OnEdge_01, Images::Victim_OnEdge_01_Mask, 0, 0);
 

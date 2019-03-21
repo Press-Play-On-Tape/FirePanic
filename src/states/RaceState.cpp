@@ -3,7 +3,7 @@
 #include "../utils/EEPROM_Utils.h"
 #include "../utils/Enums.h"
 
-#define DIST_MAXIMUM 5000
+#define DIST_MAXIMUM 3200
 #define DIST_INTERVAL DIST_MAXIMUM / 10
 #define DIST_NO_NEW_CARS 300
 #define DIST_GO_TO_HOSPITAL 128
@@ -139,7 +139,7 @@ void RaceState::update(StateMachine & machine) {
 
       // Right -------------------------------------------------------------------------------------------
 
-      if ((pressed & RIGHT_BUTTON) && this->ambulance.getX() < 50) { 
+      if ((pressed & RIGHT_BUTTON) && this->ambulance.getX() < 70) { 
 
         uint8_t carCollision = checkForCollisions(arduboy, this->ambulance.getX() + 1, this->ambulance.getY());
 
@@ -271,7 +271,7 @@ void RaceState::update(StateMachine & machine) {
           Rect ambulanceRect = { this->ambulance.getX(), this->ambulance.getY() + 21, RACE_AMBULANCE_WIDTH, 10 };
 
           if (arduboy.collide(coinRect, ambulanceRect)) {
-            gameStats.score++;
+            gameStats.score = gameStats.score + 2;
             this->coin.setEnabled(false);
           }
 
@@ -370,7 +370,7 @@ void RaceState::decHealth(StateMachine & machine) {
   
   if (this->health <= 0) {
     this->health = RACE_PLAYER_HEALTH_MAX;
-    if (gameStats.score > 0) gameStats.score--;
+    if (gameStats.score > 9) gameStats.score = gameStats.score - 10;
   }
 
 }
@@ -493,9 +493,15 @@ void RaceState::render(StateMachine & machine) {
 
   for (uint8_t i = 0; i < 4; i++) {
 
+    int16_t x = this->xScenery + (i*64);
+
     if (gameStats.timeOfDay == TimeOfDay::Day) {
 
-      SpritesB::drawOverwrite(this->xScenery + (i*64), 0, Images::Building_BG, 0);
+      if (!this->showHospital || (x != this->xHospital)) {
+      
+        SpritesB::drawOverwrite(x, 0, Images::Building_BG, 0);
+
+      }
 
       if (this->showHospital) {
 
@@ -506,7 +512,11 @@ void RaceState::render(StateMachine & machine) {
     }
     else {
 
-      SpritesB::drawErase(this->xScenery + (i*64), 0, Images::Building_BG, 0);
+      if (!this->showHospital || (x != this->xHospital)) {
+
+        SpritesB::drawErase(x, 0, Images::Building_BG, 0);
+      
+      }
 
       if (this->showHospital) {
 

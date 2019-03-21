@@ -4,12 +4,13 @@
 #include "Utils.h"
 
 //#define DEBUG
+//#define DEBUG_PLAYGAME
 
-//#define TARGET_SCORE_BASE 2
-//#define TARGET_SCORE_PER_LEVEL 1
+// #define TARGET_SCORE_BASE 2
+// #define TARGET_SCORE_PER_LEVEL 1
 // #define TARGET_SCORE_BASE 10
 // #define TARGET_SCORE_PER_LEVEL 5
-#define TARGET_SCORE_BASE 100
+#define TARGET_SCORE_BASE 50
 #define TARGET_SCORE_PER_LEVEL 50
 
 #define ANGEL_MISS_1_LEFT 76

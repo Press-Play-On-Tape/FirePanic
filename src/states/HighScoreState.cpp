@@ -46,7 +46,7 @@ void HighScoreState::update(StateMachine & machine) {
 
   if (this->winnerIdx < NO_WINNER) {
 
-    if (arduboy.everyXFrames(8)) {
+    if (arduboy.everyXFrames(12)) {
 
       if (pressed & UP_BUTTON) {
 

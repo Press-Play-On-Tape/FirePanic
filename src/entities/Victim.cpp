@@ -112,7 +112,12 @@ void Victim::incPuffIndex() {
 
 void Victim::move() {
   
-  this->posIndex++;  
+  if (this->alive == 0) {
+    this->posIndex++;  
+  }
+  else {
+    this->posIndex = 255;
+  }
 
   if (this->posIndex == PYHSICS_ARC_NO_OF_ELEM) {
     this->posIndex = 0;
@@ -120,6 +125,17 @@ void Victim::move() {
     return;
   }
 
+  #ifdef DEBUG
+Serial.print("alive ");
+Serial.print(this->alive);
+Serial.print(", posIndex ");
+Serial.print(this->posIndex);
+Serial.print(", x=");
+Serial.print(x);
+Serial.print(",y=");
+Serial.print(y);
+Serial.print(" > ");
+#endif
   switch (this->alive) {
 
     case 0: // alive
@@ -148,6 +164,16 @@ void Victim::move() {
       break;
 
   }
+
+#ifdef DEBUG
+Serial.print(" x=");
+Serial.print(x);
+Serial.print(",y=");
+Serial.print(y);
+Serial.print(", Enabled ");
+Serial.print(this->enabled);
+Serial.println(" ");
+#endif
 
 }
 
