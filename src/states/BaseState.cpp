@@ -46,6 +46,38 @@ void BaseState::renderScore(StateMachine & machine, TimeOfDay timeOfDay, bool re
 }
 
 
+void BaseState::renderMisses(StateMachine & machine, bool renderLatest) {
+
+  auto & gameStats = machine.getContext().gameStats;
+
+  switch (gameStats.misses) {
+
+    case 0: break;
+
+    case 1:
+      if (renderLatest) {
+        SpritesB::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+      }
+      break;
+
+    case 2:
+      SpritesB::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+      if (renderLatest) {
+        SpritesB::drawExternalMask(ANGEL_MISS_2_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+      }
+      break;
+      
+    default: 
+      SpritesB::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+      SpritesB::drawExternalMask(ANGEL_MISS_2_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+      SpritesB::drawExternalMask(ANGEL_MISS_3_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+      break;
+
+  }
+  
+}
+
+
 void BaseState::renderCommonScenery(StateMachine & machine, bool incSmoke, bool incRHSBuilding) {
 
   auto & gameStats = machine.getContext().gameStats;

@@ -594,32 +594,33 @@ void RaceState::render(StateMachine & machine) {
 
   bool deathFlash = true;
   if (this->deathCountdown > 0) deathFlash = ((this->deathCountdown / 30) % 2) == 1;
-  switch (gameStats.misses) {
+  BaseState::renderMisses(machine, deathFlash);
+  // switch (gameStats.misses) {
 
-    case 0: break;
+  //   case 0: break;
 
-    case 1:
-      if (deathFlash) {
-        SpritesB::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
-      }
-      break;
+  //   case 1:
+  //     if (deathFlash) {
+  //       SpritesB::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+  //     }
+  //     break;
 
-    case 2:
-      SpritesB::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
-      if (deathFlash) {
-        SpritesB::drawExternalMask(ANGEL_MISS_2_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
-      }
-      break;
+  //   case 2:
+  //     SpritesB::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+  //     if (deathFlash) {
+  //       SpritesB::drawExternalMask(ANGEL_MISS_2_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+  //     }
+  //     break;
       
-    default: 
-      SpritesB::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
-      SpritesB::drawExternalMask(ANGEL_MISS_2_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
-      if (deathFlash) {      
-        SpritesB::drawExternalMask(ANGEL_MISS_3_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
-      }
-      break;
+  //   default: 
+  //     SpritesB::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+  //     SpritesB::drawExternalMask(ANGEL_MISS_2_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+  //     if (deathFlash) {      
+  //       SpritesB::drawExternalMask(ANGEL_MISS_3_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+  //     }
+  //     break;
 
-  }
+  // }
 
 
   // Render road lines ..
