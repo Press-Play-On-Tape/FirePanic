@@ -15,7 +15,6 @@ void HighScoreState::activate(StateMachine & machine) {
   this->pressACounter = HS_PRESS_A_DELAY;
   this->winnerIdx = EEPROM_Utils::saveScore(gameStats.score);
 
-	arduboy.setRGBled(0, 0, 0);
   arduboy.clearButtonState();
 
 
@@ -109,7 +108,7 @@ void HighScoreState::update(StateMachine & machine) {
 
 	// Clear scores ..
 
-	if ((pressed & UP_BUTTON) && (pressed & DOWN_BUTTON)) {
+	if ((pressed & LEFT_BUTTON) && (pressed & RIGHT_BUTTON)) {
 
 		clearScores++;
 

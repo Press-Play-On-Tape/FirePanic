@@ -57,11 +57,21 @@ void RaceState::activate(StateMachine & machine) {
 //  Handle state updates .. 
 //
 void RaceState::update(StateMachine & machine) {
-
+	
   auto & arduboy = machine.getContext().arduboy;
   auto & gameStats = machine.getContext().gameStats;
   auto pressed = arduboy.pressedButtons();
   auto justPressed = arduboy.justPressedButtons();
+
+
+  // Turn led off?
+
+  if (this->ledCountdown > 0) {
+
+    this->ledCountdown--;
+    if (this->ledCountdown == 0)   arduboy.setRGBled(0, 0, 0);
+
+  }
 
   if (!BaseState::getPaused()) {
 
@@ -290,6 +300,10 @@ void RaceState::update(StateMachine & machine) {
           Rect ambulanceRect = { this->ambulance.getX(), this->ambulance.getY() + 21, RACE_AMBULANCE_WIDTH, 10 };
 
           if (arduboy.collide(coinRect, ambulanceRect)) {
+
+            arduboy.setRGBled(0, LED_BRIGHTNESS, 0);
+            this->ledCountdown = 10;
+
             gameStats.score = gameStats.score + 2;
             this->coin.setEnabled(false);
           }
@@ -395,7 +409,11 @@ void RaceState::checkRoadExtents() {
 //
 void RaceState::decHealth(StateMachine & machine) {
   
+	auto & arduboy = machine.getContext().arduboy;
   auto & gameStats = machine.getContext().gameStats;
+
+  arduboy.setRGBled(LED_BRIGHTNESS, 0, 0);
+  this->ledCountdown = 10;
 
   gameStats.health = gameStats.health - RACE_PLAYER_HEALTH_DEC;
   this->healthShowCountdown = 100;

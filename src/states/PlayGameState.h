@@ -19,6 +19,7 @@ class PlayGameState : public BaseState { //GameState<GameContext, GameStateType>
     uint16_t victimCountdown = 200;
     uint8_t victimDelay = 1;
     uint8_t victimLevel = 0;
+    uint8_t ledCountdown;
 
     bool transitionToRace = false;
 

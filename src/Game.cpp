@@ -25,7 +25,6 @@
 void Game::setup(void) {
 
 	auto & arduboy = this->context.arduboy;
-	//auto & gameStats = this->context.gameStats;
 
 	arduboy.boot();
 	arduboy.flashlight();
@@ -36,8 +35,6 @@ void Game::setup(void) {
 
 
   EEPROM_Utils::initEEPROM(false);
-
-	arduboy.setRGBled(0, 0, 0);
 
 	this->currentState = GameStateType::SplashScreen; 
 	this->splashScreenState.activate(*this);

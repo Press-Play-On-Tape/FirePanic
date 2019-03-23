@@ -51,25 +51,18 @@ void SplashScreenState::render(StateMachine & machine) {
 
 	auto & arduboy = machine.getContext().arduboy;
 
-  // arduboy.drawCompressed(47, 17, Images::Ppot_Buttons, WHITE);
-  // arduboy.drawCompressed(43, 26, Images::Ppot_ButtonUp, WHITE);
-  // arduboy.drawCompressed(73, 26, Images::Ppot_ButtonUp, WHITE);
   SpritesB::drawOverwrite(47, 17, Images::Ppot_Buttons, 0);
   SpritesB::drawOverwrite(43, 26, Images::Ppot_ButtonUp, 0);
   SpritesB::drawOverwrite(73, 26, Images::Ppot_ButtonUp, 0);
 
   if (this->counter == 0) {
 
-    // arduboy.drawCompressed(58, 26, Images::Ppot_ButtonUp, WHITE);
-    // arduboy.drawCompressed(26, 46, Images::Ppot_Caption, WHITE);
     SpritesB::drawOverwrite(58, 26, Images::Ppot_ButtonUp, 0);
     SpritesB::drawOverwrite(26, 46, Images::Ppot_Caption, 0);
 
   }
   else {
 
-    // arduboy.drawCompressed(58, 26, Images::Ppot_ButtonDown, WHITE);
-    // arduboy.drawCompressed(44, 46, Images::Ppot_Loading, WHITE);
     SpritesB::drawOverwrite(58, 26, Images::Ppot_ButtonDown, 0);
     SpritesB::drawOverwrite(44, 46, Images::Ppot_Loading, 0);
 

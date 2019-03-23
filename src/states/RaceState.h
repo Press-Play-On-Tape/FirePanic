@@ -28,6 +28,7 @@ class RaceState : public BaseState {
 
     uint8_t healthShowCountdown = 0;
     uint8_t deathCountdown = 0;
+    uint8_t ledCountdown = 0;
 
     uint16_t carLaunch_RandomMax;
     uint16_t carLaunch_RandomMin;

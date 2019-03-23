@@ -40,6 +40,17 @@ void PlayGameState::update(StateMachine & machine) {
 	auto justPressed = arduboy.justPressedButtons();
 	auto pressed = arduboy.pressedButtons();
 
+
+  // Turn led off?
+  
+  if (this->ledCountdown > 0) {
+
+    this->ledCountdown--;
+    if (this->ledCountdown == 0)   arduboy.setRGBled(0, 0, 0);
+
+  }
+
+
   if (!BaseState::getPaused()) {
 
 
@@ -56,7 +67,11 @@ void PlayGameState::update(StateMachine & machine) {
             uint8_t victimX = victim.getX();
 
             if (victimX == VICTIM_IN_AMBULANCE) {
+
               gameStats.score = gameStats.score + 5;
+              arduboy.setRGBled(0, LED_BRIGHTNESS, 0);
+              this->ledCountdown = 10;
+
             }
             else {
 
@@ -78,6 +93,8 @@ void PlayGameState::update(StateMachine & machine) {
 
                   victim.setAlive(VICTIM_MISSED_TRAMPOLINE);
                   gameStats.misses++;
+                  arduboy.setRGBled(LED_BRIGHTNESS, 0, 0);
+                  this->ledCountdown = 10;
 
                   switch (victim.getX()) {
 
