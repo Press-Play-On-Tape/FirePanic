@@ -400,7 +400,6 @@ void RaceState::decHealth(StateMachine & machine) {
   gameStats.health = gameStats.health - RACE_PLAYER_HEALTH_DEC;
   this->healthShowCountdown = 100;
 
-
   if (gameStats.health <= 0) {
 
     gameStats.misses++;
@@ -682,27 +681,7 @@ void RaceState::render(StateMachine & machine) {
   }
 
 
-  // // Render armour gauge ..
-
-
-  // if (this->ambulance.getPuffIndexes() > 0) {
-
-  //   SpritesB::drawExternalMask(this->ambulance.getX() + 2, this->ambulance.getY() - 7, Images::armour_gauge, Images::armour_gauge_mask, 0, 0);
-
-  //   if ((this->health <= 20 && flash) || this->health > 20) {
-
-  //     for (int i = 0, xOffset = this->ambulance.getX() + 2; i < this->health; i = i + 10, xOffset = xOffset + 2) {
-
-  //       SpritesB::drawExternalMask(xOffset, this->ambulance.getY() - 7 + 2, Images::armour_gauge_item, Images::armour_gauge_item_mask, 0, 0);
-
-  //     }
-
-  //   }
-
-  // }
-
-
-  // Pause?
+  // Render Game Over or Pause?
 
   BaseState::renderGameOverOrPause(machine);
 
