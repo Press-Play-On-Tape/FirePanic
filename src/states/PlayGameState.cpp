@@ -310,18 +310,7 @@ void PlayGameState::update(StateMachine & machine) {
 
   // Handle other buttons ..
 
-  if (gameStats.gameOver) {
-
-    if (justPressed & A_BUTTON) {
-      machine.changeState(GameStateType::HighScoreScreen, GameStateType::None); 
-    }
-
-  }
-  else {
-
-    BaseState::handlePauseButton(machine);
-
-  }
+  BaseState::handleCommonButtons(machine);
 
 }
 
@@ -402,30 +391,6 @@ void PlayGameState::render(StateMachine & machine) {
   // Render misses ..
 
   BaseState::renderMisses(machine, (!this->angel.getEnabled() || this->puffIndex >= 3));
-  // switch (gameStats.misses) {
-
-  //   case 0: break;
-
-  //   case 1:
-  //     if (!this->angel.getEnabled() || this->puffIndex >= 3) {
-  //       SpritesB::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
-  //     }
-  //     break;
-
-  //   case 2:
-  //     SpritesB::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
-  //     if (!this->angel.getEnabled() || this->puffIndex >= 3) {
-  //       SpritesB::drawExternalMask(ANGEL_MISS_2_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
-  //     }
-  //     break;
-      
-  //   default: 
-  //     SpritesB::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
-  //     SpritesB::drawExternalMask(ANGEL_MISS_2_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
-  //     SpritesB::drawExternalMask(ANGEL_MISS_3_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
-  //     break;
-
-  // }
 
 
   // Render score ..

@@ -74,7 +74,7 @@ void BaseState::renderMisses(StateMachine & machine, bool renderLatest) {
       break;
 
   }
-  
+
 }
 
 
@@ -171,13 +171,25 @@ void BaseState::setPaused(bool value) {
 
 }
 
-void BaseState::handlePauseButton(StateMachine & machine) {
+void BaseState::handleCommonButtons(StateMachine & machine) {
 
 	auto & arduboy = machine.getContext().arduboy;
+  auto & gameStats = machine.getContext().gameStats;
   auto justPressed = arduboy.justPressedButtons();
 
-  if (justPressed & B_BUTTON) {
-    this->paused = !this->paused; 
+  if (gameStats.gameOver) {
+
+    if (justPressed & A_BUTTON) {
+      machine.changeState(GameStateType::HighScoreScreen, GameStateType::None); 
+    }
+
+  }
+  else {
+
+    if (justPressed & B_BUTTON) {
+      this->paused = !this->paused; 
+    }
+
   }
 
 }
