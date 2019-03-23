@@ -25,7 +25,7 @@ class HighScoreState : public BaseState {
     int16_t score2;
     int16_t score3;
 
-    void renderHighScore(StateMachine & machine, int16_t score, uint8_t x, uint8_t y);
+    void renderHighScore(int16_t score, uint8_t x, uint8_t y);
 
   public:	
   

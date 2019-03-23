@@ -4,9 +4,10 @@
 #include "../utils/Utils.h"
 #include "../utils/Enums.h"
 
-void BaseState::renderScore(StateMachine & machine, TimeOfDay timeOfDay) {
+void BaseState::renderScore(StateMachine & machine, TimeOfDay timeOfDay, bool renderHealth, uint8_t health) {
   	
   auto & gameStats = machine.getContext().gameStats;
+  auto & arduboy = machine.getContext().arduboy;
 
   if (timeOfDay == TimeOfDay::Day) {
     SpritesB::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 1, 0);
@@ -15,19 +16,32 @@ void BaseState::renderScore(StateMachine & machine, TimeOfDay timeOfDay) {
     SpritesB::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
   }
 
-	uint8_t digits[6] = {};
-	extractDigits(digits, gameStats.score);
+  if (!renderHealth) {
 
-	for (uint8_t j = 6; j > 0; --j) {
+    uint8_t digits[6] = {};
+    extractDigits(digits, gameStats.score);
 
-    if (timeOfDay == TimeOfDay::Day) {
-      SpritesB::drawErase(124 - (j*5), 3, Images::Scoreboard_Numbers, digits[j - 1]);
+    for (uint8_t j = 6; j > 0; --j) {
+
+      if (timeOfDay == TimeOfDay::Day) {
+        SpritesB::drawErase(124 - (j*5), 3, Images::Scoreboard_Numbers, digits[j - 1]);
+      }
+      else {
+        SpritesB::drawSelfMasked(124 - (j*5), 3, Images::Scoreboard_Numbers, digits[j - 1]);
+      }
+
     }
-    else {
-      SpritesB::drawSelfMasked(124 - (j*5), 3, Images::Scoreboard_Numbers, digits[j - 1]);
+
+  }
+  else {
+
+    for (uint8_t i = 0; i < health; i = i + 2) {
+      
+      arduboy.drawFastVLine(94 + i, 3, 8);
+
     }
 
-	}
+  }
 
 }
 
@@ -136,12 +150,14 @@ void BaseState::handlePauseButton(StateMachine & machine) {
 
 }
 
-void BaseState::renderGameOverOrPause(bool gameOver) {
+void BaseState::renderGameOverOrPause(StateMachine & machine) {
+
+  auto & gameStats = machine.getContext().gameStats;
 
 
   // Game Over?
 
-  if (gameOver) {
+  if (gameStats.gameOver) {
 
     SpritesB::drawExternalMask(32, 20, Images::GameOver, Images::GameOver_Mask, 0, 0); 
 

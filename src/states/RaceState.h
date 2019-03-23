@@ -24,8 +24,10 @@ class RaceState : public BaseState {
     int8_t xLine2 = 0;
     int16_t distance = 0;
     uint8_t slowDown = 0;
-    uint8_t health = 0;
     uint8_t coin_index = 0;
+
+    uint8_t healthShowCountdown = 0;
+    uint8_t deathCountdown = 0;
 
     uint16_t carLaunch_RandomMax;
     uint16_t carLaunch_RandomMin;

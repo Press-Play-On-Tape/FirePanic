@@ -14,7 +14,7 @@ void GameIntroState::activate(StateMachine & machine) {
 
     this->xAmbulance = 156;
     this->xPlayer = PLAYER_MIN_X_POS + 6 + (30 * 3);
-    gameStats.targetScore = gameStats.score + TARGET_SCORE_BASE + (gameStats.level * TARGET_SCORE_PER_LEVEL);
+    gameStats.targetScore = gameStats.score + TARGET_SCORE_BASE + (gameStats.level * TARGET_SCORE_INC_PER_LEVEL);
 
   }
   else {

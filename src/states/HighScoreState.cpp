@@ -158,10 +158,8 @@ void HighScoreState::update(StateMachine & machine) {
 }
 
 
-void HighScoreState::renderHighScore(StateMachine & machine, int16_t score, uint8_t x, uint8_t y) {
-
-	auto & arduboy = machine.getContext().arduboy;
-
+void HighScoreState::renderHighScore(int16_t score, uint8_t x, uint8_t y) {
+  
   for (uint8_t j = 6, x2 = x - 4; j > 0; --j, x2 += 5) {
     
     uint8_t digits[6] = {};
@@ -195,15 +193,15 @@ void HighScoreState::render(StateMachine & machine) {
 
   font4x6.setCursor(HS_NAME_LEFT - 2, HS_CHAR_TOP);
   font4x6.print(this->player1);
-  renderHighScore(machine, this->score1, HS_SCORE_LEFT, HS_CHAR_TOP);
+  renderHighScore(this->score1, HS_SCORE_LEFT, HS_CHAR_TOP);
 
   font4x6.setCursor(HS_NAME_LEFT - 2, HS_CHAR_TOP + HS_CHAR_V_SPACING);
   font4x6.print(this->player2);
-  renderHighScore(machine, this->score2, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
+  renderHighScore(this->score2, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
 
   font4x6.setCursor(HS_NAME_LEFT - 2, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
   font4x6.print(this->player3);
-  renderHighScore(machine, this->score3, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
+  renderHighScore(this->score3, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
 
 
 

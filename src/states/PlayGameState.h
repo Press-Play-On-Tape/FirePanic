@@ -20,7 +20,6 @@ class PlayGameState : public BaseState { //GameState<GameContext, GameStateType>
     uint8_t victimDelay = 1;
     uint8_t victimLevel = 0;
 
-    bool gameOver = false;
     bool transitionToRace = false;
 
     uint8_t getNextAvailable(uint8_t gap);

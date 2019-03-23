@@ -11,12 +11,12 @@ class BaseState : public GameState<GameContext, GameStateType> {
 
     Font4x6 font4x6 = Font4x6();
 
-    void renderScore(StateMachine & machine, TimeOfDay timeOfDay);
+    void renderScore(StateMachine & machine, TimeOfDay timeOfDay, bool renderHealth, uint8_t health);
     void renderCommonScenery(StateMachine & machine, bool incSmoke, bool incRHSBuilding);
     void renderLowerGrass(StateMachine & machine);
     void renderAmbulance(StateMachine & machine, int8_t x, int8_t y, bool doorOpen);
     void renderPuff(int8_t x, int8_t y, uint8_t puffIndex, uint8_t puffIndex_Mask);
-    void renderGameOverOrPause(bool gameOver);
+    void renderGameOverOrPause(StateMachine & machine);
     void handlePauseButton(StateMachine & machine);
     bool getPaused();
     void setPaused(bool value);
