@@ -41,6 +41,7 @@ class RaceState : public BaseState {
     bool checkForCollision(Arduboy2Ext & arduboy, int16_t ambulanceX, uint8_t ambulanceY, int16_t carX, uint8_t carLane);
     void updateSceneryPositions(Arduboy2Ext & arduboy);
     void decHealth(StateMachine & machine);
+    void checkRoadExtents();
 
 
   public:	

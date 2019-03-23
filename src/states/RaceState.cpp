@@ -202,9 +202,7 @@ void RaceState::update(StateMachine & machine) {
           }
         }
 
-        if (this->ambulance.getY() == 7 || this->ambulance.getY() == 20 || this->ambulance.getY() == 33) {
-          this->ambulance.setDirection(Direction::None);
-        }
+        checkRoadExtents();
 
       }
 
@@ -233,9 +231,7 @@ void RaceState::update(StateMachine & machine) {
           }
         }
 
-        if (this->ambulance.getY() == 7 || this->ambulance.getY() == 20 || this->ambulance.getY() == 33) {
-          this->ambulance.setDirection(Direction::None);
-        }
+        checkRoadExtents();
 
       }
 
@@ -388,6 +384,18 @@ void RaceState::update(StateMachine & machine) {
 
     BaseState::handlePauseButton(machine);
 
+  }
+
+}
+
+
+// ----------------------------------------------------------------------------
+//  Check to see if hte ambulance is at the centre of a lane.  If so stop .. 
+//
+void RaceState::checkRoadExtents() {
+
+  if (this->ambulance.getY() == 7 || this->ambulance.getY() == 20 || this->ambulance.getY() == 33) {
+    this->ambulance.setDirection(Direction::None);
   }
 
 }
