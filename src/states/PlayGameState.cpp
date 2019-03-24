@@ -4,6 +4,10 @@
 #include "../utils/Physics.h"
 #include "../images/Images.h"
 
+const uint16_t song1[] PROGMEM = {
+  220,1000, 0,250, 440,500, 880,2000,
+  TONES_END };
+
 
 // ----------------------------------------------------------------------------
 //  Initialise state ..
@@ -11,8 +15,17 @@
 void PlayGameState::activate(StateMachine & machine) {
 
   auto & gameStats = machine.getContext().gameStats;
+  auto & arduboy = machine.getContext().arduboy;
+  auto & sound = machine.getContext().sound;
 
   gameStats.gameOver = false;
+  this->counter = 0;
+  this->puffIndex = 0;
+  this->victimCountdown = 200;
+  this->victimDelay = 0;
+  this->victimLevel = 0;
+  this->ledCountdown = 0;
+
   this->angel.setEnabled(false);
   this->transitionToRace = false;
   this->player.setX(PLAYER_MIN_X_POS);
@@ -27,8 +40,11 @@ void PlayGameState::activate(StateMachine & machine) {
 
   }
 
-}
+  sound.setOutputEnabled(arduboy.audio.enabled);
+  sound.tones(song1);
 
+}
+  
 
 // ----------------------------------------------------------------------------
 //  Handle state updates .. 
@@ -37,7 +53,6 @@ void PlayGameState::update(StateMachine & machine) {
 
 	auto & arduboy = machine.getContext().arduboy;
   auto & gameStats = machine.getContext().gameStats;
-	auto justPressed = arduboy.justPressedButtons();
 	auto pressed = arduboy.pressedButtons();
 
 

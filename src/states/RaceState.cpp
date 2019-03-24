@@ -3,24 +3,6 @@
 #include "../utils/EEPROM_Utils.h"
 #include "../utils/Enums.h"
 
-#define DIST_MAXIMUM 3200
-#define DIST_INTERVAL DIST_MAXIMUM / 10
-#define DIST_NO_NEW_CARS 300
-#define DIST_GO_TO_HOSPITAL 128
-#define DIST_DELAY_AFTER_AMBULANCE_LEAVES_SCREEN 200
-
-#define RACE_PLAYER_HEALTH_MAX 150
-#define RACE_PLAYER_HEALTH_DEC 5 
-//#define RACE_PLAYER_HEALTH_DEC 15 SJH
-
-#define OTHER_CAR_LAUNCH_MAX 400
-#define OTHER_CAR_LAUNCH_MAX_DEC 10
-#define OTHER_CAR_LAUNCH_MAX_FLOOR 180
-
-#define OTHER_CAR_LAUNCH_MIN 200
-#define OTHER_CAR_LAUNCH_MIN_DEC 5
-#define OTHER_CAR_LAUNCH_MIN_FLOOR 100
-
 
 // ----------------------------------------------------------------------------
 //  Initialise state ..

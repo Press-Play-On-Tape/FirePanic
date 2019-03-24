@@ -5,6 +5,7 @@
 #include "../utils/Enums.h"
 #include "../entities/Entities.h"
 #include "BaseState.h"
+#include "../arduboyTones/ArduboyTonesExt.h"
 
 class PlayGameState : public BaseState { //GameState<GameContext, GameStateType> {
 
