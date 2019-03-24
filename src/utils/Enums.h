@@ -9,10 +9,10 @@
 
 // - Overall Settings -----------------
 
-//#define TARGET_SCORE_BASE 10  //SJH
-//#define TARGET_SCORE_INC_PER_LEVEL 5 
-#define TARGET_SCORE_BASE 50
-#define TARGET_SCORE_INC_PER_LEVEL 10 
+// #define TARGET_SCORE_BASE 10  
+// #define TARGET_SCORE_INC_PER_LEVEL 5 
+#define TARGET_SCORE_BASE 45
+#define TARGET_SCORE_INC_PER_LEVEL 5 
 #define LED_BRIGHTNESS 32
 
 
@@ -25,8 +25,7 @@
 #define DIST_DELAY_AFTER_AMBULANCE_LEAVES_SCREEN 200
 
 #define RACE_PLAYER_HEALTH_MAX 145
-#define RACE_PLAYER_HEALTH_DEC 7 
-//#define RACE_PLAYER_HEALTH_DEC 15 SJH
+#define RACE_PLAYER_HEALTH_DEC 6 
 
 #define OTHER_CAR_LAUNCH_MAX 400
 #define OTHER_CAR_LAUNCH_MAX_DEC 10
@@ -48,7 +47,7 @@
 #define ANGEL_MISS_3_LEFT 50
 #define ANGEL_MISS_TOP 1
 
-#define VICTIMS_MAX_NUMBER 10
+#define VICTIMS_MAX_NUMBER 4
 
 #define VICTIM_ON_GROUND_1 43
 #define VICTIM_ON_GROUND_2 50
@@ -91,8 +90,8 @@
 #define NAME_LENGTH 3
 #define NAME_LENGTH_PLUS_TERM (NAME_LENGTH + 1)
 
-#define HS_NAME_LEFT 37
-#define HS_SCORE_LEFT 73
+#define HS_NAME_LEFT 40
+#define HS_SCORE_LEFT 72
 #define HS_CHAR_TOP 21
 #define HS_CHAR_V_SPACING 9
 #define HS_PRESS_A_DELAY 100
@@ -116,6 +115,7 @@
 const int8_t edgePos[] = { 5, 0, 22, 1, 5, 16, 22, 17, 5, 31, 22, 32 };
 const uint8_t cloud_X_Pos[] = { 16, 16, 18, 18, 46 };
 const uint8_t cloud_Y_Pos[] = { 10, 7, 0, 0, 0 };
+const uint8_t angel_miss_X_Pos[] = { ANGEL_MISS_1_LEFT, ANGEL_MISS_2_LEFT, ANGEL_MISS_3_LEFT };
 
 enum class TimeOfDay : uint8_t {
   Day,
@@ -156,7 +156,7 @@ struct GameStats {
 
     uint16_t score = 0;
     uint8_t misses = 0;
-    uint8_t health = 0;
+    int16_t health = 0;
     uint16_t level = 0;
     uint8_t xPosition = 0;  // Player x position between sequences ..
     uint16_t targetScore = 0;

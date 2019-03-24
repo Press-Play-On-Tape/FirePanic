@@ -56,8 +56,7 @@ static volatile uint16_t toneSequence[MAX_TONES * 2 + 1];
 static volatile bool inProgmem;
 
 
-ArduboyTonesExt::ArduboyTonesExt()
-{
+ArduboyTonesExt::ArduboyTonesExt() {
 
   toneSequence[MAX_TONES * 2] = TONES_END;
 
@@ -70,32 +69,8 @@ ArduboyTonesExt::ArduboyTonesExt()
 }
 
 
-ArduboyTonesExt::ArduboyTonesExt(boolean (*outEn)())
-{
+void ArduboyTonesExt::setOutputEnabled(boolean (*outEn)()) {
   outputEnabled = outEn;
-
-  toneSequence[MAX_TONES * 2] = TONES_END;
-
-  bitClear(TONE_PIN_PORT, TONE_PIN); // set the pin low
-  bitSet(TONE_PIN_DDR, TONE_PIN); // set the pin to output mode
-#ifdef TONES_2_SPEAKER_PINS
-  bitClear(TONE_PIN2_PORT, TONE_PIN2); // set pin 2 low
-  bitSet(TONE_PIN2_DDR, TONE_PIN2); // set pin 2 to output mode
-#endif
-}
-
-void ArduboyTonesExt::setOutputEnabled(boolean (*outEn)())
-{
-  outputEnabled = outEn;
-
-  toneSequence[MAX_TONES * 2] = TONES_END;
-
-  bitClear(TONE_PIN_PORT, TONE_PIN); // set the pin low
-  bitSet(TONE_PIN_DDR, TONE_PIN); // set the pin to output mode
-#ifdef TONES_2_SPEAKER_PINS
-  bitClear(TONE_PIN2_PORT, TONE_PIN2); // set pin 2 low
-  bitSet(TONE_PIN2_DDR, TONE_PIN2); // set pin 2 to output mode
-#endif
 }
 
 void ArduboyTonesExt::tone(uint16_t freq, uint16_t dur)

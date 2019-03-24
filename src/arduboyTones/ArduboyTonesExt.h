@@ -161,7 +161,6 @@ class ArduboyTonesExt
    * tone, so it should be as fast as possible.
    */
   ArduboyTonesExt();
-  ArduboyTonesExt(bool (*outEn)());
 
   /** \brief
    * Play a single tone.

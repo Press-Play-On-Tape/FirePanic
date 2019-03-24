@@ -132,19 +132,19 @@ void Victim::move() {
       this->y = pgm_read_byte(&Physics_Arc[(this->posIndex * 2) + 1]);
       break;
 
-    case 1: //
+    case 1: 
       this->x++;
       this->y = VICTIM_ON_GROUND_1;
       this->alive++;
       break;
 
-    case 2: //
+    case 2: 
       this->x++;
       this->y = VICTIM_ON_GROUND_2;
       this->alive++;
       break;
 
-    case 3 ... VICTIM_HALO_MAX: //
+    case 3 ... VICTIM_HALO_MAX: 
       this->alive++;
       break;
 

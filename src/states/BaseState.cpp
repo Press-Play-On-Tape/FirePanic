@@ -9,12 +9,7 @@ void BaseState::renderScore(StateMachine & machine, TimeOfDay timeOfDay, bool re
   auto & gameStats = machine.getContext().gameStats;
   auto & arduboy = machine.getContext().arduboy;
 
-  if (timeOfDay == TimeOfDay::Day) {
-    SpritesB::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 1, 0);
-  }
-  else {
-    SpritesB::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
-  }
+  SpritesB::drawExternalMask(89, 0, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
 
   if (!renderHealth) {
 
@@ -23,12 +18,7 @@ void BaseState::renderScore(StateMachine & machine, TimeOfDay timeOfDay, bool re
 
     for (uint8_t j = 6; j > 0; --j) {
 
-      if (timeOfDay == TimeOfDay::Day) {
-        SpritesB::drawErase(124 - (j*5), 3, Images::Scoreboard_Numbers, digits[j - 1]);
-      }
-      else {
-        SpritesB::drawSelfMasked(124 - (j*5), 3, Images::Scoreboard_Numbers, digits[j - 1]);
-      }
+      SpritesB::drawSelfMasked(124 - (j*5), 3, Images::Scoreboard_Numbers, digits[j - 1]);
 
     }
 
@@ -50,33 +40,31 @@ void BaseState::renderMisses(StateMachine & machine, bool renderLatest) {
 
   auto & gameStats = machine.getContext().gameStats;
 
+  uint8_t missCount = 0;
+  
   switch (gameStats.misses) {
 
     case 0: break;
 
     case 1:
-      if (renderLatest) {
-        SpritesB::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
-      }
+      if (renderLatest) missCount = 1;
       break;
 
     case 2:
-      SpritesB::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
-      if (renderLatest) {
-        SpritesB::drawExternalMask(ANGEL_MISS_2_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
-      }
+      if (renderLatest) missCount = 2;
       break;
       
     default: 
-      SpritesB::drawExternalMask(ANGEL_MISS_1_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
-      SpritesB::drawExternalMask(ANGEL_MISS_2_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
-      SpritesB::drawExternalMask(ANGEL_MISS_3_LEFT, ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+      missCount = 3;
       break;
 
   }
 
-}
+  for (uint8_t i = 0; i < missCount; i--) {
+    SpritesB::drawExternalMask(angel_miss_X_Pos[i], ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+  }
 
+}
 
 void BaseState::renderCommonScenery(StateMachine & machine, bool incSmoke, bool incRHSBuilding) {
 

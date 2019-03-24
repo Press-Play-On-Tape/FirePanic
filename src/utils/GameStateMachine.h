@@ -26,7 +26,10 @@ class GameStateMachine {
     void changeState(StateId stateId, StateId nextId) { 
 
       auto &arduboy = this->context.arduboy;
+      auto &sound = this->context.sound;
+
       arduboy.setRGBled(0, 0, 0);
+      sound.noTone();
       
       this->currentState = stateId; 
       this->nextState = nextId; 

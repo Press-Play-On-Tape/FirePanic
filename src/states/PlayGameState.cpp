@@ -151,6 +151,7 @@ void PlayGameState::update(StateMachine & machine) {
                       break;
 
                   }
+                  
                 }  
 
               }

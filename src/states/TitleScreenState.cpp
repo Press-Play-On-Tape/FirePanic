@@ -1,6 +1,7 @@
 #include "TitleScreenState.h"
 #include "../images/Images.h"
 #include "../utils/EEPROM_Utils.h"
+#include "../sounds/Sounds.h"
 
 constexpr const static uint8_t PRESS_A_DELAY = 200;
 constexpr const static uint8_t UPLOAD_DELAY = 16;
@@ -12,8 +13,12 @@ constexpr const static uint8_t UPLOAD_DELAY = 16;
 void TitleScreenState::activate(StateMachine & machine) {
 
   auto & gameStats = machine.getContext().gameStats;
+  auto & arduboy = machine.getContext().arduboy;
+  auto & sound = machine.getContext().sound;  
 	
   gameStats.resetGame();
+  sound.setOutputEnabled(arduboy.audio.enabled);
+  sound.tones(Sounds::Score);
 
 }
 
@@ -51,10 +56,10 @@ void TitleScreenState::update(StateMachine & machine) {
 		machine.changeState(GameStateType::GameIntroScreen, GameStateType::PlayGameScreen); 
 	}
 
-  // SJH Remove for production ..
-	if (justPressed & B_BUTTON) {
-		machine.changeState(GameStateType::PlayRaceScreen, GameStateType::PlayGameScreen); 
-	}
+  // // SJH Remove for production ..
+	// if (justPressed & B_BUTTON) {
+	// 	machine.changeState(GameStateType::PlayRaceScreen, GameStateType::PlayGameScreen); 
+	// }
 
 
   // Update flame counter.
