@@ -1,6 +1,7 @@
 #include "HighScoreState.h"
 #include "../images/Images.h"
 #include "../utils/EEPROM_Utils.h"
+#include "../fonts/Font4x6.h"
 
 // ----------------------------------------------------------------------------
 //  Initialise state ..
@@ -158,14 +159,12 @@ void HighScoreState::update(StateMachine & machine) {
 
 
 void HighScoreState::renderHighScore(int16_t score, uint8_t x, uint8_t y) {
-  
+
   for (uint8_t j = 6, x2 = x - 4; j > 0; --j, x2 += 5) {
     
     uint8_t digits[6] = {};
     extractDigits(digits, static_cast<uint16_t>(absT(score)));
-
-    font4x6.setCursor(x2, y);
-    font4x6.print(digits[j - 1]);
+    SpritesB::drawOverwrite(x2, y, font_images, digits[j - 1] + 27);
 
   }
 
@@ -190,16 +189,19 @@ void HighScoreState::render(StateMachine & machine) {
 
   // Render scores ..
 
-  font4x6.setCursor(HS_NAME_LEFT, HS_CHAR_TOP);
-  font4x6.print(this->player1);
+  SpritesB::drawOverwrite(HS_NAME_LEFT, HS_CHAR_TOP, font_images, this->player1[0] == 63 ? 0 : this->player1[0] - 64);
+  SpritesB::drawOverwrite(HS_NAME_LEFT + 6, HS_CHAR_TOP, font_images, this->player1[1] == 63 ? 0 : this->player1[1] - 64);
+  SpritesB::drawOverwrite(HS_NAME_LEFT + 12, HS_CHAR_TOP, font_images, this->player1[2] == 63 ? 0 : this->player1[2] - 64);
   renderHighScore(this->score1, HS_SCORE_LEFT, HS_CHAR_TOP);
 
-  font4x6.setCursor(HS_NAME_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
-  font4x6.print(this->player2);
+  SpritesB::drawOverwrite(HS_NAME_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING, font_images, this->player2[0] == 63 ? 0 : this->player2[0] - 64);
+  SpritesB::drawOverwrite(HS_NAME_LEFT + 6, HS_CHAR_TOP + HS_CHAR_V_SPACING, font_images, this->player2[1] == 63 ? 0 : this->player2[1] - 64);
+  SpritesB::drawOverwrite(HS_NAME_LEFT + 12, HS_CHAR_TOP + HS_CHAR_V_SPACING, font_images, this->player2[2] == 63 ? 0 : this->player2[2] - 64);
   renderHighScore(this->score2, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
 
-  font4x6.setCursor(HS_NAME_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
-  font4x6.print(this->player3);
+  SpritesB::drawOverwrite(HS_NAME_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING, font_images, this->player3[0] == 63 ? 0 : this->player3[0] - 64);
+  SpritesB::drawOverwrite(HS_NAME_LEFT + 6, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING, font_images, this->player3[1] == 63 ? 0 : this->player3[1] - 64);
+  SpritesB::drawOverwrite(HS_NAME_LEFT + 12, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING, font_images, this->player3[2] == 63 ? 0 : this->player3[2] - 64);
   renderHighScore(this->score3, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
 
 
@@ -211,10 +213,7 @@ void HighScoreState::render(StateMachine & machine) {
     char *player = this->players[this->winnerIdx];
 
     arduboy.fillRect(HS_NAME_LEFT + (this->charIdx * 6) - 1, HS_CHAR_TOP + (winnerIdx * HS_CHAR_V_SPACING), 6, 8, WHITE);
-    font4x6.setTextColor(BLACK);
-    font4x6.setCursor(HS_NAME_LEFT + (this->charIdx * 6), HS_CHAR_TOP + (HS_CHAR_V_SPACING * this->winnerIdx));
-    font4x6.print(player[this->charIdx]);
-    font4x6.setTextColor(WHITE);
+    SpritesB::drawErase(HS_NAME_LEFT + (this->charIdx * 6), HS_CHAR_TOP + (HS_CHAR_V_SPACING * this->winnerIdx), font_images, player[this->charIdx] == 63 ? 0 : player[this->charIdx] - 64);
 
   }
 
