@@ -24,7 +24,7 @@ class Ambulance {
     void incY();
     void incPuffIndex(Direction direction);
     void incPuffIndexes();
-    void decX();
+    void decX(uint8_t value = 1);
     void decY();
     bool incPuffIndexIfZero(Direction direction);
 

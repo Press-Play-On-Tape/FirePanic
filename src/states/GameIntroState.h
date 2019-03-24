@@ -15,6 +15,8 @@ class GameIntroState : public BaseState { //GameState<GameContext, GameStateType
     uint8_t xPlayer = 0;
     uint8_t counter = 0;
     uint8_t speedInc = 0;    
+    uint8_t ledBrightness = 0;    
+    
     bool ambulanceDoor = false;
     bool playerImageIndex = false;
 
