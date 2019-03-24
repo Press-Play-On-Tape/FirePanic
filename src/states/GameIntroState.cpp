@@ -14,7 +14,7 @@ void GameIntroState::activate(StateMachine & machine) {
 
     this->xAmbulance = 156;
     this->xPlayer = PLAYER_MIN_X_POS + 6 + (30 * 3);
-    gameStats.targetScore = gameStats.score + TARGET_SCORE_BASE + (gameStats.level * TARGET_SCORE_PER_LEVEL);
+    gameStats.targetScore = gameStats.score + TARGET_SCORE_BASE + (gameStats.level * TARGET_SCORE_INC_PER_LEVEL);
 
   }
   else {
@@ -28,6 +28,7 @@ void GameIntroState::activate(StateMachine & machine) {
   this->ambulanceDoor = false;
   this->playerImageIndex = false;
   this->speedInc = 0;
+  this->ledBrightness = 32;
 
 }
 
@@ -39,8 +40,11 @@ void GameIntroState::update(StateMachine & machine) {
 
 	auto & arduboy = machine.getContext().arduboy;
 	auto justPressed = arduboy.justPressedButtons();
-    
+
   if (arduboy.everyXFrames(2)) {
+
+    uint8_t colour = ((counter / 10) % 2) == 0;
+    arduboy.setRGBled(colour == 0 ? ledBrightness : 0, 0, colour == 0 ? 0 : ledBrightness);
 
     if (machine.getContext().nextState == GameStateType::PlayGameScreen) {
 
@@ -86,6 +90,7 @@ void GameIntroState::update(StateMachine & machine) {
           break;
 
         case 162 ... 190:
+          this->ledBrightness--;
           this->ambulanceDoor = false;
           break;
 
@@ -143,6 +148,7 @@ void GameIntroState::update(StateMachine & machine) {
 
         case 141 ... 179:
           this->xAmbulance++;
+          this->ledBrightness--;
           break;
 
         case 180:

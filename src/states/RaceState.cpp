@@ -3,23 +3,6 @@
 #include "../utils/EEPROM_Utils.h"
 #include "../utils/Enums.h"
 
-#define DIST_MAXIMUM 3200
-#define DIST_INTERVAL DIST_MAXIMUM / 10
-#define DIST_NO_NEW_CARS 300
-#define DIST_GO_TO_HOSPITAL 128
-#define DIST_DELAY_AFTER_AMBULANCE_LEAVES_SCREEN 200
-
-#define RACE_PLAYER_HEALTH_MAX 140
-#define RACE_PLAYER_HEALTH_DEC 10
-
-#define OTHER_CAR_LAUNCH_MAX 400
-#define OTHER_CAR_LAUNCH_MAX_DEC 10
-#define OTHER_CAR_LAUNCH_MAX_FLOOR 180
-
-#define OTHER_CAR_LAUNCH_MIN 200
-#define OTHER_CAR_LAUNCH_MIN_DEC 5
-#define OTHER_CAR_LAUNCH_MIN_FLOOR 100
-
 
 // ----------------------------------------------------------------------------
 //  Initialise state ..
@@ -33,7 +16,7 @@ void RaceState::activate(StateMachine & machine) {
   this->distance = DIST_MAXIMUM;
   this->slowDown = 3;
   this->showHospital = false;
-  this->health = RACE_PLAYER_HEALTH_MAX;
+  gameStats.health = RACE_PLAYER_HEALTH_MAX;
 
   this->carLaunch_RandomMax = OTHER_CAR_LAUNCH_MAX - (gameStats.level * OTHER_CAR_LAUNCH_MAX_DEC * 3);
   this->carLaunch_RandomMin = OTHER_CAR_LAUNCH_MIN - (gameStats.level * OTHER_CAR_LAUNCH_MIN_DEC * 3);
@@ -56,10 +39,21 @@ void RaceState::activate(StateMachine & machine) {
 //  Handle state updates .. 
 //
 void RaceState::update(StateMachine & machine) {
-
+	
   auto & arduboy = machine.getContext().arduboy;
   auto & gameStats = machine.getContext().gameStats;
   auto pressed = arduboy.pressedButtons();
+  auto justPressed = arduboy.justPressedButtons();
+
+
+  // Turn led off?
+
+  if (this->ledCountdown > 0) {
+
+    this->ledCountdown--;
+    if (this->ledCountdown == 0)   arduboy.setRGBled(0, 0, 0);
+
+  }
 
   if (!BaseState::getPaused()) {
 
@@ -72,7 +66,10 @@ void RaceState::update(StateMachine & machine) {
     }
 
 
-    if (this->distance > 0) this->distance--;
+    if (gameStats.misses < 3) { if (this->distance > 0) this->distance--; }
+    if (this->healthShowCountdown > 0) this->healthShowCountdown--;
+    if (this->deathCountdown > 0) this->deathCountdown--;
+
 
 
     // Make the game a little harder ..
@@ -88,9 +85,27 @@ void RaceState::update(StateMachine & machine) {
     }
 
 
+    // Game over?
+
+    if (gameStats.misses == 3) {
+
+      if (this->ambulance.getX() >- 120) {
+
+        if (arduboy.everyXFrames(5)) {
+          this->ambulance.decX(2);
+        }
+
+      }
+      else {
+        gameStats.gameOver = true;
+      }
+      
+    }
+
+        
     // Ambulance is still entering screen ..
 
-    if (this->ambulance.getX() < 0) {
+    else if (this->ambulance.getX() < 0) {
 
       if (arduboy.everyXFrames(5)) {
         this->ambulance.incX(2);
@@ -179,9 +194,7 @@ void RaceState::update(StateMachine & machine) {
           }
         }
 
-        if (this->ambulance.getY() == 7 || this->ambulance.getY() == 20 || this->ambulance.getY() == 33) {
-          this->ambulance.setDirection(Direction::None);
-        }
+        checkRoadExtents();
 
       }
 
@@ -210,9 +223,7 @@ void RaceState::update(StateMachine & machine) {
           }
         }
 
-        if (this->ambulance.getY() == 7 || this->ambulance.getY() == 20 || this->ambulance.getY() == 33) {
-          this->ambulance.setDirection(Direction::None);
-        }
+        checkRoadExtents();
 
       }
 
@@ -271,6 +282,10 @@ void RaceState::update(StateMachine & machine) {
           Rect ambulanceRect = { this->ambulance.getX(), this->ambulance.getY() + 21, RACE_AMBULANCE_WIDTH, 10 };
 
           if (arduboy.collide(coinRect, ambulanceRect)) {
+
+            arduboy.setRGBled(0, LED_BRIGHTNESS, 0);
+            this->ledCountdown = 10;
+
             gameStats.score = gameStats.score + 2;
             this->coin.setEnabled(false);
           }
@@ -352,9 +367,21 @@ void RaceState::update(StateMachine & machine) {
   }
 
 
-  // Pause the game?
+  // Handle other buttons ..
 
-  BaseState::handlePauseButton(machine);
+  BaseState::handleCommonButtons(machine);
+
+}
+
+
+// ----------------------------------------------------------------------------
+//  Check to see if hte ambulance is at the centre of a lane.  If so stop .. 
+//
+void RaceState::checkRoadExtents() {
+
+  if (this->ambulance.getY() == 7 || this->ambulance.getY() == 20 || this->ambulance.getY() == 33) {
+    this->ambulance.setDirection(Direction::None);
+  }
 
 }
 
@@ -364,13 +391,26 @@ void RaceState::update(StateMachine & machine) {
 //
 void RaceState::decHealth(StateMachine & machine) {
   
+	auto & arduboy = machine.getContext().arduboy;
   auto & gameStats = machine.getContext().gameStats;
 
-  this->health = this->health - RACE_PLAYER_HEALTH_DEC;
-  
-  if (this->health <= 0) {
-    this->health = RACE_PLAYER_HEALTH_MAX;
-    if (gameStats.score > 9) gameStats.score = gameStats.score - 10;
+  arduboy.setRGBled(LED_BRIGHTNESS, 0, 0);
+  this->ledCountdown = 10;
+
+  gameStats.health = gameStats.health - RACE_PLAYER_HEALTH_DEC;
+  this->healthShowCountdown = 100;
+
+  if (gameStats.health <= 0) {
+
+    gameStats.misses++;
+
+    if (gameStats.misses < 3) {
+
+      gameStats.health = RACE_PLAYER_HEALTH_MAX;
+      this->deathCountdown = 200;
+
+    }
+
   }
 
 }
@@ -486,8 +526,6 @@ void RaceState::render(StateMachine & machine) {
 	auto & arduboy = machine.getContext().arduboy;
   auto & gameStats = machine.getContext().gameStats;
 
-	const bool flash = arduboy.getFrameCountHalf(FLASH_FRAME_COUNT_2);
-
 
   // Render background ..
 
@@ -537,7 +575,14 @@ void RaceState::render(StateMachine & machine) {
 
   // Render score ..
 
-  BaseState::renderScore(machine, TimeOfDay::Night);
+  BaseState::renderScore(machine, TimeOfDay::Night, this->healthShowCountdown, (gameStats.health) / 5);
+
+
+  // Render misses ..
+
+  bool deathFlash = true;
+  if (this->deathCountdown > 0) deathFlash = ((this->deathCountdown / 30) % 2) == 1;
+  BaseState::renderMisses(machine, deathFlash);
 
 
   // Render road lines ..
@@ -636,29 +681,9 @@ void RaceState::render(StateMachine & machine) {
   }
 
 
-  // Render armour gauge ..
+  // Render Game Over or Pause?
 
-
-  if (this->ambulance.getPuffIndexes() > 0) {
-
-    SpritesB::drawExternalMask(this->ambulance.getX() + 2, this->ambulance.getY() - 7, Images::armour_gauge, Images::armour_gauge_mask, 0, 0);
-
-    if ((this->health <= 20 && flash) || this->health > 20) {
-
-      for (int i = 0, xOffset = this->ambulance.getX() + 2; i < this->health; i = i + 10, xOffset = xOffset + 2) {
-
-        SpritesB::drawExternalMask(xOffset, this->ambulance.getY() - 7 + 2, Images::armour_gauge_item, Images::armour_gauge_item_mask, 0, 0);
-
-      }
-
-    }
-
-  }
-
-
-  // Pause?
-
-  BaseState::renderGameOverOrPause(false);
+  BaseState::renderGameOverOrPause(machine);
 
 	arduboy.displayWithBackground(TimeOfDay::Mixed);
 

@@ -6,15 +6,46 @@
 //#define DEBUG
 //#define DEBUG_PLAYGAME
 
-// #define TARGET_SCORE_BASE 2
-// #define TARGET_SCORE_PER_LEVEL 1
-// #define TARGET_SCORE_BASE 10
-// #define TARGET_SCORE_PER_LEVEL 5
+
+// - Overall Settings -----------------
+
+//#define TARGET_SCORE_BASE 10  //SJH
+//#define TARGET_SCORE_INC_PER_LEVEL 5 
 #define TARGET_SCORE_BASE 50
-#define TARGET_SCORE_PER_LEVEL 50
+#define TARGET_SCORE_INC_PER_LEVEL 10 
+#define LED_BRIGHTNESS 32
+
+
+// - Race Game ------------------------
+
+#define DIST_MAXIMUM 3200
+#define DIST_INTERVAL DIST_MAXIMUM / 10
+#define DIST_NO_NEW_CARS 300
+#define DIST_GO_TO_HOSPITAL 128
+#define DIST_DELAY_AFTER_AMBULANCE_LEAVES_SCREEN 200
+
+#define RACE_PLAYER_HEALTH_MAX 150
+#define RACE_PLAYER_HEALTH_DEC 8 
+//#define RACE_PLAYER_HEALTH_DEC 15 SJH
+
+#define OTHER_CAR_LAUNCH_MAX 400
+#define OTHER_CAR_LAUNCH_MAX_DEC 10
+#define OTHER_CAR_LAUNCH_MAX_FLOOR 180
+
+#define OTHER_CAR_LAUNCH_MIN 200
+#define OTHER_CAR_LAUNCH_MIN_DEC 5
+#define OTHER_CAR_LAUNCH_MIN_FLOOR 100
+
+#define RACE_AMBULANCE_WIDTH 31
+#define RACE_OTHERCAR_WIDTH 30
+#define RACE_OTHERCARS_MAX 3
+
+
+// - Fire Game ------------------------
 
 #define ANGEL_MISS_1_LEFT 76
 #define ANGEL_MISS_2_LEFT 63
+#define ANGEL_MISS_3_LEFT 50
 #define ANGEL_MISS_TOP 1
 
 #define VICTIMS_MAX_NUMBER 10
@@ -39,10 +70,6 @@
 
 #define ACCURACY_TOLERANCE 10
 
-#define RACE_AMBULANCE_WIDTH 31
-#define RACE_OTHERCAR_WIDTH 30
-#define RACE_OTHERCARS_MAX 3
-
 #define PLAYER_RANGE1_X_LEFT_START_POS PLAYER_MIN_X_POS
 #define PLAYER_RANGE1_X_LEFT_END_POS PLAYER_RANGE1_X11_POS + 3
 #define PLAYER_RANGE1_X_MID_START_POS PLAYER_MIN_X_POS
@@ -57,6 +84,9 @@
 
 #define PLAYER_Y_POS 42
 #define PLAYER_STEP_INC 6 
+
+
+// - High Scores ---------------------
 
 #define NAME_LENGTH 3
 #define NAME_LENGTH_PLUS_TERM (NAME_LENGTH + 1)
@@ -126,18 +156,22 @@ struct GameStats {
 
     uint16_t score = 0;
     uint8_t misses = 0;
+    uint8_t health = 0;
     uint16_t level = 0;
     uint8_t xPosition = 0;  // Player x position between sequences ..
     uint16_t targetScore = 0;
+    bool gameOver = false;
 
     TimeOfDay timeOfDay = TimeOfDay::Day;
 
     void resetGame() {
 
       this->level = 0;
+      this->health = 0;
       this->misses = 0;
-      this->score = 0; //SJH
+      this->score = 0; 
       this->timeOfDay = TimeOfDay::Day;
+      this->gameOver = false;
 
     }
 

@@ -66,9 +66,9 @@ void Ambulance::incX(uint8_t value) {
 
 }
 
-void Ambulance::decX() {
+void Ambulance::decX(uint8_t value) {
 
-  this->x--;
+  this->x = this->x - value;
 
 }
 

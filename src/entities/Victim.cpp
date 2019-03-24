@@ -125,17 +125,6 @@ void Victim::move() {
     return;
   }
 
-  #ifdef DEBUG
-Serial.print("alive ");
-Serial.print(this->alive);
-Serial.print(", posIndex ");
-Serial.print(this->posIndex);
-Serial.print(", x=");
-Serial.print(x);
-Serial.print(",y=");
-Serial.print(y);
-Serial.print(" > ");
-#endif
   switch (this->alive) {
 
     case 0: // alive
@@ -164,16 +153,6 @@ Serial.print(" > ");
       break;
 
   }
-
-#ifdef DEBUG
-Serial.print(" x=");
-Serial.print(x);
-Serial.print(",y=");
-Serial.print(y);
-Serial.print(", Enabled ");
-Serial.print(this->enabled);
-Serial.println(" ");
-#endif
 
 }
 

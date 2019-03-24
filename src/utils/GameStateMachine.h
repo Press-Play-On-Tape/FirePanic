@@ -22,7 +22,12 @@ class GameStateMachine {
 		Context & getContext(void) { return this->context; }
 		const Context & getContext(void) const { return this->context; }
     const StateId getCurrentState() { return this->currentState; }
+
     void changeState(StateId stateId, StateId nextId) { 
+
+      auto &arduboy = this->context.arduboy;
+      arduboy.setRGBled(0, 0, 0);
+      
       this->currentState = stateId; 
       this->nextState = nextId; 
     }

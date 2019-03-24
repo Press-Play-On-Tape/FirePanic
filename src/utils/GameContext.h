@@ -19,6 +19,7 @@
 */
 
 #include "Arduboy2Ext.h"
+#include "../arduboyTones/ArduboyTonesExt.h"
 #include "Enums.h"
 
 class GameContext {
@@ -28,6 +29,7 @@ class GameContext {
     GameStateType gameState;
     GameStateType nextState;
     Arduboy2Ext arduboy;
+    ArduboyTonesExt sound;
     GameStats gameStats;
 
     GameContext();
