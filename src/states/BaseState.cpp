@@ -40,27 +40,9 @@ void BaseState::renderMisses(StateMachine & machine, bool renderLatest) {
 
   auto & gameStats = machine.getContext().gameStats;
 
-  uint8_t missCount = 0;
-  
-  switch (gameStats.misses) {
+  uint8_t missCount = gameStats.misses - (renderLatest ? 0 : 1);
 
-    case 0: break;
-
-    case 1:
-      if (renderLatest) missCount = 1;
-      break;
-
-    case 2:
-      if (renderLatest) missCount = 2;
-      break;
-      
-    default: 
-      missCount = 3;
-      break;
-
-  }
-
-  for (uint8_t i = 0; i < missCount; i--) {
+  for (uint8_t i = 0; i < missCount; i++) {
     SpritesB::drawExternalMask(angel_miss_X_Pos[i], ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
   }
 
@@ -71,23 +53,14 @@ void BaseState::renderCommonScenery(StateMachine & machine, bool incSmoke, bool 
   auto & gameStats = machine.getContext().gameStats;
 	auto & arduboy = machine.getContext().arduboy;
 
-  for (uint8_t i = 0; i <= 120; i = i + 8) {
-    SpritesB::drawExternalMask(i, 28, Images::Grass, Images::Grass_Mask, 0, 0);
-  }
-
-  SpritesB::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
-
-
-  // Draw smoke if specified ..
-
   #ifndef DEBUG
 
-  if (incSmoke) {
-    
-    uint8_t x = cloud_X_Pos[this->smokeIndex];
-    uint8_t y = cloud_Y_Pos[this->smokeIndex];
+  if (incSmoke) {  
 
-    SpritesB::drawOverwrite(x, y, pgm_read_word_near(&Images::Smoke[this->smokeIndex]), static_cast<uint8_t>(gameStats.timeOfDay));
+    uint8_t xOffset = cloud_X_Pos[this->smokeIndex];
+    uint8_t yOffset = cloud_Y_Pos[this->smokeIndex];
+
+    SpritesB::drawOverwrite(xOffset, yOffset, pgm_read_word_near(&Images::Smoke[this->smokeIndex]), static_cast<uint8_t>(gameStats.timeOfDay));
 
     if (arduboy.everyXFrames(16)) {
       this->smokeIndex++;
@@ -98,6 +71,11 @@ void BaseState::renderCommonScenery(StateMachine & machine, bool incSmoke, bool 
 
   #endif
 
+  for (uint8_t i = 0; i <= 120; i = i + 8) {
+    SpritesB::drawExternalMask(i, 28, Images::Grass, Images::Grass_Mask, 0, 0);
+  }
+
+  SpritesB::drawExternalMask(0, 51, Images::Ground, Images::Ground_Mask, 0, 0);
   SpritesB::drawExternalMask(0, 0, Images::Building, Images::Building_Mask, 0, 0);
 
   if (incRHSBuilding) {
@@ -108,8 +86,6 @@ void BaseState::renderCommonScenery(StateMachine & machine, bool incSmoke, bool 
 
 
 void BaseState::renderLowerGrass(StateMachine & machine) {
-
-	auto & arduboy = machine.getContext().arduboy;
 
   for (uint8_t i = 0; i <= 120; i = i + 8) {
     SpritesB::drawExternalMask(i, 59, Images::Grass, Images::Grass_Mask, 0, 0);

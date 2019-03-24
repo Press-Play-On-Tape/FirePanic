@@ -667,7 +667,7 @@ void RaceState::render(StateMachine & machine) {
     // Draw Ambulance ..
 
     if (iLane == this->ambulance.getLane()) {
-      
+ 
 
       // Draw puff above (and behind) the ambulance if it has crashed into something above ..
 

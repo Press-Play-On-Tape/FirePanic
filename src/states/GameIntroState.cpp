@@ -186,6 +186,7 @@ void GameIntroState::render(StateMachine & machine) {
 	auto & gameStats = machine.getContext().gameStats;
 
   BaseState::renderCommonScenery(machine, true, false);
+  
 
   if (this->xPlayer < 100) {
 
