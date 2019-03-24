@@ -2,6 +2,7 @@
 #include "../images/Images.h"
 #include "../utils/EEPROM_Utils.h"
 #include "../utils/Enums.h"
+#include "../sounds/Sounds.h"
 
 
 // ----------------------------------------------------------------------------
@@ -10,6 +11,10 @@
 void RaceState::activate(StateMachine & machine) {
 
   auto & gameStats = machine.getContext().gameStats;
+  auto & arduboy = machine.getContext().arduboy;  
+  auto & sound = machine.getContext().sound;  
+  
+  sound.setOutputEnabled(arduboy.audio.enabled);
 
   this->ambulance.setX(-40);
   this->ambulance.setY(31);
@@ -42,8 +47,9 @@ void RaceState::update(StateMachine & machine) {
 	
   auto & arduboy = machine.getContext().arduboy;
   auto & gameStats = machine.getContext().gameStats;
+  auto & sound = machine.getContext().sound; 
+
   auto pressed = arduboy.pressedButtons();
-  auto justPressed = arduboy.justPressedButtons();
 
 
   // Turn led off?
@@ -159,9 +165,15 @@ void RaceState::update(StateMachine & machine) {
         uint8_t carCollision = checkForCollisions(arduboy, this->ambulance.getX() + 1, this->ambulance.getY());
 
         if (carCollision < CAR_COLLISION_NONE) {
-          if (this->ambulance.incPuffIndexIfZero(Direction::Right)) decHealth(machine);
+          
+          if (this->ambulance.incPuffIndexIfZero(Direction::Right)) {
+            decHealth(machine);
+            sound.tones(Sounds::Crash);
+          }
+
           this->otherCars[carCollision].setX(this->ambulance.getX() + RACE_AMBULANCE_WIDTH);
           this->otherCars[carCollision].setDoNotMove(true);
+
         }
         else {
           this->ambulance.incX();
@@ -175,7 +187,12 @@ void RaceState::update(StateMachine & machine) {
       if (pressed & UP_BUTTON && this->ambulance.getY() > 7) {
 
         if (checkForCollisions(arduboy, this->ambulance.getX(), this->ambulance.getY() - 1) < CAR_COLLISION_NONE) {
-          if (this->ambulance.incPuffIndexIfZero(Direction::Up)) decHealth(machine);
+
+          if (this->ambulance.incPuffIndexIfZero(Direction::Up)) {
+            decHealth(machine);
+            sound.tones(Sounds::Crash);
+          }
+
         }
         else {
           this->ambulance.decY();
@@ -187,7 +204,12 @@ void RaceState::update(StateMachine & machine) {
 
         if (!(pressed & UP_BUTTON)) {
           if (checkForCollisions(arduboy, this->ambulance.getX(), this->ambulance.getY() - 1) < CAR_COLLISION_NONE) {
-            if (this->ambulance.incPuffIndexIfZero(Direction::Up)) decHealth(machine);
+
+            if (this->ambulance.incPuffIndexIfZero(Direction::Up)) {
+              decHealth(machine);
+              sound.tones(Sounds::Crash);
+            }
+
           }
           else {
             this->ambulance.decY();
@@ -204,7 +226,12 @@ void RaceState::update(StateMachine & machine) {
       if (pressed & DOWN_BUTTON && this->ambulance.getY() < 33) {
 
         if (checkForCollisions(arduboy, this->ambulance.getX(), this->ambulance.getY() + 1) < CAR_COLLISION_NONE) {
-          if (this->ambulance.incPuffIndexIfZero(Direction::Down)) decHealth(machine);
+
+          if (this->ambulance.incPuffIndexIfZero(Direction::Down)) {
+            decHealth(machine);
+            sound.tones(Sounds::Crash);
+          }
+
         }
         else {
           this->ambulance.incY();
@@ -216,7 +243,12 @@ void RaceState::update(StateMachine & machine) {
 
         if (!(pressed & DOWN_BUTTON)) {
           if (checkForCollisions(arduboy, this->ambulance.getX(), this->ambulance.getY() + 1) < CAR_COLLISION_NONE) {
-            if (this->ambulance.incPuffIndexIfZero(Direction::Down)) decHealth(machine);
+
+            if (this->ambulance.incPuffIndexIfZero(Direction::Down)) {
+              decHealth(machine);
+              sound.tones(Sounds::Crash);
+            }
+
           }
           else {
             this->ambulance.incY();
@@ -288,6 +320,8 @@ void RaceState::update(StateMachine & machine) {
 
             gameStats.score = gameStats.score + 2;
             this->coin.setEnabled(false);
+            sound.tones(Sounds::Coin);
+
           }
 
         }
@@ -303,7 +337,12 @@ void RaceState::update(StateMachine & machine) {
 
           if (checkForCollision(arduboy, this->ambulance.getX(), this->ambulance.getY(), car.getX(), car.getLane())) {
             car.setX(ambulance.getX() + RACE_AMBULANCE_WIDTH);
-            if (this->ambulance.incPuffIndexIfZero(Direction::Right)) decHealth(machine);
+
+            if (this->ambulance.incPuffIndexIfZero(Direction::Right)) {
+              decHealth(machine);
+              sound.tones(Sounds::Crash);
+            }
+            
           }
           else {
             car.setX(car.getX() - (arduboy.getFrameCount(car.getSpeed()) == 0/*< car.speed - 1*/ ? 2 : 1));
@@ -393,6 +432,7 @@ void RaceState::decHealth(StateMachine & machine) {
   
 	auto & arduboy = machine.getContext().arduboy;
   auto & gameStats = machine.getContext().gameStats;
+  auto & sound = machine.getContext().sound;
 
   arduboy.setRGBled(LED_BRIGHTNESS, 0, 0);
   this->ledCountdown = 10;
@@ -403,6 +443,7 @@ void RaceState::decHealth(StateMachine & machine) {
   if (gameStats.health <= 0) {
 
     gameStats.misses++;
+    sound.tones(Sounds::VictimDead);
 
     if (gameStats.misses < 3) {
 

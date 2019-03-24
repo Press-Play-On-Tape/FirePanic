@@ -9,6 +9,7 @@
 void GameIntroState::activate(StateMachine & machine) {
   	
   auto & gameStats = machine.getContext().gameStats;
+  auto & arduboy = machine.getContext().arduboy;
 
   if (machine.getContext().nextState == GameStateType::PlayGameScreen) {
 
@@ -39,11 +40,13 @@ void GameIntroState::activate(StateMachine & machine) {
 void GameIntroState::update(StateMachine & machine) { 
 
 	auto & arduboy = machine.getContext().arduboy;
+  auto & sound = machine.getContext().sound;  
 	auto justPressed = arduboy.justPressedButtons();
 
   if (arduboy.everyXFrames(2)) {
-
+    
     uint8_t colour = ((counter / 10) % 2) == 0;
+
     arduboy.setRGBled(colour == 0 ? ledBrightness : 0, 0, colour == 0 ? 0 : ledBrightness);
 
     if (machine.getContext().nextState == GameStateType::PlayGameScreen) {

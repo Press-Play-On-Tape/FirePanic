@@ -3,10 +3,7 @@
 #include "../utils/Arduboy2Ext.h"
 #include "../utils/Physics.h"
 #include "../images/Images.h"
-
-const uint16_t song1[] PROGMEM = {
-  220,1000, 0,250, 440,500, 880,2000,
-  TONES_END };
+#include "../sounds/Sounds.h"
 
 
 // ----------------------------------------------------------------------------
@@ -16,7 +13,7 @@ void PlayGameState::activate(StateMachine & machine) {
 
   auto & gameStats = machine.getContext().gameStats;
   auto & arduboy = machine.getContext().arduboy;
-  auto & sound = machine.getContext().sound;
+  auto & sound = machine.getContext().sound;  
 
   gameStats.gameOver = false;
   this->counter = 0;
@@ -41,7 +38,6 @@ void PlayGameState::activate(StateMachine & machine) {
   }
 
   sound.setOutputEnabled(arduboy.audio.enabled);
-  sound.tones(song1);
 
 }
   
@@ -53,6 +49,7 @@ void PlayGameState::update(StateMachine & machine) {
 
 	auto & arduboy = machine.getContext().arduboy;
   auto & gameStats = machine.getContext().gameStats;
+  auto & sound = machine.getContext().sound;  
 	auto pressed = arduboy.pressedButtons();
 
 
@@ -85,6 +82,7 @@ void PlayGameState::update(StateMachine & machine) {
 
               gameStats.score = gameStats.score + 5;
               arduboy.setRGBled(0, LED_BRIGHTNESS, 0);
+              sound.tones(Sounds::VictimSaved);
               this->ledCountdown = 10;
 
             }
@@ -109,6 +107,8 @@ void PlayGameState::update(StateMachine & machine) {
                   victim.setAlive(VICTIM_MISSED_TRAMPOLINE);
                   gameStats.misses++;
                   arduboy.setRGBled(LED_BRIGHTNESS, 0, 0);
+                  sound.tones(Sounds::VictimDead);
+
                   this->ledCountdown = 10;
 
                   switch (victim.getX()) {
@@ -133,6 +133,24 @@ void PlayGameState::update(StateMachine & machine) {
 
                   }
                   
+                }
+                else {
+
+                  switch(posIndex) {
+
+                    case BOTTOM_ARC_1: 
+                      sound.tones(Sounds::VictimBounced_1);
+                      break;
+
+                    case BOTTOM_ARC_2: 
+                      sound.tones(Sounds::VictimBounced_2);
+                      break;
+
+                    case BOTTOM_ARC_3: 
+                      sound.tones(Sounds::VictimBounced_3);
+                      break;
+
+                  }
                 }  
 
               }
