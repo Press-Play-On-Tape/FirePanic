@@ -3,13 +3,10 @@
 #include "../utils/GameContext.h"
 #include "../utils/GameState.h"
 #include "../utils/Enums.h"
-#include "../fonts/Font4x6.h"
 
 class BaseState : public GameState<GameContext, GameStateType> {
 
   protected:
-
-    Font4x6 font4x6 = Font4x6();
 
     void renderScore(StateMachine & machine, TimeOfDay timeOfDay, bool renderHealth, uint8_t health);
     void renderMisses(StateMachine & machine, bool renderLatest);
