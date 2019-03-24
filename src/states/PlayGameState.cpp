@@ -227,7 +227,7 @@ void PlayGameState::update(StateMachine & machine) {
         uint8_t nextAvailableVictim = getNextAvailable(gap);
 
         if (nextAvailableVictim != VICTIM_NONE_AVAILABLE) {
-          this->victims[nextAvailableVictim].init();
+          this->victims[nextAvailableVictim].init(this->victimLevel);
           //this->victimCountdown = VICTIM_COUNTDOWN_NONE;
 
           if (gameStats.misses < 3) {

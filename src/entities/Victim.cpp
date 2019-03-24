@@ -6,8 +6,10 @@ Victim::Victim() {
   this->enabled = false;
   this->posIndex = 0;
   this->alive = 0;
-  this->x = pgm_read_byte(&Physics_Arc[this->posIndex * 2]);
-  this->y = pgm_read_byte(&Physics_Arc[(this->posIndex * 2) + 1]);
+  this->x = pgm_read_word_near(&Physics_Arc[this->startingLevel][this->posIndex * 2]);
+  this->y = pgm_read_word_near(&Physics_Arc[this->startingLevel][this->posIndex * 2] + 1);
+  // this->x = pgm_read_byte(&Physics_Arc[this->posIndex * 2]);
+  // this->y = pgm_read_byte(&Physics_Arc[(this->posIndex * 2) + 1]);
 
 }
 
@@ -88,17 +90,20 @@ void Victim::setPrevBounce(bool value) {
 
 }
 
-void Victim::init() {
+void Victim::init(uint8_t level) {
 
   this->enabled = true;
   this->posIndex = 0;  
   this->alive = 0;
   this->puffIndex = 0;
+  this->startingLevel = level;
 
   if (this->posIndex > 67) this->posIndex = 0;
 
-  this->x = pgm_read_byte(&Physics_Arc[this->posIndex * 2]);
-  this->y = pgm_read_byte(&Physics_Arc[(this->posIndex * 2) + 1]);
+  // this->x = pgm_read_byte(&Physics_Arc[this->posIndex * 2]);
+  // this->y = pgm_read_byte(&Physics_Arc[(this->posIndex * 2) + 1]);
+  this->x = pgm_read_word_near(&Physics_Arc[this->startingLevel][this->posIndex * 2]);
+  this->y = pgm_read_word_near(&Physics_Arc[this->startingLevel][this->posIndex * 2] + 1);
 
 }
 
@@ -128,8 +133,10 @@ void Victim::move() {
   switch (this->alive) {
 
     case 0: // alive
-      this->x = pgm_read_byte(&Physics_Arc[this->posIndex * 2]);
-      this->y = pgm_read_byte(&Physics_Arc[(this->posIndex * 2) + 1]);
+      this->x = pgm_read_word_near(&Physics_Arc[this->startingLevel][this->posIndex * 2]);
+      this->y = pgm_read_word_near(&Physics_Arc[this->startingLevel][this->posIndex * 2] + 1);
+      // this->x = pgm_read_byte(&Physics_Arc[this->posIndex * 2]);
+      // this->y = pgm_read_byte(&Physics_Arc[(this->posIndex * 2) + 1]);
       break;
 
     case 1: 

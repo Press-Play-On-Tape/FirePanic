@@ -18,19 +18,21 @@ class Victim {
     uint8_t getPuffIndex();
     bool getPrevBounce();
 
+    void setStartingLevel(bool value);
     void setEnabled(bool value);
     void setAlive(uint8_t value);
     void setPrevBounce(bool value);
 
     void move();
     void rotate();
-    void init();
+    void init(uint8_t level);
     void incPuffIndex();
     
   protected:
 
     uint8_t x;
     uint8_t y;
+    uint8_t startingLevel;
     uint8_t posIndex;
     uint8_t rotIndex;
     uint8_t puffIndex;
