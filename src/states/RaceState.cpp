@@ -93,7 +93,7 @@ void RaceState::update(StateMachine & machine) {
 
     // Game over?
 
-    if (gameStats.misses == 3) {
+    if (gameStats.misses >= 3) {
 
       if (this->ambulance.getX() >- 120) {
 
@@ -400,7 +400,6 @@ void RaceState::update(StateMachine & machine) {
 
   }
 
-      
   if (arduboy.everyXFrames(6)) {
     this->ambulance.incPuffIndexes();
   }
@@ -593,7 +592,7 @@ void RaceState::render(StateMachine & machine) {
     SpritesB::drawExternalMask(this->xGrass + (i*16), 20, Images::Race_Grass, Images::Race_Grass_Mask, 0, 0);
 
   }
-  
+
 
   // Render score ..
 
@@ -690,36 +689,6 @@ void RaceState::render(StateMachine & machine) {
 
       }
 
-      // if (this->ambulance.getPuffIndex(Direction::Right) > 0) {
-
-      //   uint8_t puffIndex_Mask = this->ambulance.getPuffIndex(Direction::Right) - 1;
-      //   uint8_t puffIndex = (puffIndex_Mask * 2);
-
-      //   BaseState::renderPuff(this->ambulance.getX() + RACE_AMBULANCE_WIDTH - 8, this->ambulance.getY() + 16, puffIndex, puffIndex_Mask);
-
-      // }
-
-      // if (this->ambulance.getPuffIndex(Direction::Left) > 0) {
-
-      //   uint8_t puffIndex_Mask = this->ambulance.getPuffIndex(Direction::Left) - 1;
-      //   uint8_t puffIndex = (puffIndex_Mask * 2);
-
-      //   BaseState::renderPuff(this->ambulance.getX() - 8, this->ambulance.getY() + 16, puffIndex, puffIndex_Mask);
-
-      // }
-
-
-      // // Draw puffs if the ambulance has crashed into something ..
-
-      // if (this->ambulance.getPuffIndex(Direction::Down) > 0) {
-
-      //   uint8_t puffIndex_Mask = this->ambulance.getPuffIndex(Direction::Down) - 1;
-      //   uint8_t puffIndex = (puffIndex_Mask * 2);
-
-      //   BaseState::renderPuff(this->ambulance.getX() + (RACE_AMBULANCE_WIDTH / 2) - 8, this->ambulance.getY() + 12, puffIndex, puffIndex_Mask);
-
-      // }
-
     }
 
   }
@@ -729,8 +698,7 @@ void RaceState::render(StateMachine & machine) {
 
   BaseState::renderGameOverOrPause(machine);
 
-//	arduboy.displayWithBackground(TimeOfDay::Mixed);
 	arduboy.displayWithBackground(gameStats.timeOfDay == TimeOfDay::Day ? TimeOfDay::Mixed : TimeOfDay::Night);
-
+ 
 }
 

@@ -8,7 +8,7 @@ class BaseState : public GameState<GameContext, GameStateType> {
 
   protected:
 
-    void renderScore(StateMachine & machine, TimeOfDay timeOfDay, bool renderHealth, uint8_t health);
+    void renderScore(StateMachine & machine, TimeOfDay timeOfDay, bool renderHealth, int16_t health);
     void renderMisses(StateMachine & machine, bool renderLatest);
     void renderCommonScenery(StateMachine & machine, bool incSmoke, bool incRHSBuilding);
     void renderLowerGrass(StateMachine & machine);
