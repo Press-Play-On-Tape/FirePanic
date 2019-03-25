@@ -43,7 +43,7 @@ void BaseState::renderMisses(StateMachine & machine, bool renderLatest) {
   uint8_t missCount = gameStats.misses - (renderLatest ? 0 : 1);
 
   for (uint8_t i = 0; i < missCount; i++) {
-    SpritesB::drawExternalMask(angel_miss_X_Pos[i], ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
+    SpritesB::drawExternalMask(angel_miss_X_Pos[i] - (gameStats.timeOfDay ==TimeOfDay::Day ? 0 : i), ANGEL_MISS_TOP, Images::Misses, Images::Misses_Mask, 0, 0); 
   }
 
 }
