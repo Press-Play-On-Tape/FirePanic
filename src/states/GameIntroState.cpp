@@ -17,6 +17,7 @@ void GameIntroState::activate(StateMachine & machine) {
     this->xPlayer = PLAYER_MIN_X_POS + 6 + (30 * 3);
     gameStats.targetScore = gameStats.score + TARGET_SCORE_BASE + (gameStats.level * TARGET_SCORE_INC_PER_LEVEL);
 
+
   }
   else {
 
@@ -40,7 +41,6 @@ void GameIntroState::activate(StateMachine & machine) {
 void GameIntroState::update(StateMachine & machine) { 
 
 	auto & arduboy = machine.getContext().arduboy;
-  auto & sound = machine.getContext().sound;  
 	auto justPressed = arduboy.justPressedButtons();
 
   if (arduboy.everyXFrames(2)) {
@@ -123,7 +123,7 @@ void GameIntroState::update(StateMachine & machine) {
 
           if (arduboy.everyXFrames(4)) {
 
-            this->xPlayer = (this->xPlayer + 1) / 2;
+            this->xPlayer = this->xPlayer + ((speedInc + 1) / 2);
             if (this->speedInc < 5) this->speedInc++;
 
           }
