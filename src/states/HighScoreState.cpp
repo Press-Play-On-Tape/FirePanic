@@ -194,7 +194,7 @@ void HighScoreState::render(StateMachine & machine) {
   // Render scores ..
 
   renderHighScore(HS_CHAR_TOP, this->player1, this->score1);
-  renderHighScore(HS_CHAR_TOP + HS_CHAR_V_SPACING, this->player2, this->score1);
+  renderHighScore(HS_CHAR_TOP + HS_CHAR_V_SPACING, this->player2, this->score2);
   renderHighScore(HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING, this->player3, this->score3);
 
 
