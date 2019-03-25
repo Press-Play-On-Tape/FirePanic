@@ -18,7 +18,7 @@
 
 // - Race Game ------------------------
 
-#define DIST_MAXIMUM 3200
+#define DIST_MAXIMUM 3200 
 #define DIST_INTERVAL DIST_MAXIMUM / 10
 #define DIST_NO_NEW_CARS 300
 #define DIST_GO_TO_HOSPITAL 128

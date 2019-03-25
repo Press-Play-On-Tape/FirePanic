@@ -123,23 +123,8 @@ void GameIntroState::update(StateMachine & machine) {
 
           if (arduboy.everyXFrames(4)) {
 
-            switch (this->speedInc) {
-
-              case 0 ... 1:
-                this->xPlayer = this->xPlayer + 1;
-                break;
-
-              case 2 ... 3:
-                this->xPlayer = this->xPlayer + 2;
-                break;
-
-              default:
-                this->xPlayer = this->xPlayer + 3;
-                break;
-
-            }
-
-            this->speedInc++;
+            this->xPlayer = (this->xPlayer + 1) / 2;
+            if (this->speedInc < 5) this->speedInc++;
 
           }
 
@@ -164,6 +149,7 @@ void GameIntroState::update(StateMachine & machine) {
     }
 
   }
+
 
   // Skip intro ..
   

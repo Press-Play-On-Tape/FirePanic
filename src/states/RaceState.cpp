@@ -574,34 +574,15 @@ void RaceState::render(StateMachine & machine) {
 
     int16_t x = this->xScenery + (i*64);
 
-    if (gameStats.timeOfDay == TimeOfDay::Day) {
-
-      if (!this->showHospital || (x != this->xHospital)) {
-      
-        SpritesB::drawOverwrite(x, 0, Images::Building_BG, 0);
-
-      }
-
-      if (this->showHospital) {
-
-        SpritesB::drawOverwrite(this->xHospital, 0, Images::Hospital, 0);
-
-      }
+    if (!this->showHospital || (x != this->xHospital)) {
+    
+      SpritesB::drawExternalMask(x, 0, Images::Building_BG, Images::Building_BG_Mask, 0, 0);
 
     }
-    else {
 
-      if (!this->showHospital || (x != this->xHospital)) {
+    if (this->showHospital) {
 
-        SpritesB::drawErase(x, 0, Images::Building_BG, 0);
-      
-      }
-
-      if (this->showHospital) {
-
-        SpritesB::drawErase(this->xHospital, 0, Images::Hospital, 0);
-
-      }
+      SpritesB::drawExternalMask(this->xHospital, 0, Images::Hospital, Images::Hospital_Mask, 0, 0);
 
     }
 
@@ -630,8 +611,9 @@ void RaceState::render(StateMachine & machine) {
 
   for (uint8_t i = 0; i < 5; i++) {
 
-    SpritesB::drawOverwrite(this->xLine1 + (i*32), 40, Images::Race_Line, 0);
-    SpritesB::drawOverwrite(this->xLine2 + (i*32), 53, Images::Race_Line, 0);
+    uint8_t z = i * 32;
+    SpritesB::drawOverwrite(this->xLine1 + z, 40, Images::Race_Line, 0);
+    SpritesB::drawOverwrite(this->xLine2 + z, 53, Images::Race_Line, 0);
 
   }
 
@@ -680,42 +662,63 @@ void RaceState::render(StateMachine & machine) {
 
       }
 
-      if (this->ambulance.getX() > -RACE_AMBULANCE_WIDTH && this->ambulance.getX() < WIDTH) {
-        BaseState::renderAmbulance(machine, this->ambulance.getX(), this->ambulance.getY(), false);
-      }
+      BaseState::renderAmbulance(machine, this->ambulance.getX(), this->ambulance.getY(), false);
 
 
       // Draw puffs if the ambulance has crashed into something ..
 
-      if (this->ambulance.getPuffIndex(Direction::Right) > 0) {
+      const int8_t puffConsts[] = { static_cast<int8_t>(Direction::Right), RACE_AMBULANCE_WIDTH - 8, 16, 
+                                    static_cast<int8_t>(Direction::Left), -8, 16, 
+                                    static_cast<int8_t>(Direction::Down), (RACE_AMBULANCE_WIDTH / 2) - 8, 12 };
 
-        uint8_t puffIndex_Mask = this->ambulance.getPuffIndex(Direction::Right) - 1;
-        uint8_t puffIndex = (puffIndex_Mask * 2);
+      for (uint8_t i = 0; i< 3; i++) {
 
-        BaseState::renderPuff(this->ambulance.getX() + RACE_AMBULANCE_WIDTH - 8, this->ambulance.getY() + 16, puffIndex, puffIndex_Mask);
+        Direction direction = static_cast<Direction>(puffConsts[i * 3]);
+        
+        uint8_t puffIndex = this->ambulance.getPuffIndex(direction);
+        int8_t x = puffConsts[(i * 3) + 1];
+        int8_t y = puffConsts[(i * 3) + 2];
+        
+        if (puffIndex > 0) {
 
-      }
+          uint8_t puffIndex_Mask = puffIndex - 1;
+          uint8_t puffIndex = (puffIndex_Mask * 2);
 
-      if (this->ambulance.getPuffIndex(Direction::Left) > 0) {
+          BaseState::renderPuff(this->ambulance.getX() + x, this->ambulance.getY() + y, puffIndex, puffIndex_Mask);
 
-        uint8_t puffIndex_Mask = this->ambulance.getPuffIndex(Direction::Left) - 1;
-        uint8_t puffIndex = (puffIndex_Mask * 2);
-
-        BaseState::renderPuff(this->ambulance.getX() - 8, this->ambulance.getY() + 16, puffIndex, puffIndex_Mask);
-
-      }
-
-
-      // Draw puffs if the ambulance has crashed into something ..
-
-      if (this->ambulance.getPuffIndex(Direction::Down) > 0) {
-
-        uint8_t puffIndex_Mask = this->ambulance.getPuffIndex(Direction::Down) - 1;
-        uint8_t puffIndex = (puffIndex_Mask * 2);
-
-        BaseState::renderPuff(this->ambulance.getX() + (RACE_AMBULANCE_WIDTH / 2) - 8, this->ambulance.getY() + 12, puffIndex, puffIndex_Mask);
+        }
 
       }
+
+      // if (this->ambulance.getPuffIndex(Direction::Right) > 0) {
+
+      //   uint8_t puffIndex_Mask = this->ambulance.getPuffIndex(Direction::Right) - 1;
+      //   uint8_t puffIndex = (puffIndex_Mask * 2);
+
+      //   BaseState::renderPuff(this->ambulance.getX() + RACE_AMBULANCE_WIDTH - 8, this->ambulance.getY() + 16, puffIndex, puffIndex_Mask);
+
+      // }
+
+      // if (this->ambulance.getPuffIndex(Direction::Left) > 0) {
+
+      //   uint8_t puffIndex_Mask = this->ambulance.getPuffIndex(Direction::Left) - 1;
+      //   uint8_t puffIndex = (puffIndex_Mask * 2);
+
+      //   BaseState::renderPuff(this->ambulance.getX() - 8, this->ambulance.getY() + 16, puffIndex, puffIndex_Mask);
+
+      // }
+
+
+      // // Draw puffs if the ambulance has crashed into something ..
+
+      // if (this->ambulance.getPuffIndex(Direction::Down) > 0) {
+
+      //   uint8_t puffIndex_Mask = this->ambulance.getPuffIndex(Direction::Down) - 1;
+      //   uint8_t puffIndex = (puffIndex_Mask * 2);
+
+      //   BaseState::renderPuff(this->ambulance.getX() + (RACE_AMBULANCE_WIDTH / 2) - 8, this->ambulance.getY() + 12, puffIndex, puffIndex_Mask);
+
+      // }
 
     }
 
@@ -726,7 +729,8 @@ void RaceState::render(StateMachine & machine) {
 
   BaseState::renderGameOverOrPause(machine);
 
-	arduboy.displayWithBackground(TimeOfDay::Mixed);
+//	arduboy.displayWithBackground(TimeOfDay::Mixed);
+	arduboy.displayWithBackground(gameStats.timeOfDay == TimeOfDay::Day ? TimeOfDay::Mixed : TimeOfDay::Night);
 
 }
 

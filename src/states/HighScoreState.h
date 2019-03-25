@@ -25,14 +25,13 @@ class HighScoreState : public BaseState {
     int16_t score2;
     int16_t score3;
 
-    void renderHighScore(int16_t score, uint8_t x, uint8_t y);
+    void renderHighScore(uint8_t y, uint8_t chars[], int16_t score);
 
   public:	
   
     void activate(StateMachine & machine) override;
     void update(StateMachine & machine) override;
     void render(StateMachine & machine) override;
-
 
 };
 

@@ -53,7 +53,7 @@ void TitleScreenState::update(StateMachine & machine) {
 	// Handle other input ..
 
 	if (justPressed & A_BUTTON) {
-		machine.changeState(GameStateType::GameIntroScreen, GameStateType::PlayGameScreen); 
+		machine.changeState(GameStateType::PlayGameScreen, GameStateType::PlayGameScreen); 
 	}
 
   // SJH Remove for production ..

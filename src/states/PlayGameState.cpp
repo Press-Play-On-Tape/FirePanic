@@ -501,7 +501,7 @@ void PlayGameState::render(StateMachine & machine) {
 
   // Render victim about to jump ..
 
-  if (this->victimCountdown < 75) {//VICTIM_COUNTDOWN_NONE) {
+  if (this->victimCountdown < 75) {
 
     SpritesB::drawExternalMask(edgePos[this->victimLevel * 4], edgePos[(this->victimLevel * 4) + 1], Images::Victim_OnEdge_01, Images::Victim_OnEdge_01_Mask, 0, 0);
 

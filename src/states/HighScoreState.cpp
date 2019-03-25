@@ -158,9 +158,13 @@ void HighScoreState::update(StateMachine & machine) {
 }
 
 
-void HighScoreState::renderHighScore(int16_t score, uint8_t x, uint8_t y) {
+void HighScoreState::renderHighScore(uint8_t y, uint8_t chars[], int16_t score) {
 
-  for (uint8_t j = 6, x2 = x - 4; j > 0; --j, x2 += 5) {
+  for (uint8_t i = 0; i < 3; i++) {
+    SpritesB::drawOverwrite(HS_NAME_LEFT + (i * 6), y, font_images, chars[i] == 63 ? 0 : chars[i] - 64);
+  }
+
+  for (uint8_t j = 6, x2 = HS_SCORE_LEFT - 4; j > 0; --j, x2 += 5) {
     
     uint8_t digits[6] = {};
     extractDigits(digits, static_cast<uint16_t>(absT(score)));
@@ -189,21 +193,9 @@ void HighScoreState::render(StateMachine & machine) {
 
   // Render scores ..
 
-  SpritesB::drawOverwrite(HS_NAME_LEFT, HS_CHAR_TOP, font_images, this->player1[0] == 63 ? 0 : this->player1[0] - 64);
-  SpritesB::drawOverwrite(HS_NAME_LEFT + 6, HS_CHAR_TOP, font_images, this->player1[1] == 63 ? 0 : this->player1[1] - 64);
-  SpritesB::drawOverwrite(HS_NAME_LEFT + 12, HS_CHAR_TOP, font_images, this->player1[2] == 63 ? 0 : this->player1[2] - 64);
-  renderHighScore(this->score1, HS_SCORE_LEFT, HS_CHAR_TOP);
-
-  SpritesB::drawOverwrite(HS_NAME_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING, font_images, this->player2[0] == 63 ? 0 : this->player2[0] - 64);
-  SpritesB::drawOverwrite(HS_NAME_LEFT + 6, HS_CHAR_TOP + HS_CHAR_V_SPACING, font_images, this->player2[1] == 63 ? 0 : this->player2[1] - 64);
-  SpritesB::drawOverwrite(HS_NAME_LEFT + 12, HS_CHAR_TOP + HS_CHAR_V_SPACING, font_images, this->player2[2] == 63 ? 0 : this->player2[2] - 64);
-  renderHighScore(this->score2, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING);
-
-  SpritesB::drawOverwrite(HS_NAME_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING, font_images, this->player3[0] == 63 ? 0 : this->player3[0] - 64);
-  SpritesB::drawOverwrite(HS_NAME_LEFT + 6, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING, font_images, this->player3[1] == 63 ? 0 : this->player3[1] - 64);
-  SpritesB::drawOverwrite(HS_NAME_LEFT + 12, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING, font_images, this->player3[2] == 63 ? 0 : this->player3[2] - 64);
-  renderHighScore(this->score3, HS_SCORE_LEFT, HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING);
-
+  renderHighScore(HS_CHAR_TOP, this->player1, this->score1);
+  renderHighScore(HS_CHAR_TOP + HS_CHAR_V_SPACING, this->player2, this->score1);
+  renderHighScore(HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING, this->player3, this->score3);
 
 
   // Render edit field if the slot is being editted ..
@@ -212,7 +204,7 @@ void HighScoreState::render(StateMachine & machine) {
 
     char *player = this->players[this->winnerIdx];
 
-    arduboy.fillRect(HS_NAME_LEFT + (this->charIdx * 6) - 1, HS_CHAR_TOP + (winnerIdx * HS_CHAR_V_SPACING), 6, 8, WHITE);
+    arduboy.fillRect(HS_NAME_LEFT + (this->charIdx * 6) - 1, HS_CHAR_TOP + (winnerIdx * HS_CHAR_V_SPACING) - 1, 6, 8, WHITE);
     SpritesB::drawErase(HS_NAME_LEFT + (this->charIdx * 6), HS_CHAR_TOP + (HS_CHAR_V_SPACING * this->winnerIdx), font_images, player[this->charIdx] == 63 ? 0 : player[this->charIdx] - 64);
 
   }
