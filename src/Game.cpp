@@ -34,7 +34,7 @@ void Game::setup(void) {
 	arduboy.setFrameRate(75);
 
 
-  EEPROM_Utils::initEEPROM(false);
+	EEPROM_Utils::initialiseEEPROM();
 
 	this->currentState = GameStateType::SplashScreen; 
 	this->splashScreenState.activate(*this);

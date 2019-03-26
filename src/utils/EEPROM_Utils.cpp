@@ -17,83 +17,57 @@ constexpr uint8_t letter2 = 'P';
 
 namespace EEPROM_Utils {
 
-  void initEEPROM(bool forceClear) {
+  void initialiseEEPROM() {
 
     uint8_t * const eepromStartChar1 = reinterpret_cast<uint8_t *>(EEPROM_START_C1);
     uint8_t * const eepromStartChar2 = reinterpret_cast<uint8_t *>(EEPROM_START_C2);
 
-    uint8_t * const eepromHSName1 = reinterpret_cast<uint8_t *>(EEPROM_HS_NAME_1);
-    uint8_t * const eepromHSName2 = reinterpret_cast<uint8_t *>(EEPROM_HS_NAME_2);
-    uint8_t * const eepromHSName3 = reinterpret_cast<uint8_t *>(EEPROM_HS_NAME_3);
-    uint8_t * const eepromEnd = reinterpret_cast<uint8_t *>(EEPROM_END);
-
     const byte c1 = eeprom_read_byte(eepromStartChar1);
     const byte c2 = eeprom_read_byte(eepromStartChar2);
 
-    if (!forceClear && (c1 == letter1) && (c2 == letter2)) {
+    if ((c1 != letter1) || (c2 != letter2)) {
 
-      return;
+      clearEEPROM();
 
     }
+
+  }
+
+  void clearEEPROM() {
+
+    uint8_t * const eepromStartChar1 = reinterpret_cast<uint8_t *>(EEPROM_START_C1);
+    uint8_t * const eepromStartChar2 = reinterpret_cast<uint8_t *>(EEPROM_START_C2);
 
     eeprom_update_byte(eepromStartChar1, letter1);
     eeprom_update_byte(eepromStartChar2, letter2);
 
-    for (uint8_t * x = eepromHSName1; x <= eepromEnd; ++x) {
+    SaveEntry * const saveEntries = reinterpret_cast<SaveEntry *>(eepromSaveEntriesStart);
+    
+    for(uint8_t saveIndex = 0; saveIndex < eepromSaveEntriesCount; ++saveIndex) {
+    
+      SaveEntry entry { 0, "" };
 
-      eeprom_update_byte(x, 0);
+      for (uint8_t index = 0; index < SaveEntry::nameCount; ++index) {
+
+        entry.name[index] = ('A' + index);
+      
+      }
+
+      entry.name[NAME_LENGTH] = '\0';
+
+      eeprom_update_block(&entry, &saveEntries[saveIndex], sizeof(SaveEntry));
 
     }
 
-    for (uint8_t x = 0; x < 3; ++x) {
-
-      eeprom_update_byte(&eepromHSName1[x], 'A');
-      eeprom_update_byte(&eepromHSName2[x], 'B');
-      eeprom_update_byte(&eepromHSName3[x], 'C');
-
-    }
-
-    uint16_t * const eepromHSScore1 = reinterpret_cast<uint16_t *>(EEPROM_HS_SCORE_1);
-    uint16_t * const eepromHSScore2 = reinterpret_cast<uint16_t *>(EEPROM_HS_SCORE_2);
-    uint16_t * const eepromHSScore3 = reinterpret_cast<uint16_t *>(EEPROM_HS_SCORE_3);
-
-    eeprom_update_word(eepromHSScore1, 0);
-    eeprom_update_word(eepromHSScore2, 0);
-    eeprom_update_word(eepromHSScore3, 0);
-
   }
 
+  uint8_t findScore(uint16_t newScore) {
 
-  /* -----------------------------------------------------------------------------
-   *   Get name ..
-   */
-  void getName(char (&name)[NAME_LENGTH + 1], uint8_t startLoc) {
+    SaveEntry * const saveEntries = reinterpret_cast<SaveEntry *>(eepromSaveEntriesStart);
 
-    const void * sourcePointer = reinterpret_cast<const void *>(startLoc);
-    eeprom_read_block(name, sourcePointer, (NAME_LENGTH - 1));
+    for (uint8_t i = 0; i < eepromSaveEntriesCount; ++i) {
 
-    name[NAME_LENGTH] = '\0';
-
-  }
-
-
-  /* -----------------------------------------------------------------------------
-   *   Get name ..
-   */
-  uint16_t getHighScore(uint8_t startLoc) {
-
-    const uint16_t * const scoreAddresss = reinterpret_cast<const uint16_t *>(startLoc);
-    return eeprom_read_word(scoreAddresss);
-
-  }
-
-  static uint8_t testScore(uint16_t newScore) {
-
-    uint16_t * const eepromHSScore1 = reinterpret_cast<uint16_t *>(EEPROM_HS_SCORE_1);
-
-    for (uint8_t i = 0; i < 3; ++i) {
-
-      const uint16_t oldScore = eeprom_read_word(&eepromHSScore1[i]);
+      const uint16_t oldScore = eeprom_read_word(&saveEntries[i].score);
 
       if (newScore >= oldScore) {
 
@@ -104,7 +78,7 @@ namespace EEPROM_Utils {
     }
 
     return NO_WINNER;
-  
+
   }
 
   /* -----------------------------------------------------------------------------
@@ -112,9 +86,9 @@ namespace EEPROM_Utils {
    */
   uint8_t saveScore(uint16_t newScore) {
 
-    uint8_t idx = testScore(newScore);
+    const uint8_t targetIndex = findScore(newScore);
 
-    if(idx == NO_WINNER) {
+    if(targetIndex == NO_WINNER) {
 
       return NO_WINNER;
 
@@ -122,48 +96,75 @@ namespace EEPROM_Utils {
 
     // New High Score ..
 
-    uint16_t * const eepromHSScore1 = reinterpret_cast<uint16_t *>(EEPROM_HS_SCORE_1);
-    uint8_t * const eepromHSName1 = reinterpret_cast<uint8_t *>(EEPROM_HS_NAME_1);
+    SaveEntry * const saveEntries = reinterpret_cast<SaveEntry *>(eepromSaveEntriesStart);
 
-    for (uint8_t i = 2; i > idx; --i) {
+    for (uint8_t index = (eepromSaveEntriesCount - 1); index > targetIndex; --index) {
 
-      const size_t previousIndex = (i - 1);
-      const size_t sourceBaseIndex = (previousIndex * NAME_LENGTH_PLUS_TERM);
-      const size_t destinationBaseIndex = (i * NAME_LENGTH_PLUS_TERM);
+      const uint8_t previousIndex = (index - 1);
 
-      for (uint8_t j = 0; j < NAME_LENGTH_PLUS_TERM; ++j) {
-
-        const uint8_t x = eeprom_read_byte(&eepromHSName1[sourceBaseIndex + j]);
-        eeprom_update_byte(&eepromHSName1[destinationBaseIndex + j], x);
-
-      }
-
-      const uint16_t score = eeprom_read_word(&eepromHSScore1[previousIndex]);
-      eeprom_update_word(&eepromHSScore1[i], score);
+      SaveEntry entry;
+      eeprom_read_block(&entry, &saveEntries[previousIndex], sizeof(SaveEntry));
+      eeprom_update_block(&entry, &saveEntries[index], sizeof(SaveEntry));
 
     }
 
+    // Save new name and score ..
+    SaveEntry entry { newScore, { '?', '?', '?', '\0' } };
+    eeprom_update_block(&entry, &saveEntries[targetIndex], sizeof(SaveEntry));
 
-    // Write out new name and score ..
+    return targetIndex;
 
-    for (uint8_t j = 0; j < NAME_LENGTH_PLUS_TERM; j++) {
+  }
 
-      eeprom_update_byte(&eepromHSName1[(idx * NAME_LENGTH_PLUS_TERM) + j], '?');
+  void saveChar(uint8_t saveIndex, uint8_t charIndex, char newChar) {
 
-    }
+    SaveEntry * const saveEntries = reinterpret_cast<SaveEntry *>(eepromSaveEntriesStart);
+    uint8_t * const bytePointer = reinterpret_cast<uint8_t *>(&saveEntries[saveIndex].name[charIndex]);
+    eeprom_update_byte(bytePointer, newChar);
 
-    eeprom_write_word(&eepromHSScore1[idx], newScore);
+  }
+
+  void readSaveEntry(SaveEntry & entry, uint8_t saveIndex) {
+
+    const SaveEntry * const saveEntries = reinterpret_cast<const SaveEntry *>(eepromSaveEntriesStart);
+    eeprom_read_block(&entry, &saveEntries[saveIndex], sizeof(SaveEntry));
+
+  }
+
+
+  void readSaveEntryName(char (&name)[SaveEntry::nameSize], uint8_t saveIndex) {
+
+    const SaveEntry * const saveEntries = reinterpret_cast<const SaveEntry *>(eepromSaveEntriesStart);
+    eeprom_read_block(&name, &saveEntries[saveIndex].name, SaveEntry::nameSize);
+
+  }
+
+  uint16_t readSaveEntryScore(uint8_t saveIndex) {
+
+    const SaveEntry * const saveEntries = reinterpret_cast<const SaveEntry *>(eepromSaveEntriesStart);
+    return eeprom_read_word(&saveEntries[saveIndex].score);
+
+  }
+
+  void writeSaveEntry(const SaveEntry & entry, uint8_t saveIndex) {
+
+    SaveEntry * const saveEntries = reinterpret_cast<SaveEntry *>(eepromSaveEntriesStart);
+    eeprom_update_block(&entry, &saveEntries[saveIndex], sizeof(SaveEntry));
 
     return idx;
 
-  }
+  void writeSaveEntryName(const char (&name)[SaveEntry::nameSize], uint8_t saveIndex) {
 
-  void saveChar(int8_t slotIdx, uint8_t charIdx, uint8_t newChar) {
-
-    uint8_t * const eepromHSName1 = reinterpret_cast<uint8_t *>(EEPROM_HS_NAME_1);
-    const size_t index = ((slotIdx * NAME_LENGTH_PLUS_TERM) + charIdx);
-    eeprom_update_byte(&eepromHSName1[index], newChar);
+    SaveEntry * const saveEntries = reinterpret_cast<SaveEntry *>(eepromSaveEntriesStart);
+    eeprom_update_block(&name, &saveEntries[saveIndex].name, SaveEntry::nameSize);
 
   }
 
+  void writeSaveEntryScore(uint16_t score, uint8_t saveIndex) {
+
+    SaveEntry * const saveEntries = reinterpret_cast<SaveEntry *>(eepromSaveEntriesStart);
+    eeprom_update_word(&saveEntries[saveIndex].score, score);
+
+  }
+  
 }

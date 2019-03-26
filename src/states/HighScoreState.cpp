@@ -18,16 +18,8 @@ void HighScoreState::activate(StateMachine & machine) {
 
   arduboy.clearButtonState();
 
-
   // Retrieve existing names and scores ..
-
-  EEPROM_Utils::getName(this->player1, EEPROM_HS_NAME_1);
-  EEPROM_Utils::getName(this->player2, EEPROM_HS_NAME_2);
-  EEPROM_Utils::getName(this->player3, EEPROM_HS_NAME_3);
-
-  this->score1 = EEPROM_Utils::getHighScore(EEPROM_HS_SCORE_1);
-  this->score2 = EEPROM_Utils::getHighScore(EEPROM_HS_SCORE_2);
-  this->score3 = EEPROM_Utils::getHighScore(EEPROM_HS_SCORE_3);
+  EEPROM_Utils::readSaveEntries(this->players);
 
 }
 
@@ -50,7 +42,7 @@ void HighScoreState::update(StateMachine & machine) {
 
       if (pressed & UP_BUTTON) {
 
-        char *player = this->players[this->winnerIdx];
+        char *player = this->players[this->winnerIdx].name;
         player[this->charIdx]++;
         if (player[this->charIdx] > 90) player[this->charIdx] = 65;
         if (player[this->charIdx] == 64) player[this->charIdx] = 65;
@@ -59,7 +51,7 @@ void HighScoreState::update(StateMachine & machine) {
 
       if (pressed & DOWN_BUTTON) {
 
-        char *player = this->players[this->winnerIdx];
+        char *player = this->players[this->winnerIdx].name;
         player[this->charIdx]--;
         if (player[this->charIdx] < 65) player[this->charIdx] = 90;
         if (player[this->charIdx] == 62) player[this->charIdx] = 90;
@@ -76,7 +68,7 @@ void HighScoreState::update(StateMachine & machine) {
 
       if (pressed & A_BUTTON) {
 
-        char *player = this->players[this->winnerIdx];
+        char *player = this->players[this->winnerIdx].name;
 
         if (player[0] != 63 && player[1] != 63 && player[2] != 63) {
           
@@ -124,15 +116,8 @@ void HighScoreState::update(StateMachine & machine) {
 
 				clearScores = 0;
 				arduboy.setRGBled(0, 0, 0);
-				EEPROM_Utils::initEEPROM(true);
-
-				EEPROM_Utils::getName(this->player1, EEPROM_HS_NAME_1);
-				EEPROM_Utils::getName(this->player2, EEPROM_HS_NAME_2);
-				EEPROM_Utils::getName(this->player3, EEPROM_HS_NAME_3);
-
-				this->score1 = EEPROM_Utils::getHighScore(EEPROM_HS_SCORE_1);
-				this->score2 = EEPROM_Utils::getHighScore(EEPROM_HS_SCORE_2);
-				this->score3 = EEPROM_Utils::getHighScore(EEPROM_HS_SCORE_3);
+				EEPROM_Utils::clearEEPROM();
+				EEPROM_Utils::readSaveEntries(this->players);
 
 				break;
 
@@ -158,16 +143,16 @@ void HighScoreState::update(StateMachine & machine) {
 }
 
 
-void HighScoreState::renderHighScore(uint8_t y, uint8_t chars[], int16_t score) {
+void HighScoreState::renderHighScore(uint8_t y, const SaveEntry & saveEntry) {
 
   for (uint8_t i = 0; i < 3; i++) {
-    SpritesB::drawOverwrite(HS_NAME_LEFT + (i * 6), y, font_images, chars[i] == 63 ? 0 : chars[i] - 64);
+    SpritesB::drawOverwrite(HS_NAME_LEFT + (i * 6), y, font_images, saveEntry.name[i] == 63 ? 0 : saveEntry.name[i] - 64);
   }
 
   for (uint8_t j = 6, x2 = HS_SCORE_LEFT - 4; j > 0; --j, x2 += 5) {
     
     uint8_t digits[6] = {};
-    extractDigits(digits, static_cast<uint16_t>(absT(score)));
+    extractDigits(digits, saveEntry.score);
     SpritesB::drawOverwrite(x2, y, font_images, digits[j - 1] + 27);
 
   }
@@ -192,17 +177,18 @@ void HighScoreState::render(StateMachine & machine) {
 
 
   // Render scores ..
+  for (uint8_t index = 0; index < eepromSaveEntriesCount; ++index) {
 
-  renderHighScore(HS_CHAR_TOP, this->player1, this->score1);
-  renderHighScore(HS_CHAR_TOP + HS_CHAR_V_SPACING, this->player2, this->score2);
-  renderHighScore(HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING, this->player3, this->score3);
+    renderHighScore(HS_CHAR_TOP + (HS_CHAR_V_SPACING * index), this->players[index]);
+
+  }
 
 
   // Render edit field if the slot is being editted ..
 
   if (this->winnerIdx < NO_WINNER && flash) {
 
-    char *player = this->players[this->winnerIdx];
+    char *player = this->players[this->winnerIdx].name;
 
     arduboy.fillRect(HS_NAME_LEFT + (this->charIdx * 6) - 1, HS_CHAR_TOP + (winnerIdx * HS_CHAR_V_SPACING) - 1, 6, 8, WHITE);
     SpritesB::drawErase(HS_NAME_LEFT + (this->charIdx * 6), HS_CHAR_TOP + (HS_CHAR_V_SPACING * this->winnerIdx), font_images, player[this->charIdx] == 63 ? 0 : player[this->charIdx] - 64);
