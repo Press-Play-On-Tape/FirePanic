@@ -19,13 +19,13 @@ namespace EEPROM_Utils {
 
   void initEEPROM(bool forceClear) {
 
-    uint8_t * eepromStartChar1 = reinterpret_cast<uint8_t *>(EEPROM_START_C1);
-    uint8_t * eepromStartChar2 = reinterpret_cast<uint8_t *>(EEPROM_START_C2);
+    uint8_t * const eepromStartChar1 = reinterpret_cast<uint8_t *>(EEPROM_START_C1);
+    uint8_t * const eepromStartChar2 = reinterpret_cast<uint8_t *>(EEPROM_START_C2);
 
-    uint8_t * eepromHSName1 = reinterpret_cast<uint8_t *>(EEPROM_HS_NAME_1);
-    uint8_t * eepromHSName2 = reinterpret_cast<uint8_t *>(EEPROM_HS_NAME_2);
-    uint8_t * eepromHSName3 = reinterpret_cast<uint8_t *>(EEPROM_HS_NAME_3);
-    uint8_t * eepromEnd = reinterpret_cast<uint8_t *>(EEPROM_END);
+    uint8_t * const eepromHSName1 = reinterpret_cast<uint8_t *>(EEPROM_HS_NAME_1);
+    uint8_t * const eepromHSName2 = reinterpret_cast<uint8_t *>(EEPROM_HS_NAME_2);
+    uint8_t * const eepromHSName3 = reinterpret_cast<uint8_t *>(EEPROM_HS_NAME_3);
+    uint8_t * const eepromEnd = reinterpret_cast<uint8_t *>(EEPROM_END);
 
     const byte c1 = eeprom_read_byte(eepromStartChar1);
     const byte c2 = eeprom_read_byte(eepromStartChar2);
@@ -53,9 +53,9 @@ namespace EEPROM_Utils {
 
     }
 
-    uint16_t * eepromHSScore1 = reinterpret_cast<uint16_t *>(EEPROM_HS_SCORE_1);
-    uint16_t * eepromHSScore2 = reinterpret_cast<uint16_t *>(EEPROM_HS_SCORE_2);
-    uint16_t * eepromHSScore3 = reinterpret_cast<uint16_t *>(EEPROM_HS_SCORE_3);
+    uint16_t * const eepromHSScore1 = reinterpret_cast<uint16_t *>(EEPROM_HS_SCORE_1);
+    uint16_t * const eepromHSScore2 = reinterpret_cast<uint16_t *>(EEPROM_HS_SCORE_2);
+    uint16_t * const eepromHSScore3 = reinterpret_cast<uint16_t *>(EEPROM_HS_SCORE_3);
 
     eeprom_update_word(eepromHSScore1, 0);
     eeprom_update_word(eepromHSScore2, 0);
@@ -82,7 +82,7 @@ namespace EEPROM_Utils {
    */
   uint16_t getHighScore(uint8_t startLoc) {
 
-    const uint16_t * scoreAddresss = reinterpret_cast<const uint16_t *>(startLoc);
+    const uint16_t * const scoreAddresss = reinterpret_cast<const uint16_t *>(startLoc);
     return eeprom_read_word(scoreAddresss);
 
   }
@@ -94,7 +94,7 @@ namespace EEPROM_Utils {
   uint8_t saveScore(uint16_t newScore) {
 
     uint8_t idx = NO_WINNER;
-    uint16_t * const eepromHSScore1 = reinterpret_cast<const uint16_t *>(EEPROM_HS_SCORE_1);
+    uint16_t * const eepromHSScore1 = reinterpret_cast<uint16_t *>(EEPROM_HS_SCORE_1);
 
     for (uint8_t i = 0; i < 3; ++i) {
 
