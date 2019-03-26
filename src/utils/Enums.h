@@ -110,6 +110,8 @@
 #define EEPROM_HS_SCORE_2             117
 #define EEPROM_HS_SCORE_3             119
 #define EEPROM_END                    121
+constexpr size_t eepromSaveEntriesCount = 3;
+constexpr size_t eepromSaveEntriesStart = 103;
 
 #define FLASH_FRAME_COUNT_2 56
 #define CAR_COLLISION_NONE 255
