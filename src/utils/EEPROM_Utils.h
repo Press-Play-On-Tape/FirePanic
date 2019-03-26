@@ -27,5 +27,6 @@ namespace EEPROM_Utils {
     for(size_t index = 0; index < count; ++index)
       readSaveEntry(entries[index], index);
   }
+  
 };
 

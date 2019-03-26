@@ -100,18 +100,11 @@
 
 #define NO_WINNER 255
 
-#define EEPROM_START                  100
-#define EEPROM_START_C1               101
-#define EEPROM_START_C2               102
-#define EEPROM_HS_NAME_1              103
-#define EEPROM_HS_NAME_2              107
-#define EEPROM_HS_NAME_3              111
-#define EEPROM_HS_SCORE_1             115
-#define EEPROM_HS_SCORE_2             117
-#define EEPROM_HS_SCORE_3             119
-#define EEPROM_END                    121
+constexpr size_t eepromStart = 120;
+constexpr size_t eepromStart_C1 = eepromStart + 1;
+constexpr size_t eepromStart_C2 = eepromStart + 2;
 constexpr size_t eepromSaveEntriesCount = 3;
-constexpr size_t eepromSaveEntriesStart = 103;
+constexpr size_t eepromSaveEntriesStart = eepromStart + 3;
 
 #define FLASH_FRAME_COUNT_2 56
 #define CAR_COLLISION_NONE 255

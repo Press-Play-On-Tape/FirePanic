@@ -19,8 +19,8 @@ namespace EEPROM_Utils {
 
   void initialiseEEPROM() {
 
-    uint8_t * const eepromStartChar1 = reinterpret_cast<uint8_t *>(EEPROM_START_C1);
-    uint8_t * const eepromStartChar2 = reinterpret_cast<uint8_t *>(EEPROM_START_C2);
+    uint8_t * const eepromStartChar1 = reinterpret_cast<uint8_t *>(eepromStart_C1);
+    uint8_t * const eepromStartChar2 = reinterpret_cast<uint8_t *>(eepromStart_C2);
 
     const byte c1 = eeprom_read_byte(eepromStartChar1);
     const byte c2 = eeprom_read_byte(eepromStartChar2);
@@ -35,8 +35,8 @@ namespace EEPROM_Utils {
 
   void clearEEPROM() {
 
-    uint8_t * const eepromStartChar1 = reinterpret_cast<uint8_t *>(EEPROM_START_C1);
-    uint8_t * const eepromStartChar2 = reinterpret_cast<uint8_t *>(EEPROM_START_C2);
+    uint8_t * const eepromStartChar1 = reinterpret_cast<uint8_t *>(eepromStart_C1);
+    uint8_t * const eepromStartChar2 = reinterpret_cast<uint8_t *>(eepromStart_C2);
 
     eeprom_update_byte(eepromStartChar1, letter1);
     eeprom_update_byte(eepromStartChar2, letter2);
@@ -49,7 +49,7 @@ namespace EEPROM_Utils {
 
       for (uint8_t index = 0; index < SaveEntry::nameCount; ++index) {
 
-        entry.name[index] = ('A' + index);
+        entry.name[index] = ('A' + saveIndex);
       
       }
 
@@ -131,7 +131,6 @@ namespace EEPROM_Utils {
 
   }
 
-
   void readSaveEntryName(char (&name)[SaveEntry::nameSize], uint8_t saveIndex) {
 
     const SaveEntry * const saveEntries = reinterpret_cast<const SaveEntry *>(eepromSaveEntriesStart);
@@ -151,7 +150,7 @@ namespace EEPROM_Utils {
     SaveEntry * const saveEntries = reinterpret_cast<SaveEntry *>(eepromSaveEntriesStart);
     eeprom_update_block(&entry, &saveEntries[saveIndex], sizeof(SaveEntry));
 
-    return idx;
+  }
 
   void writeSaveEntryName(const char (&name)[SaveEntry::nameSize], uint8_t saveIndex) {
 
@@ -166,5 +165,5 @@ namespace EEPROM_Utils {
     eeprom_update_word(&saveEntries[saveIndex].score, score);
 
   }
-  
+
 }

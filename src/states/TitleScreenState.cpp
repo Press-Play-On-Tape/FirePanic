@@ -56,10 +56,9 @@ void TitleScreenState::update(StateMachine & machine) {
 		machine.changeState(GameStateType::GameIntroScreen, GameStateType::PlayGameScreen); 
 	}
 
-  // SJH Remove for production ..
-	// if (justPressed & B_BUTTON) {
-	// 	machine.changeState(GameStateType::PlayRaceScreen, GameStateType::PlayGameScreen); 
-	// }
+	if (justPressed & B_BUTTON) {
+		machine.changeState(GameStateType::HighScoreScreen, GameStateType::None); 
+	}
 
 
   // Update flame counter.
