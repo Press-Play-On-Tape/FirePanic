@@ -44,7 +44,7 @@ void HighScoreState::update(StateMachine & machine) {
 
         char *player = this->players[this->winnerIdx].name;
         player[this->charIdx]++;
-        if (player[this->charIdx] > 90) player[this->charIdx] = 65;
+        if (player[this->charIdx] > 90)  player[this->charIdx] = 65;
         if (player[this->charIdx] == 64) player[this->charIdx] = 65;
 
       }
@@ -53,8 +53,8 @@ void HighScoreState::update(StateMachine & machine) {
 
         char *player = this->players[this->winnerIdx].name;
         player[this->charIdx]--;
-        if (player[this->charIdx] < 65) player[this->charIdx] = 90;
-        if (player[this->charIdx] == 62) player[this->charIdx] = 90;
+        if (player[this->charIdx] < 65)  player[this->charIdx] = 90;
+//      if (player[this->charIdx] == 62) player[this->charIdx] = 90;
 
       }
 
@@ -138,7 +138,7 @@ void HighScoreState::update(StateMachine & machine) {
 
   // Decrement the 'Press A' counter if it has been set ..
 
-  if (this->pressACounter > 0) pressACounter--;
+  if (this->pressACounter > 0) this->pressACounter--;
 
 }
 

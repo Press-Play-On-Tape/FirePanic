@@ -16,6 +16,9 @@ void TitleScreenState::activate(StateMachine & machine) {
   auto & arduboy = machine.getContext().arduboy;
   auto & sound = machine.getContext().sound;  
 	
+  this->sloganCaption = 0;
+  this->sloganDisplay = false;
+
   gameStats.resetGame();
   sound.setOutputEnabled(arduboy.audio.enabled);
   sound.tones(Sounds::Score);
@@ -73,9 +76,12 @@ void TitleScreenState::update(StateMachine & machine) {
 
   // Help !
 
-  if (arduboy.everyXFrames(80)) {
+  if (arduboy.everyXFrames(80) && this->pressACounter > 75) {
 
-    this->help = !this->help;
+    this->sloganDisplay = !this->sloganDisplay;
+    this->sloganCaption++;
+
+    if (this->sloganCaption == 16) this->sloganCaption = 0;
 
   }
 
@@ -98,7 +104,11 @@ void TitleScreenState::render(StateMachine & machine) {
   BaseState::renderLowerGrass(machine);
   
   SpritesB::drawExternalMask(33, 1, Images::FirePanic_Logo, Images::FirePanic_Logo_Mask, 0, 0);
-  SpritesB::drawSelfMasked(42, 13, Images::FirePanic_Logo_Anim, this->flameCounter);
+  SpritesB::drawSelfMasked(42, 13, Images::FirePanic_Logo_Anim_1, this->flameCounter);
+  SpritesB::drawSelfMasked(54, 13, Images::FirePanic_Logo_Anim_2, this->flameCounter);
+  SpritesB::drawSelfMasked(63, 13, Images::FirePanic_Logo_Anim_3, this->flameCounter);
+  SpritesB::drawSelfMasked(71, 13, Images::FirePanic_Logo_Anim_4, this->flameCounter);
+  SpritesB::drawSelfMasked(79, 13, Images::FirePanic_Logo_Anim_5, this->flameCounter);
 
   if (this->pressACounter == PRESS_A_DELAY) {
 
@@ -106,11 +116,49 @@ void TitleScreenState::render(StateMachine & machine) {
 
   }
 
-  SpritesB::drawExternalMask(0, 14, Images::Victim_OnEdge_01, Images::Victim_OnEdge_01_Mask, 0, 0);
+  uint8_t slogan = this->sloganCaption / 4;
 
-  if (this->help) {
+  switch (slogan) {
 
-    SpritesB::drawOverwrite(17, 16, Images::Help, 0);
+    case 0:
+      SpritesB::drawExternalMask(0, 14, Images::Victim_OnEdge_01, Images::Victim_OnEdge_01_Mask, 0, 0);
+      break;
+
+    case 1:
+      SpritesB::drawExternalMask(112, 14, Images::Victim_OnEdge_01_RH, Images::Victim_OnEdge_01_RH_Mask, 0, 0);
+      break;
+
+    case 2:
+      SpritesB::drawExternalMask(0, 31, Images::Victim_OnEdge_01, Images::Victim_OnEdge_01_Mask, 0, 0);
+      break;
+
+    case 3:
+      SpritesB::drawExternalMask(112, 31, Images::Victim_OnEdge_01_RH, Images::Victim_OnEdge_01_RH_Mask, 0, 0);
+      break;
+      
+  }
+
+  if (this->sloganDisplay) {
+
+    switch (slogan) {
+      
+      case 0:
+        SpritesB::drawExternalMask(18, 3, Images::Help, Images::Help_Mask, 0, 0);
+        break;
+      
+      case 1:
+        SpritesB::drawExternalMask(89, 3, Images::Help, Images::Help_Mask, 1, 1);
+        break;
+      
+      case 2:
+        SpritesB::drawExternalMask(18, 16, Images::Filmote, Images::Filmote_Mask, 0, 0);
+        break;
+      
+      case 3:
+        SpritesB::drawExternalMask(71, 16, Images::Vampirics, Images::Vampirics_Mask, 0, 0);
+        break;
+
+    }
 
   }
 

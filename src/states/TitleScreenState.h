@@ -13,7 +13,10 @@ class TitleScreenState : public BaseState {
     uint8_t restart = 0;
     uint8_t flameCounter = 0;
     uint8_t pressACounter = 0;
-    bool help = false;
+
+    uint8_t sloganCaption = 0;
+    uint8_t sloganHeight = 0;
+    bool sloganDisplay = false;
 
   public:	
   

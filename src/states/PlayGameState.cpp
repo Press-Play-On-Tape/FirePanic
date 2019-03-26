@@ -111,25 +111,23 @@ void PlayGameState::update(StateMachine & machine) {
 
                   this->ledCountdown = 10;
 
-                  switch (victim.getX()) {
+                  if (gameStats.misses < 3) {
 
-                    case PLAYER_MIN_X_POS ... PLAYER_MID_X_POS - 1:
-                      if (gameStats.misses < 3) {
+                    switch (victim.getX()) {
+
+                      case PLAYER_MIN_X_POS ... PLAYER_MID_X_POS - 1:
                         this->angel.init(0, gameStats.misses);
-                      }
-                      break;
+                        break;
 
-                    case PLAYER_MID_X_POS ... PLAYER_MAX_X_POS - 1:
-                      if (gameStats.misses < 3) {
+                      case PLAYER_MID_X_POS ... PLAYER_MAX_X_POS - 1:
                         this->angel.init(1, gameStats.misses);
-                      }
-                      break;
+                        break;
 
-                    case PLAYER_MAX_X_POS ... WIDTH:
-                      if (gameStats.misses < 3) {
+                      case PLAYER_MAX_X_POS ... WIDTH:
                         this->angel.init(2, gameStats.misses);
-                      }
-                      break;
+                        break;
+
+                    }
 
                   }
                   

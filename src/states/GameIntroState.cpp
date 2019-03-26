@@ -159,7 +159,6 @@ void GameIntroState::update(StateMachine & machine) {
     this->playerImageIndex = !this->playerImageIndex;
   }
   
-
 }
 
 
@@ -176,8 +175,9 @@ void GameIntroState::render(StateMachine & machine) {
 
   if (this->xPlayer < 100) {
 
-    uint8_t image = this->playerImageIndex ? 1 : 0;
-    SpritesB::drawExternalMask(xPlayer, PLAYER_Y_POS, Images::FireMen, Images::FireMen_Mask, image, image);
+    // uint8_t image = this->playerImageIndex ? 1 : 0;
+    // SpritesB::drawExternalMask(xPlayer, PLAYER_Y_POS, Images::FireMen, Images::FireMen_Mask, image, image);
+    SpritesB::drawExternalMask(xPlayer, PLAYER_Y_POS, Images::FireMen, Images::FireMen_Mask, this->playerImageIndex, this->playerImageIndex);
 
   }
 
