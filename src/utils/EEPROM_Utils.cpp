@@ -87,13 +87,8 @@ namespace EEPROM_Utils {
 
   }
 
+  static uint8_t testScore(uint16_t newScore) {
 
-  /* -----------------------------------------------------------------------------
-   *   Save score if it is in the top 3, return slot number (or NO_WINNER) ..
-   */
-  uint8_t saveScore(uint16_t newScore) {
-
-    uint8_t idx = NO_WINNER;
     uint16_t * const eepromHSScore1 = reinterpret_cast<uint16_t *>(EEPROM_HS_SCORE_1);
 
     for (uint8_t i = 0; i < 3; ++i) {
@@ -108,43 +103,56 @@ namespace EEPROM_Utils {
 
     }
 
+    return NO_WINNER;
+  
+  }
+
+  /* -----------------------------------------------------------------------------
+   *   Save score if it is in the top 3, return slot number (or NO_WINNER) ..
+   */
+  uint8_t saveScore(uint16_t newScore) {
+
+    uint8_t idx = testScore(newScore);
+
+    if(idx == NO_WINNER) {
+
+      return NO_WINNER;
+
+    }
 
     // New High Score ..
 
+    uint16_t * const eepromHSScore1 = reinterpret_cast<uint16_t *>(EEPROM_HS_SCORE_1);
     uint8_t * const eepromHSName1 = reinterpret_cast<uint8_t *>(EEPROM_HS_NAME_1);
 
-    if (idx < NO_WINNER) {
+    for (uint8_t i = 2; i > idx; --i) {
 
-      for (uint8_t i = 2; i > idx; --i) {
+      const size_t previousIndex = (i - 1);
+      const size_t sourceBaseIndex = (previousIndex * NAME_LENGTH_PLUS_TERM);
+      const size_t destinationBaseIndex = (i * NAME_LENGTH_PLUS_TERM);
 
-        const size_t previousIndex = (i - 1);
-        const size_t sourceBaseIndex = (previousIndex * NAME_LENGTH_PLUS_TERM);
-        const size_t destinationBaseIndex = (i * NAME_LENGTH_PLUS_TERM);
+      for (uint8_t j = 0; j < NAME_LENGTH_PLUS_TERM; ++j) {
 
-        for (uint8_t j = 0; j < NAME_LENGTH_PLUS_TERM; ++j) {
-
-          const uint8_t x = eeprom_read_byte(&eepromHSName1[sourceBaseIndex + j]);
-          eeprom_update_byte(&eepromHSName1[destinationBaseIndex + j], x);
-
-        }
-
-        const uint16_t score = eeprom_read_word(&eepromHSScore1[previousIndex]);
-        eeprom_update_word(&eepromHSScore1[i], score);
+        const uint8_t x = eeprom_read_byte(&eepromHSName1[sourceBaseIndex + j]);
+        eeprom_update_byte(&eepromHSName1[destinationBaseIndex + j], x);
 
       }
 
-
-      // Write out new name and score ..
-
-      for (uint8_t j = 0; j < NAME_LENGTH_PLUS_TERM; j++) {
-
-        eeprom_update_byte(&eepromHSName1[(idx * NAME_LENGTH_PLUS_TERM) + j], '?');
-
-      }
-
-      eeprom_write_word(&eepromHSScore1[idx], newScore);
+      const uint16_t score = eeprom_read_word(&eepromHSScore1[previousIndex]);
+      eeprom_update_word(&eepromHSScore1[i], score);
 
     }
+
+
+    // Write out new name and score ..
+
+    for (uint8_t j = 0; j < NAME_LENGTH_PLUS_TERM; j++) {
+
+      eeprom_update_byte(&eepromHSName1[(idx * NAME_LENGTH_PLUS_TERM) + j], '?');
+
+    }
+
+    eeprom_write_word(&eepromHSScore1[idx], newScore);
 
     return idx;
 
