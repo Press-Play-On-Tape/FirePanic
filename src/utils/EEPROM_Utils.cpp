@@ -131,6 +131,7 @@ namespace EEPROM_Utils {
 
   }
 
+
   void readSaveEntryName(char (&name)[SaveEntry::nameSize], uint8_t saveIndex) {
 
     const SaveEntry * const saveEntries = reinterpret_cast<const SaveEntry *>(eepromSaveEntriesStart);
@@ -150,7 +151,7 @@ namespace EEPROM_Utils {
     SaveEntry * const saveEntries = reinterpret_cast<SaveEntry *>(eepromSaveEntriesStart);
     eeprom_update_block(&entry, &saveEntries[saveIndex], sizeof(SaveEntry));
 
-  }
+    return idx;
 
   void writeSaveEntryName(const char (&name)[SaveEntry::nameSize], uint8_t saveIndex) {
 
@@ -165,4 +166,5 @@ namespace EEPROM_Utils {
     eeprom_update_word(&saveEntries[saveIndex].score, score);
 
   }
+  
 }
