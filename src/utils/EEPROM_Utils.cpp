@@ -117,14 +117,18 @@ namespace EEPROM_Utils {
 
       for (uint8_t i = 2; i > idx; --i) {
 
+        const size_t previousIndex = (i - 1);
+        const size_t sourceBaseIndex = (previousIndex * NAME_LENGTH_PLUS_TERM);
+        const size_t destinationBaseIndex = (i * NAME_LENGTH_PLUS_TERM);
+
         for (uint8_t j = 0; j < NAME_LENGTH_PLUS_TERM; ++j) {
 
-          const uint8_t x = eeprom_read_byte(&eepromHSName1[((i - 1) * NAME_LENGTH_PLUS_TERM) + j]);
-          eeprom_update_byte(&eepromHSName1[(i * NAME_LENGTH_PLUS_TERM) + j], x);
+          const uint8_t x = eeprom_read_byte(&eepromHSName1[sourceBaseIndex + j]);
+          eeprom_update_byte(&eepromHSName1[destinationBaseIndex + j], x);
 
         }
 
-        const uint16_t score = eeprom_read_word(&eepromHSScore1[i - 1]);
+        const uint16_t score = eeprom_read_word(&eepromHSScore1[previousIndex]);
         eeprom_update_word(&eepromHSScore1[i], score);
 
       }
