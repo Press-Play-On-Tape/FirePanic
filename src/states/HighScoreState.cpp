@@ -177,10 +177,11 @@ void HighScoreState::render(StateMachine & machine) {
 
 
   // Render scores ..
+  for (uint8_t index = 0; index < eepromSaveEntriesCount; ++index) {
 
-  renderHighScore(HS_CHAR_TOP, this->players[0]);
-  renderHighScore(HS_CHAR_TOP + HS_CHAR_V_SPACING, this->players[1]);
-  renderHighScore(HS_CHAR_TOP + HS_CHAR_V_SPACING + HS_CHAR_V_SPACING, this->players[2]);
+    renderHighScore(HS_CHAR_TOP + (HS_CHAR_V_SPACING * index), this->players[index]);
+
+  }
 
 
   // Render edit field if the slot is being editted ..
