@@ -2,6 +2,8 @@
 #include "Arduboy2Ext.h"
 #include "Enums.h"
 
+#include <avr/eeprom.h>
+
 /* ----------------------------------------------------------------------------
  *   Is the EEPROM initialised?
  *
@@ -10,140 +12,146 @@
  *   it resets the settings ..
  */
 
-const char chars1[4] = { 'A', 'A', 'A', ' ' };
-const char chars2[4] = { 'B', 'B', 'B', ' ' };
-const char chars3[4] = { 'C', 'C', 'C', ' ' };
+constexpr uint8_t letter1 = 'F';
+constexpr uint8_t letter2 = 'P';
 
-const uint8_t letter1 = 'F'; 
-const uint8_t letter2 = 'P'; 
+namespace EEPROM_Utils {
 
-void EEPROM_Utils::initEEPROM(bool forceClear) {
+  void initEEPROM(bool forceClear) {
 
-  byte c1 = EEPROM.read(EEPROM_START_C1);
-  byte c2 = EEPROM.read(EEPROM_START_C2);
+    uint8_t * eepromStartChar1 = reinterpret_cast<uint8_t *>(EEPROM_START_C1);
+    uint8_t * eepromStartChar2 = reinterpret_cast<uint8_t *>(EEPROM_START_C2);
 
-  if (forceClear || c1 != letter1 || c2 != letter2) { 
+    uint8_t * eepromHSName1 = reinterpret_cast<uint8_t *>(EEPROM_HS_NAME_1);
+    uint8_t * eepromHSName2 = reinterpret_cast<uint8_t *>(EEPROM_HS_NAME_2);
+    uint8_t * eepromHSName3 = reinterpret_cast<uint8_t *>(EEPROM_HS_NAME_3);
+    uint8_t * eepromEnd = reinterpret_cast<uint8_t *>(EEPROM_END);
 
-    EEPROM.update(EEPROM_START_C1, letter1);
-    EEPROM.update(EEPROM_START_C2, letter2);
+    const byte c1 = eeprom_read_byte(eepromStartChar1);
+    const byte c2 = eeprom_read_byte(eepromStartChar2);
 
-    for (uint8_t x = EEPROM_HS_NAME_1; x <= EEPROM_END; x++) {
+    if (!forceClear && (c1 == letter1) && (c2 == letter2)) {
 
-       EEPROM.update(x, 0);
-
-    }
-
-    for (uint8_t x = 0; x < 3; x++) {
-
-      EEPROM.update(EEPROM_HS_NAME_1 + x, chars1[x]);
-      EEPROM.update(EEPROM_HS_NAME_2 + x, chars2[x]);
-      EEPROM.update(EEPROM_HS_NAME_3 + x, chars3[x]);
+      return;
 
     }
 
-    int16_t score = 0;
-    EEPROM.put(EEPROM_HS_SCORE_1, score);
-    EEPROM.put(EEPROM_HS_SCORE_2, score);
-    EEPROM.put(EEPROM_HS_SCORE_3, score);
+    eeprom_update_byte(eepromStartChar1, letter1);
+    eeprom_update_byte(eepromStartChar2, letter2);
 
-  }
+    for (uint8_t * x = eepromHSName1; x <= eepromEnd; ++x) {
 
-}
-
-
-/* -----------------------------------------------------------------------------
- *   Get name ..
- */
-void EEPROM_Utils::getName(char *name, uint8_t startLoc) {
-
-  uint8_t chars[NAME_LENGTH + 1];
-
-  for (uint8_t x = 0; x < NAME_LENGTH; x++) {
-    
-    chars[x] = EEPROM.read(startLoc + x);
-
-  }
-
-  chars[NAME_LENGTH] = 0;
-
-  memcpy(name, &chars, NAME_LENGTH + 1);
-
-}
-
-
-/* -----------------------------------------------------------------------------
- *   Get name ..
- */
-int16_t EEPROM_Utils::getHighScore(uint8_t startLoc) {
-
-  int16_t score = 0;
-  EEPROM.get(startLoc, score);
-
-  return score;
-
-}
-
-
-/* -----------------------------------------------------------------------------
- *   Save score if it is in the top 3, return slot number (or NO_WINNER) .. 
- */
-static uint8_t EEPROM_Utils::saveScore(int16_t score) {
-
-  int16_t scores[3];
-  uint8_t idx = NO_WINNER;
-
-  for (uint8_t i = 0; i < 3; i++) {
-
-    scores[i] = getHighScore(EEPROM_HS_SCORE_1 + (i * 2));
-
-    if (score >= scores[i]) {
-
-      idx = i;
-      break;
+      eeprom_update_byte(x, 0);
 
     }
+
+    for (uint8_t x = 0; x < 3; ++x) {
+
+      eeprom_update_byte(&eepromHSName1[x], 'A');
+      eeprom_update_byte(&eepromHSName2[x], 'B');
+      eeprom_update_byte(&eepromHSName3[x], 'C');
+
+    }
+
+    uint16_t * eepromHSScore1 = reinterpret_cast<uint16_t *>(EEPROM_HS_SCORE_1);
+    uint16_t * eepromHSScore2 = reinterpret_cast<uint16_t *>(EEPROM_HS_SCORE_2);
+    uint16_t * eepromHSScore3 = reinterpret_cast<uint16_t *>(EEPROM_HS_SCORE_3);
+
+    eeprom_update_word(eepromHSScore1, 0);
+    eeprom_update_word(eepromHSScore2, 0);
+    eeprom_update_word(eepromHSScore3, 0);
 
   }
 
 
-  // New High Score ..
+  /* -----------------------------------------------------------------------------
+   *   Get name ..
+   */
+  void getName(char (&name)[NAME_LENGTH + 1], uint8_t startLoc) {
 
-  if (idx < NO_WINNER) {
+    const void * sourcePointer = reinterpret_cast<const void *>(startLoc);
+    eeprom_read_block(name, sourcePointer, (NAME_LENGTH - 1));
 
-    for (uint8_t i = 2; i > idx; i--) {
+    name[NAME_LENGTH] = '\0';
 
-      for (uint8_t j = 0; j < NAME_LENGTH_PLUS_TERM; j++) {
+  }
 
-        uint8_t x = EEPROM.read(EEPROM_HS_NAME_1 + ((i - 1) * NAME_LENGTH_PLUS_TERM) + j);
-        EEPROM.update(EEPROM_HS_NAME_1 + (i * NAME_LENGTH_PLUS_TERM) + j, x);
+
+  /* -----------------------------------------------------------------------------
+   *   Get name ..
+   */
+  uint16_t getHighScore(uint8_t startLoc) {
+
+    const uint16_t * scoreAddresss = reinterpret_cast<const uint16_t *>(startLoc);
+    return eeprom_read_word(scoreAddresss);
+
+  }
+
+
+  /* -----------------------------------------------------------------------------
+   *   Save score if it is in the top 3, return slot number (or NO_WINNER) ..
+   */
+  uint8_t saveScore(uint16_t newScore) {
+
+    uint8_t idx = NO_WINNER;
+    uint16_t * const eepromHSScore1 = reinterpret_cast<const uint16_t *>(EEPROM_HS_SCORE_1);
+
+    for (uint8_t i = 0; i < 3; ++i) {
+
+      const uint16_t oldScore = eeprom_read_word(&eepromHSScore1[i]);
+
+      if (newScore >= oldScore) {
+
+        return i;
 
       }
 
-      int16_t score = 0;
-      EEPROM.get(EEPROM_HS_SCORE_1 + ((i -1) * 2), score);
-      EEPROM.put(EEPROM_HS_SCORE_1 + (i * 2), score);
-
     }
 
 
-    // Write out new name and score ..
+    // New High Score ..
 
-    for (uint8_t j = 0; j < NAME_LENGTH_PLUS_TERM; j++) {
+    uint8_t * const eepromHSName1 = reinterpret_cast<uint8_t *>(EEPROM_HS_NAME_1);
 
-      EEPROM.update(EEPROM_HS_NAME_1 + (idx * NAME_LENGTH_PLUS_TERM) + j, '?');
+    if (idx < NO_WINNER) {
+
+      for (uint8_t i = 2; i > idx; --i) {
+
+        for (uint8_t j = 0; j < NAME_LENGTH_PLUS_TERM; ++j) {
+
+          const uint8_t x = eeprom_read_byte(&eepromHSName1[((i - 1) * NAME_LENGTH_PLUS_TERM) + j]);
+          eeprom_update_byte(&eepromHSName1[(i * NAME_LENGTH_PLUS_TERM) + j], x);
+
+        }
+
+        const uint16_t score = eeprom_read_word(&eepromHSScore1[i - 1]);
+        eeprom_update_word(&eepromHSScore1[i], score);
+
+      }
+
+
+      // Write out new name and score ..
+
+      for (uint8_t j = 0; j < NAME_LENGTH_PLUS_TERM; j++) {
+
+        eeprom_update_byte(&eepromHSName1[(idx * NAME_LENGTH_PLUS_TERM) + j], '?');
+
+      }
+
+      eeprom_write_word(&eepromHSScore1[idx], newScore);
 
     }
 
-    EEPROM.put(EEPROM_HS_SCORE_1 + (idx * 2), score);
+    return idx;
 
   }
 
-  return idx;
+  void saveChar(int8_t slotIdx, uint8_t charIdx, uint8_t newChar) {
 
-}
+    uint8_t * const eepromHSName1 = reinterpret_cast<uint8_t *>(EEPROM_HS_NAME_1);
+    const size_t index = ((slotIdx * NAME_LENGTH_PLUS_TERM) + charIdx);
+    eeprom_update_byte(&eepromHSName1[index], newChar);
 
-static void EEPROM_Utils::saveChar(int8_t slotIdx, uint8_t charIdx, uint8_t newChar) {
-
-  EEPROM.update(EEPROM_HS_NAME_1 + (slotIdx * NAME_LENGTH_PLUS_TERM) + charIdx, newChar);
+  }
 
 }
