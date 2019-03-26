@@ -3,17 +3,13 @@
 #include "Arduboy2Ext.h"
 #include "Enums.h"
 
-class EEPROM_Utils {
+namespace EEPROM_Utils {
 
-  public: 
-
-    EEPROM_Utils(){};
-        
-    static void initEEPROM(bool forceClear);
-    static void getName(char *name, uint8_t startLoc);
-    static int16_t getHighScore(uint8_t startLoc);
-    static uint8_t saveScore(int16_t score);
-    static void saveChar(int8_t slotIdx, uint8_t charIdx, uint8_t newChar);
+  void initEEPROM(bool forceClear);
+  void getName(char (&name)[NAME_LENGTH + 1], uint8_t startLoc);
+  uint16_t getHighScore(uint8_t startLoc);
+  uint8_t saveScore(uint16_t score);
+  void saveChar(int8_t slotIdx, uint8_t charIdx, uint8_t newChar);
 
 };
 
