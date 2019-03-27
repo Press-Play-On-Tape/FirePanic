@@ -94,8 +94,8 @@ void Victim::init(uint8_t level) {
   this->puffIndex = 0;
   this->startingLevel = level;
 
-  this->x = pgm_read_word_near(&Physics_Arc[this->startingLevel][this->posIndex * 2]);
-  this->y = pgm_read_word_near(&Physics_Arc[this->startingLevel][this->posIndex * 2] + 1);
+  this->x = pgm_read_word_near(&Physics_Arc_1[this->startingLevel][this->posIndex * 2]);
+  this->y = pgm_read_word_near(&Physics_Arc_1[this->startingLevel][this->posIndex * 2] + 1);
 
 }
 
@@ -125,10 +125,14 @@ void Victim::move() {
   switch (this->alive) {
 
     case 0: // alive
-      this->x = pgm_read_word_near(&Physics_Arc[this->startingLevel][this->posIndex * 2]);
-      this->y = pgm_read_word_near(&Physics_Arc[this->startingLevel][this->posIndex * 2] + 1);
-      // this->x = pgm_read_byte(&Physics_Arc[this->posIndex * 2]);
-      // this->y = pgm_read_byte(&Physics_Arc[(this->posIndex * 2) + 1]);
+      if (this->posIndex < 11) {
+        this->x = pgm_read_word_near(&Physics_Arc_1[this->startingLevel][this->posIndex * 2]);
+        this->y = pgm_read_word_near(&Physics_Arc_1[this->startingLevel][this->posIndex * 2] + 1);
+      }
+      else {
+        this->x = pgm_read_word_near(&Physics_Arc_2[(this->posIndex - 11) * 2]);
+        this->y = pgm_read_word_near(&Physics_Arc_2[(this->posIndex - 11) * 2] + 1);
+      }
       break;
 
     case 1: 

@@ -97,10 +97,11 @@ void Ambulance::incPuffIndexes() {
 
   for (uint8_t direction = 0; direction < 4; direction++) {
 
-    if (this->puffIndex[static_cast<uint8_t>(direction)] > 0) {
-      this->puffIndex[static_cast<uint8_t>(direction)]++;
-      if (this->puffIndex[static_cast<uint8_t>(direction)] == 6) this->puffIndex[static_cast<uint8_t>(direction)] = 0;
-    }
+    incPuffIndex(static_cast<Direction>(direction));
+    // if (this->puffIndex[static_cast<uint8_t>(direction)] > 0) {
+    //   this->puffIndex[static_cast<uint8_t>(direction)]++;
+    //   if (this->puffIndex[static_cast<uint8_t>(direction)] == 6) this->puffIndex[static_cast<uint8_t>(direction)] = 0;
+    // }
 
   }
 

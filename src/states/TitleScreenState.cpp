@@ -105,10 +105,10 @@ void TitleScreenState::render(StateMachine & machine) {
   
   SpritesB::drawExternalMask(33, 1, Images::FirePanic_Logo, Images::FirePanic_Logo_Mask, 0, 0);
   SpritesB::drawSelfMasked(42, 13, Images::FirePanic_Logo_Anim_1, this->flameCounter);
-  SpritesB::drawSelfMasked(54, 13, Images::FirePanic_Logo_Anim_1, this->flameCounter); //SJH
+  SpritesB::drawSelfMasked(54, 13, Images::FirePanic_Logo_Anim_2, this->flameCounter); 
   SpritesB::drawSelfMasked(63, 13, Images::FirePanic_Logo_Anim_3, this->flameCounter);
   SpritesB::drawSelfMasked(71, 13, Images::FirePanic_Logo_Anim_4, this->flameCounter);
-  SpritesB::drawSelfMasked(79, 13, Images::FirePanic_Logo_Anim_1, this->flameCounter); //SJH
+  SpritesB::drawSelfMasked(79, 13, Images::FirePanic_Logo_Anim_5, this->flameCounter); 
 
   if (this->pressACounter == PRESS_A_DELAY) {
 

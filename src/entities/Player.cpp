@@ -77,29 +77,36 @@ void Player::move() {
     case Direction::Left:
 
       this->x = this->x - pgm_read_byte(&steps[this->xIdx++]);
-      this->image++;
-      if (this->image == PLAYER_STEP_INC * 2) this->image = 0;
+      // this->image++;
+      // if (this->image == PLAYER_STEP_INC * 2) this->image = 0;
 
-      if (this->xIdx == NUM_OF_ELEMENTS) {
-        this->xIdx = 0;
-        this->direction = Direction::None;
-      }
+      // if (this->xIdx == NUM_OF_ELEMENTS) {
+      //   this->xIdx = 0;
+      //   this->direction = Direction::None;
+      // }
       break;
 
     case Direction::Right:
 
       this->x = this->x + pgm_read_byte(&steps[this->xIdx++]);
-      this->image++;
-      if (this->image == PLAYER_STEP_INC * 2) this->image = 0;
+      // this->image++;
+      // if (this->image == PLAYER_STEP_INC * 2) this->image = 0;
 
-      if (this->xIdx == NUM_OF_ELEMENTS) {
-        this->xIdx = 0;
-        this->direction = Direction::None;
-      }
+      // if (this->xIdx == NUM_OF_ELEMENTS) {
+      //   this->xIdx = 0;
+      //   this->direction = Direction::None;
+      // }
       break;
-
-    default: break;
+      default: break;
     
+  }
+
+  this->image++;
+  if (this->image == PLAYER_STEP_INC * 2) this->image = 0;
+
+  if (this->xIdx == NUM_OF_ELEMENTS) {
+    this->xIdx = 0;
+    this->direction = Direction::None;
   }
 
 }
