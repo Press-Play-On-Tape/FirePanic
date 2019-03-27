@@ -101,7 +101,7 @@ void TitleScreenState::render(StateMachine & machine) {
   auto & arduboy = machine.getContext().arduboy;
 
   BaseState::renderCommonScenery(machine, false, true);
-  BaseState::renderLowerGrass(machine);
+  BaseState::renderLowerGrass();
   
   SpritesB::drawExternalMask(33, 1, Images::FirePanic_Logo, Images::FirePanic_Logo_Mask, 0, 0);
   SpritesB::drawSelfMasked(42, 13, Images::FirePanic_Logo_Anim_1, this->flameCounter);
@@ -112,7 +112,7 @@ void TitleScreenState::render(StateMachine & machine) {
 
   if (this->pressACounter == PRESS_A_DELAY) {
 
-    SpritesB::drawExternalMask(43, 52, Images::PressA, Images::PressA_Mask, 0, 0);
+    SpritesB::drawOverwrite(43, 52, Images::PressA, 0);
 
   }
 

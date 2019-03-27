@@ -92,8 +92,8 @@
 #define NAME_LENGTH 3
 #define NAME_LENGTH_PLUS_TERM (NAME_LENGTH + 1)
 
-#define HS_NAME_LEFT 37
-#define HS_SCORE_LEFT 70
+#define HS_NAME_LEFT 36
+#define HS_SCORE_LEFT 69
 #define HS_CHAR_TOP 22
 #define HS_CHAR_V_SPACING 9
 #define HS_PRESS_A_DELAY 100

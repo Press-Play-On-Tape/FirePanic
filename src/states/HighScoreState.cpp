@@ -166,13 +166,12 @@ void HighScoreState::renderHighScore(uint8_t y, const SaveEntry & saveEntry) {
 void HighScoreState::render(StateMachine & machine) {
 
 	auto & arduboy = machine.getContext().arduboy;
-	auto & gameStats = machine.getContext().gameStats;
 
 	const bool flash = arduboy.getFrameCountHalf(FLASH_FRAME_COUNT_2);
 
   BaseState::renderCommonScenery(machine, false, true);
-  SpritesB::drawExternalMask(31, 3, Images::HighscoreText, Images::HighscoreText_Mask, 0, 0);
-  SpritesB::drawExternalMask(29, 16, Images::HighscorePanel, Images::HighscorePanel_Mask, 0, 0);
+  SpritesB::drawExternalMask(30, 3, Images::HighscoreText, Images::HighscoreText_Mask, 0, 0);
+  SpritesB::drawExternalMask(28, 16, Images::HighscorePanel, Images::HighscorePanel_Mask, 0, 0);
   
 
 
@@ -196,12 +195,16 @@ void HighScoreState::render(StateMachine & machine) {
   }
 
 
+  // Render foreground grass ..
+
+  BaseState::renderLowerGrass();
+
 
   // Display Press A message?
 
   if (this->winnerIdx == NO_WINNER && this->pressACounter == 0) {
 
-    SpritesB::drawExternalMask(43, 52, Images::PressA, Images::PressA_Mask, 0, 0);
+    SpritesB::drawOverwrite(43, 52, Images::PressA, 0);
 
   }
 

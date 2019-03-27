@@ -16,7 +16,7 @@ class Angel {
     void setEnabled(bool value);
     void setSequence(uint8_t sequence);
     void init(uint8_t sequence, uint8_t missNumber);
-    bool move(uint8_t missNumber);
+    bool move();
     bool renderImage();
     
   protected:

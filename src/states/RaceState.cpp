@@ -596,7 +596,7 @@ void RaceState::render(StateMachine & machine) {
 
   // Render score ..
 
-  BaseState::renderScore(machine, TimeOfDay::Night, this->healthShowCountdown, (gameStats.health) / 5);
+  BaseState::renderScore(machine, this->healthShowCountdown, (gameStats.health) / 5);
 
 
   // Render misses ..

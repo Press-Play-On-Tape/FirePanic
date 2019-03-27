@@ -4,7 +4,7 @@
 #include "../utils/Utils.h"
 #include "../utils/Enums.h"
 
-void BaseState::renderScore(StateMachine & machine, TimeOfDay timeOfDay, bool renderHealth, int16_t health) {
+void BaseState::renderScore(StateMachine & machine, bool renderHealth, int16_t health) {
   	
   auto & gameStats = machine.getContext().gameStats;
   auto & arduboy = machine.getContext().arduboy;
@@ -85,7 +85,7 @@ void BaseState::renderCommonScenery(StateMachine & machine, bool incSmoke, bool 
 }
 
 
-void BaseState::renderLowerGrass(StateMachine & machine) {
+void BaseState::renderLowerGrass() {
 
   for (uint8_t i = 0; i <= 120; i = i + 8) {
     SpritesB::drawExternalMask(i, 59, Images::Grass, Images::Grass_Mask, 0, 0);

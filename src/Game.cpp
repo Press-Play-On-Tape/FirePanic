@@ -44,7 +44,6 @@ void Game::setup(void) {
 void Game::loop(void) {
 
 	auto &arduboy = this->context.arduboy;
-	auto &gameStats = this->context.gameStats;
 	if (!arduboy.nextFrame()) return;
 
 	arduboy.pollButtons();

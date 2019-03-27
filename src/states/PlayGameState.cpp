@@ -287,7 +287,7 @@ void PlayGameState::update(StateMachine & machine) {
     
       if (this->angel.getEnabled()) {
 
-        if (this->angel.move(gameStats.misses)) {
+        if (this->angel.move()) {
 
           this->puffIndex++;
 
@@ -444,7 +444,7 @@ void PlayGameState::render(StateMachine & machine) {
 
   // Render score ..
 
-  BaseState::renderScore(machine, gameStats.timeOfDay, false, 0);
+  BaseState::renderScore(machine, false, 0);
 
 
   // Render firemen ..
@@ -455,7 +455,7 @@ void PlayGameState::render(StateMachine & machine) {
 
   // Render foreground grass ..
 
-  BaseState::renderLowerGrass(machine);
+  BaseState::renderLowerGrass();
 
 
   // Render victims ..

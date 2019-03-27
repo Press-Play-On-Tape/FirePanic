@@ -9,7 +9,6 @@
 void GameIntroState::activate(StateMachine & machine) {
   	
   auto & gameStats = machine.getContext().gameStats;
-  auto & arduboy = machine.getContext().arduboy;
 
   if (machine.getContext().nextState == GameStateType::PlayGameScreen) {
 
@@ -183,7 +182,7 @@ void GameIntroState::render(StateMachine & machine) {
 
   SpritesB::drawExternalMask(104, 28, Images::Grass, Images::Grass_Mask, 0, 0);
   SpritesB::drawOverwrite(104, 38, Images::Ground_RHS, static_cast<uint8_t>(gameStats.timeOfDay));
-  BaseState::renderLowerGrass(machine);
+  BaseState::renderLowerGrass();
 
 
   // Draw Ambulance with lights ..

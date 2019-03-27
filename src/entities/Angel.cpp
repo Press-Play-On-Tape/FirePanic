@@ -75,7 +75,7 @@ void Angel::init(uint8_t sequence, uint8_t missNumber) {
   
 }
 
-bool Angel::move(uint8_t missNumber) {
+bool Angel::move() {
   
   this->posIndex++;  
 
