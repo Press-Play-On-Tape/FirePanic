@@ -14,7 +14,7 @@ class GameState {
 
   public:
   
-    virtual ~GameState(void) {};
+    //virtual ~GameState(void) {};
 
     virtual void activate(StateMachine & machine) {
       (void)machine;
