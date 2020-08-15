@@ -28,8 +28,8 @@ class GameContext {
 
     GameStateType gameState;
     GameStateType nextState;
-    Arduboy2Ext arduboy;
-    ArduboyTonesExt sound;
+    static Arduboy2Ext arduboy;
+    static ArduboyTonesExt sound;
     GameStats gameStats;
 
     GameContext();
