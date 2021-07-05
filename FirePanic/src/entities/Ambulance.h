@@ -27,8 +27,9 @@ class Ambulance {
     void decX(uint8_t value = 1);
     void decY();
     bool incPuffIndexIfZero(Direction direction);
+    void resetPuffIndex();
 
-  protected:
+  private:
 
     int16_t x;
     uint8_t y;

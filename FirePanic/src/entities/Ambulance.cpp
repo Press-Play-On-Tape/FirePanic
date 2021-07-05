@@ -97,11 +97,10 @@ void Ambulance::incPuffIndexes() {
 
   for (uint8_t direction = 0; direction < 4; direction++) {
 
-    incPuffIndex(static_cast<Direction>(direction));
-    // if (this->puffIndex[static_cast<uint8_t>(direction)] > 0) {
-    //   this->puffIndex[static_cast<uint8_t>(direction)]++;
-    //   if (this->puffIndex[static_cast<uint8_t>(direction)] == 6) this->puffIndex[static_cast<uint8_t>(direction)] = 0;
-    // }
+    if (this->puffIndex[static_cast<uint8_t>(direction)] > 0) {
+      this->puffIndex[static_cast<uint8_t>(direction)]++;
+      if (this->puffIndex[static_cast<uint8_t>(direction)] == 6) this->puffIndex[static_cast<uint8_t>(direction)] = 0;
+    }
 
   }
 
@@ -127,6 +126,16 @@ uint8_t Ambulance::getLane() {
     case 15 ... 27: return 1;
     default:        return 2;
 
+  }
+
+}
+
+void Ambulance::resetPuffIndex() {
+  
+  for (uint8_t direction = 0; direction < 4; direction++) {
+
+    this->puffIndex[direction] = 0;
+  
   }
 
 }

@@ -22,46 +22,34 @@
 // ${cwd}: the current working directory of the spawned process
 //
 {
-	"version": "2.0.0",
-  "command": "arduino",
+	"version": "0.1.0",
+	"command": "arduino",
+	"isShellCommand": true,
+	"showOutput": "always",
 	"tasks": [
-    {
-      "label": "--verify",
-      "type": "shell",
-      "command": "arduino",
-      "args": [
-        "--verify",
-        "-v",
-        "${file}"
-      ],
-      "problemMatcher": {
-        "owner": "external",
-        "fileLocation": [
-          "relative",
-          "${fileDirname}"
-        ],
-        "pattern": {
-          "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
-          "file": 1,
-          "line": 2,
-          "column": 3,
-          "severity": 4,
-          "message": 5
-        }
-      },
-      "group": "build"
-    },
-    {
-      "label": "--upload",
-      "type": "shell",
-      "command": "arduino",
-      "args": [
-        "--upload",
-        "-v",
-        "${file}"
-      ],
-      "problemMatcher": [],
-      "group": "test"
-    }
-  ]
+		{
+			"taskName": "--verify",
+			"args": ["-v", "${file}"],
+			"isBuildCommand": true,
+			"showOutput": "silent",
+			"problemMatcher": {
+				"owner": "external",
+				"fileLocation": ["relative", "${fileDirname}"],
+				"pattern": {
+					"regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+					"file": 1,
+					"line": 2,
+					"column": 3,
+					"severity": 4,
+					"message": 5
+				}
+			}
+		},
+		{
+			"taskName": "--upload",
+			"args": ["-v", "${file}"],
+			"isTestCommand": true,
+			"showOutput": "always"
+		}	
+	]
 }
