@@ -19,6 +19,9 @@
 #include "GameContext.h"
 #include "Utils.h"
 
+Arduboy2Ext GameContext::arduboy;
+ArduboyTonesExt GameContext::sound;
+
 GameContext::GameContext() { }
 
 void GameContext::resetGame() {
